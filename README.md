@@ -1,7 +1,7 @@
 # Request Management System
 
-# PLEASE NOTE
-API source code can be found [HERE](https://github.com/NotReal003/api).
+# API
+API source code can be found **[HERE](https://github.com/NotReal003/api)**.
 ## Overview
 This project is a fully functional request management system, designed for users to submit various types of requests such as Discord reports, support requests, and guild applications. Administrators can manage these requests with advanced control options. Additionally, the system incorporates a cryptocurrency payment feature, allowing users to support the project using different crypto wallets.
 
@@ -21,6 +21,35 @@ LaGrw1RgSWnhxKo1SiG9D9n4tVTVJyL2VC
 ```
 
 For more info, please visit **https://pay.notreal003.xyz** :)
+
+## Installation
+
+### Prerequisites
+- Node.js and npm installed.
+- MongoDB Atlas or local MongoDB setup.
+- (Optional) Cloudflare Workers account for backend hosting.
+
+### Frontend Setup
+1. Clone the repository:  
+   `git clone https://github.com/NotReal003/Requests.git`
+2. Install dependencies:  
+```bash
+npm install
+```
+3. Create a `.env` file and add your API URL:
+```bash
+REACT_APP_API=your_api_url
+CI=false
+```
+4. Start the React app:  
+```bash
+npm start
+```
+for development or
+```bash
+npm run build
+```
+for production (output will be in `/build`).
 
 ## Features
 
@@ -107,53 +136,6 @@ For more info, please visit **https://pay.notreal003.xyz** :)
 - **DELETE `/admin/requests/:id`**: Delete a request.
 - **PUT `/admin/users/block`**: Block a user.
 - **PUT `/admin/users/unblock`**: Unblock a user.
-
-## Installation
-
-### Prerequisites
-- Node.js and npm installed.
-- MongoDB Atlas or local MongoDB setup.
-- (Optional) Cloudflare Workers account for backend hosting.
-
-### Frontend Setup
-1. Clone the repository:  
-   `git clone https://github.com/NotReal003/REQUEST_PAGE.git`
-2. Install dependencies:  
-   `npm install`
-3. Create a `.env` file and add your API URL:  
-REACT_APP_API=your_api_url
-CI=false
-4. Start the React app:  
-`npm start` for development or `npm run build` for production (output will be in `/build`).
-
-### Backend Setup
-1. Clone the repository:  
-`git clone https://github.com/NotReal003/REQUEST_PAGE_API.git`
-2. Install dependencies:  
-`npm install`
-3. Configure environment variables:
-```bash
-MONGODB_URI=mongodb+srv://username@cluster.mongodb.net/database
-JWT_SECRET=your_jwt_secret
-DISCORD_CLIENT_ID=your_discord_client_id
-DISCORD_CLIENT_SECRET=your_discord_client_secret
-NODE_ENV=production
-DISCORD_REDIRECT_URI=callback_url
-DISCORD_WEBHOOK_URL=first_request_route_webhookurl
-DISCORD_WEBHOOK_URL1=second_request_route_webhookurl
-EMAIL=email
-EPASS=email_password
-NODE_ENV=production
-SESSION_SECRET=...
-WEB_TOKEN=an_webhook_url(please test it)
-USER_AUTH_WEBTOKEN=user_auth_logger_webhookurl
-ADMIN_ID=theAdminId(user_id)
-G_ID=github_client_id
-G_SECRET=github_client_secret
-```
-(please note that the GitHub Auth is not available for now so just for optional)
-5. Start the backend server:  
-`node index.js`
 
 ## Usage
 
