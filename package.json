@@ -34,7 +34,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "PUBLIC_URL=/support/ react-scripts build",
+    "build": "PUBLIC_URL=/portal/ react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
