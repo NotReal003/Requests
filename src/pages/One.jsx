@@ -153,7 +153,7 @@ const One = () => {
         </div>
 
         <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-1 border-t-slate-100 flex justify-start items-center rounded-md p-2">
-          <button className="btn btn-info no-animation hover:btn-warning" onClick={() => navigate('/')}>
+          <button className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation" onClick={() => navigate('/')}>
             <IoMdArrowRoundBack className="mr-2" />Back
           </button>
         </div>

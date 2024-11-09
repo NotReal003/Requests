@@ -247,7 +247,7 @@ function RequestDetail() {
       )}
 
       <div className="p-2">
-        <button className="btn text-white bg-blue-600 btn-md no-animation" onClick={() => navigate(-1)}>
+        <button className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation" onClick={() => navigate(-1)}>
           <IoMdArrowRoundBack className="mr-1" />
           Back
         </button>
