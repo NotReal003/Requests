@@ -65,8 +65,11 @@ export default function Navbar({ isAuthenticated }) {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch('/api/auth/signout', {
+      const res = await fetch(`${API}/auth/signout`, {
         credentials: 'include',
+        headers: {
+          'Authorization': localStorage.getItem('jwtToken')
+        }
       });
 
       if (!res.ok) {
