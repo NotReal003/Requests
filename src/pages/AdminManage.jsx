@@ -9,24 +9,21 @@ const BlockUserPage = () => {
   const [myBlockReason, setMyBlockReason] = useState('');
   const [blockedUsers, setBlockedUsers] = useState([]);
   const [nonBlockedUsers, setNonBlockedUsers] = useState([]);
-  const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [secure, setSecure] = useState(false);
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
+
+  const token = localStorage.getItem('jwtToken');
+  const headers = { Authorization: `${token}` };
 
   // Fetch blocked and non-blocked users from the API
   const fetchBlockedUsers = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API}/users/blocks`, {
-        headers: {
-          Authorization: `${localStorage.getItem('jwtToken')}`,
-        },
-      });
+      const response = await axios.get(`${API}/users/blocks`, { headers });
 
-      // Separate users based on their "blocked" status
       const blocked = response.data.filter(user => user.blocked === "YES");
       const nonBlocked = response.data.filter(user => user.blocked !== "YES");
 
@@ -35,36 +32,31 @@ const BlockUserPage = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      setSecure(true);
-      const errorStatus = error.response?.status;
-      if (errorStatus === 403) {
-        // Navigate to the 404 page if forbidden
+      const status = error.response?.status;
+      if (status === 403) {
         navigate('/PageNotFound');
       } else {
-        setLoading(false);
-        const errorMessage = error.response?.data?.message || 'Failed to load users. Please try again later.';
         console.error('Error fetching blocked users:', error);
-        setError(`${errorStatus}: ${errorMessage || 'Failed to fetch users. Please try again.'}`);
+        setError(`Error ${status}: ${error.response?.data?.message || 'Failed to fetch users.'}`);
       }
     }
-  }, [API, navigate]);
+  }, [API, navigate, headers]);
 
-
-  // Fetch all blocked users when the component mounts
   useEffect(() => {
     fetchBlockedUsers();
   }, [fetchBlockedUsers]);
 
-  // Block user function
   const blockUser = async () => {
+    if (!myBlockUser || !myBlockReason) {
+      toast.error('User ID and reason are required.');
+      return;
+    }
+
+    setBlockLoading(true);
     const blockUserPromise = axios.post(
       `${API}/users/block/add`,
       { myBlockUser, myBlockReason },
-      {
-        headers: {
-          Authorization: `${localStorage.getItem('jwtToken')}`,
-        },
-      }
+      { headers }
     );
 
     toast.promise(
@@ -72,15 +64,19 @@ const BlockUserPage = () => {
       {
         loading: 'Blocking user...',
         success: 'User blocked successfully!',
-        error: (err) => err.response?.data?.message || 'An error occurred while cancelling your request',
+        error: (err) => err.response?.data?.message || 'An error occurred',
       }
     );
 
     try {
       await blockUserPromise;
-      fetchBlockedUsers(); // Refresh the list after blocking a user
+      setMyBlockUser('');
+      setMyBlockReason('');
+      fetchBlockedUsers();
     } catch (error) {
       console.error('Error blocking the user:', error);
+    } finally {
+      setBlockLoading(false);
     }
   };
 
@@ -89,33 +85,32 @@ const BlockUserPage = () => {
     const unblockUserPromise = axios.put(
       `${API}/users/unblock`,
       { myBlockUser: userId },
-      {
-        headers: {
-          Authorization: `${localStorage.getItem('jwtToken')}`,
-        },
-      }
+      { headers }
     );
-    setMessage(null);
 
     toast.promise(
       unblockUserPromise,
       {
         loading: 'Unblocking user...',
         success: 'User unblocked successfully!',
-        error: (err) => err.response?.data?.message || 'An error occurred while cancelling your request',
+        error: (err) => err.response?.data?.message || 'An error occurred',
       }
     );
 
     try {
       await unblockUserPromise;
-      fetchBlockedUsers(); // Refresh the list after unblocking a user
+      fetchBlockedUsers();
     } catch (error) {
       console.error('Error unblocking the user:', error);
     }
   };
 
   if (loading) {
-    return <div><ImSpinner6 className="animate-spin" /></div>;
+    return (
+      <div className="flex items-center justify-center">
+        <ImSpinner6 className="animate-spin text-4xl text-primary" />
+      </div>
+    );
   }
 
   return (
@@ -123,7 +118,6 @@ const BlockUserPage = () => {
       <Toaster />
       <h1 className="text-2xl font-bold mb-4">Block/Unblock Users</h1>
 
-      {/* Block User Form */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Block a User</h2>
         <input
@@ -132,6 +126,7 @@ const BlockUserPage = () => {
           value={myBlockUser}
           onChange={(e) => setMyBlockUser(e.target.value)}
           className="input input-bordered w-full mb-2"
+          aria-label="User ID"
         />
         <input
           type="text"
@@ -139,87 +134,54 @@ const BlockUserPage = () => {
           value={myBlockReason}
           onChange={(e) => setMyBlockReason(e.target.value)}
           className="input input-bordered w-full mb-2"
+          aria-label="Reason for blocking"
         />
-        <button disabled={secure} className="btn btn-primary" onClick={blockUser}>
-          Block User
+        <button
+          className={`btn btn-primary ${blockLoading ? 'loading' : ''}`}
+          onClick={blockUser}
+          disabled={blockLoading}
+        >
+          {blockLoading ? 'Blocking...' : 'Block User'}
         </button>
       </div>
 
-      {/* Display success or error message */}
-      {message && (
-        <div className="alert alert-success shadow-lg mb-4">
-          <span>{message}</span>
-        </div>
-      )}
       {error && (
         <div className="alert alert-error shadow-lg mb-4">
           <span>{error}</span>
         </div>
       )}
 
-      {/* Blocked Users List */}
       <div className="mb-8">
         <h2 className="text-xl font-semibold mb-4">Blocked Users</h2>
         {blockedUsers.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>User ID</th>
-                  <th>Reason</th>
-                  <th>Actions</th>
+          <table className="table table-zebra w-full">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Reason</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {blockedUsers.map((user) => (
+                <tr key={user.user_id}>
+                  <td>{user.user_id}</td>
+                  <td>{user.reason}</td>
+                  <td>
+                    <button
+                      className="btn btn-outline btn-sm"
+                      onClick={() => unblockUser(user.user_id)}
+                    >
+                      Unblock
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {blockedUsers.map((user) => (
-                  <tr key={user.user_id}>
-                    <td>{user.user_id}</td>
-                    <td>{user.reason}</td>
-                    <td>
-                      <button
-                        className="btn btn-outline btn-sm"
-                        onClick={() => unblockUser(user.user_id)}
-                      >
-                        Unblock
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         ) : (
           <div className="alert alert-info shadow-lg">
             <span>No blocked users found.</span>
-          </div>
-        )}
-      </div>
-
-      {/* Non-blocked Users List */}
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4">Non-blocked Users</h2>
-        {nonBlockedUsers.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="table table-zebra w-full">
-              <thead>
-                <tr>
-                  <th>User ID</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {nonBlockedUsers.map((user) => (
-                  <tr key={user.user_id}>
-                    <td>{user.user_id}</td>
-                    <td>Not Blocked</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="alert alert-info shadow-lg">
-            <span>No non-blocked users found.</span>
           </div>
         )}
       </div>
