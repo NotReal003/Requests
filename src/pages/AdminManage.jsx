@@ -48,11 +48,6 @@ const BlockUserPage = () => {
       return;
     }
 
-    if (!/^\d+$/.test(myBlockUser)) {
-      toast.error('Invalid User ID format.');
-      return;
-    }
-
     const blockUserPromise = axios.post(
       `${API}/users/block/add`,
       { myBlockUser, myBlockReason },
