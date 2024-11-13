@@ -14,12 +14,13 @@ const BlockUserPage = () => {
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
   const token = localStorage.getItem('jwtToken');
-  const headers = { Authorization: `${token}` };
 
   const fetchBlockedUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/users/blocks`, { headers });
+      const response = await axios.get(`${API}/users/blocks`, {
+        headers: { Authorization: `${token}` }
+      });
       const blocked = response.data.filter(user => user.blocked === "YES");
       const nonBlocked = response.data.filter(user => user.blocked !== "YES");
       setBlockedUsers(blocked);
@@ -35,7 +36,7 @@ const BlockUserPage = () => {
     } finally {
       setLoading(false);
     }
-  }, [API, navigate, headers]);
+  }, [API, navigate, token]);
 
   useEffect(() => {
     fetchBlockedUsers();
@@ -55,7 +56,7 @@ const BlockUserPage = () => {
     const blockUserPromise = axios.post(
       `${API}/users/block/add`,
       { myBlockUser, myBlockReason },
-      { headers }
+      { headers: { Authorization: `${token}` } }
     );
 
     toast.promise(
@@ -81,7 +82,7 @@ const BlockUserPage = () => {
     const unblockUserPromise = axios.put(
       `${API}/users/unblock`,
       { myBlockUser: userId },
-      { headers }
+      { headers: { Authorization: `${token}` } }
     );
 
     toast.promise(
