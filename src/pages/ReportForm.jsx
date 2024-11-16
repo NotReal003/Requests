@@ -60,9 +60,9 @@ const ReportForm = () => {
       setIsSubmitting(true);
       const response = await fetch(`${API}/requests/report`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
