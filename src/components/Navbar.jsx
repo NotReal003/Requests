@@ -64,9 +64,6 @@ export default function Navbar({ isAuthenticated }) {
     try {
       const res = await fetch(`${API}/auth/signout`, {
         credentials: 'include',
-        headers: {
-          'Authorization': localStorage.getItem('jwtToken')
-        }
       });
 
       if (!res.ok) {
@@ -75,7 +72,6 @@ export default function Navbar({ isAuthenticated }) {
       }
 
       localStorage.removeItem('jwtToken');
-      window.location.href = '/';
     } catch (error) {
       setShowAlert(true);
       console.error(error);
