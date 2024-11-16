@@ -24,7 +24,9 @@ const Callback = () => {
           if (response.status === 200) {
             toast.success('Verification In Process...');
             const token = response.data.jwtToken;
-            localStorage.setItem('jwtToken', token);
+
+            document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; Secure; HttpOnly; SameSite=Strict`;
+          localStorage.setItem('jwtToken', token);
 
             // user auth
             axios.get(`https://api.notreal003.xyz/auth/user?callback=${token}`, {

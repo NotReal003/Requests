@@ -155,14 +155,11 @@ const Admin = () => {
   const handleToggleApiStatus = async () => {
     const confirmMessage = apiClosed ? 'open the API' : 'close the API';
     if (window.confirm(`Are you sure you want to ${confirmMessage}?`)) {
-      const jwtToken = localStorage.getItem('jwtToken');
       try {
         const response = await axios.put(
           `${API}/server/manage-api`,
           { closeType: apiClosed ? 'noopened' : 'yesclosed' },
-          {
-            headers: { Authorization: `${jwtToken}` },
-          }
+          { withCredentials: true }
         );
         if (response.status === 200) {
           toast.success(`API has been ${apiClosed ? 'opened' : 'closed'} successfully.`);
