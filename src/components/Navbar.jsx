@@ -25,7 +25,7 @@ export default function Navbar({ isAuthenticated }) {
         });
 
         if (res.status === 403) {
-          window.location.href = 'https://request.notreal003.xyz/api/auth/signout';
+          window.location.href = 'https://api.notreal003.xyz/auth/signout';
           return;
         }
 
@@ -60,7 +60,7 @@ export default function Navbar({ isAuthenticated }) {
   }, [isAuthenticated, API]);
 
   const handleLogout = () => {
-    window.location.href = 'https://request.notreal003.xyz/api/auth/signout';
+    window.location.href = 'https://api.notreal003.xyz/auth/signout';
   };
 
   return (
