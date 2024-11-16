@@ -20,7 +20,7 @@ function AdminDetail() {
     const fetchRequest = async () => {
       try {
         const response = await axios.get(`${API}/admin/requests/${requestId}`, {
-          withCredentials: true
+          withCredentials: true,
         });
 
         // Success case
