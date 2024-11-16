@@ -25,6 +25,7 @@ const Callback = () => {
             const token = response.data.jwtToken;
 
             document.cookie = `token=${token}; path=/; max-age=${7 * 24 * 60 * 60}; Secure; HttpOnly; SameSite=Strict`;
+            console.log(document.cookie);
             toast('Verification In Process...');
           localStorage.setItem('jwtToken', token);
 
