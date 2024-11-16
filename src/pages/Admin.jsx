@@ -161,7 +161,7 @@ const Admin = () => {
           { closeType: apiClosed ? 'noopened' : 'yesclosed' },
           withCredentials: true,
         );
-        const credentials = document.cookie.split(';').find((cookie) => cookie.trim().startsWith('token'));
+        const credentials = document.cookie;
         console.log(credentials);
         if (response.status === 200) {
           toast.success(`API has been ${apiClosed ? 'opened' : 'closed'} successfully.`);
