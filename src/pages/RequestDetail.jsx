@@ -25,9 +25,8 @@ function RequestDetail() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const requestId = urlParams.get('id');
-        const token = localStorage.getItem('jwtToken');
         const response = await axios.get(`${API}/requests/${requestId}`, {
-          headers: { Authorization: `${token}` },
+          withCredentials: true,
         });
 
         if (response.status === 200) {

@@ -19,7 +19,7 @@ const BlockUserPage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/users/blocks`, {
-        headers: { Authorization: `${token}` }
+        withCredentials: true,
       });
       const blocked = response.data.filter(user => user.blocked === "YES");
       const nonBlocked = response.data.filter(user => user.blocked !== "YES");
@@ -51,7 +51,7 @@ const BlockUserPage = () => {
     const blockUserPromise = axios.post(
       `${API}/users/block/add`,
       { myBlockUser, myBlockReason },
-      { headers: { Authorization: `${token}` } }
+      { withCredentials: true }
     );
 
     toast.promise(
@@ -77,7 +77,7 @@ const BlockUserPage = () => {
     const unblockUserPromise = axios.put(
       `${API}/users/unblock`,
       { myBlockUser: userId },
-      { headers: { Authorization: `${token}` } }
+      { withCredentials: true }
     );
 
     toast.promise(

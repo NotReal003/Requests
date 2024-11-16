@@ -57,13 +57,9 @@ const One = () => {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      if (!token) {
-        window.location.reload();
-        return;
-      }
       try {
         const response = await axios.get(`${API}/requests`, {
-          headers: { Authorization: `${token}` },
+          withCredentials: true,
         });
         if (response.status === 403) {
           window.location.reload();

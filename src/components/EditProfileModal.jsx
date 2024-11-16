@@ -18,11 +18,10 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
       }
       
       setLoading(true);
-      const token = localStorage.getItem('jwtToken');
       const response = await axios.put(
         `${API}/users/display`,
         { displayName: newDisplayName },
-        { headers: { Authorization: `${token}` } }
+        { withCredentials: true }
       );
 
       if (response.status === 200) {

@@ -20,11 +20,8 @@ export default function Navbar({ isAuthenticated }) {
       setLoading(true);
 
       try {
-        const token = localStorage.getItem('jwtToken');
         const res = await fetch(`${API}/users/@me`, {
-          headers: {
-            'Authorization': `${token}`
-          }
+          withCredentials: true,
         });
 
         if (res.status === 403) {

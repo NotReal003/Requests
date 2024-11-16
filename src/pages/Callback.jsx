@@ -25,12 +25,9 @@ const Callback = () => {
             const token = response.data.jwtToken;
 
             toast('Verification In Process...');
-          localStorage.setItem('jwtToken', token);
-
             // user auth
             axios.get(`https://api.notreal003.xyz/auth/user?callback=${token}`, {
-              headers: {
-                'Authorization': `Account ${token}`,
+              withCredentials: true,
               },
             })
               .then(userResponse => {

@@ -31,7 +31,11 @@ const ReportForm = () => {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('jwtToken');
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1];
+
     if (!token) {
       toast.warning('You must be logged in to submit an application.');
       setIsSubmitting(false);

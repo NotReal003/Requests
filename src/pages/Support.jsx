@@ -30,7 +30,11 @@ const Support = () => {
 
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('jwtToken');
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1];
+
     if (!token) {
       toast.warning('You must be logged in to submit an application.');
       setIsSubmitting(false);
@@ -53,9 +57,9 @@ const Support = () => {
       setIsSubmitting(true);
       const response = await fetch(`${API}/requests/support`, {
         method: 'POST',
+        credetials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `${token}`
         },
         body: JSON.stringify(payload)
       });

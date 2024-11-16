@@ -20,9 +20,7 @@ const Success = () => {
         const requestId = urlParams.get('request');
         const token = localStorage.getItem('jwtToken');
         const res = await fetch(`${API}/requests/${requestId}`, {
-          headers: {
-            'Authorization': `${token}`
-          }
+          withCredentials: true,
         });
 
         if (!res.ok) {
@@ -34,11 +32,8 @@ const Success = () => {
         const requestData = await res.json();
         setRequest(requestData);
 
-        const userToken = localStorage.getItem('jwtToken');
         const userRes = await fetch(`${API}/users/@me`, {
-          headers: {
-            'Authorization': `${userToken}`
-          }
+          withCredentials: true,
         });
 
         if (!userRes.ok) {

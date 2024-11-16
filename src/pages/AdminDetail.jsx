@@ -48,7 +48,7 @@ function AdminDetail() {
       const updateResponse = await axios.put(
         `${API}/admin/${requestId}`,
         { status, reviewMessage },
-        { headers: { Authorization: `${token}` } }
+        { withCredentials: true }
       );
 
       if (updateResponse.status === 200) {
@@ -88,7 +88,7 @@ function AdminDetail() {
     const token = localStorage.getItem('jwtToken');
     try {
       await axios.delete(`${API}/admin/${requestId}`, {
-        headers: { Authorization: `${token}` },
+        withCredentials: true,
       });
       toast.success('Request deleted successfully.');
       navigate('/admin'); // Redirect back to the admin dashboard

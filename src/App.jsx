@@ -35,9 +35,13 @@ const App = () => {
       setIsAuthenticated(true);
       window.history.replaceState({}, document.title, "/");
     } else {
-      const storedToken = localStorage.getItem('jwtToken');
-      if (storedToken) {
-        setIsAuthenticated(true);
+        const storedToken = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('token='))
+          ?.split('=')[1];
+
+        if (storedToken) {
+          setIsAuthenticated(true);
       }
     }
     setLoading(false);

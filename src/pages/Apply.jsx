@@ -19,10 +19,14 @@ const Apply = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const token = localStorage.getItem('jwtToken');
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1];
+
     if (!token) {
       toast.warning('You must be logged in to submit an application.');
-      setIsLoading(false);
+      setIsSubmitting(false);
       return;
     }
 
@@ -42,13 +46,14 @@ const Apply = () => {
     try {
       const response = await fetch(`${API}/requests/guild`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `${token}`,
         },
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
+
 
       clearTimeout(timeoutId);
 

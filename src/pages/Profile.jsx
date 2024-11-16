@@ -19,16 +19,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const token = localStorage.getItem('jwtToken');
 
         // Fetch user info
         const userResponse = await axios.get(`${API}/users/@me`, {
-          headers: { Authorization: `${token}` }
+          withCredentials: true,
         });
 
         // Fetch request count
         const requestsResponse = await axios.get(`${API}/requests`, {
-          headers: { Authorization: `${token}` }
+          withCredentials: true,
         });
 
         setUser(userResponse.data);
