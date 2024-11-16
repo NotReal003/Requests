@@ -161,10 +161,7 @@ const Admin = () => {
           { closeType: apiClosed ? 'noopened' : 'yesclosed' },
           { withCredentials: true }
         );
-        const myTokens = document.cookie.split(';');
-        const credentials = document.cookie;
-        console.log(credentials);
-        console.log(myTokens);
+        
         if (response.status === 200) {
           toast.success(`API has been ${apiClosed ? 'opened' : 'closed'} successfully.`);
           setApiClosed(!apiClosed);
@@ -181,7 +178,7 @@ const Admin = () => {
     const fetchRequests = async () => {
       try {
         const response = await axios.get(`${API}/admin/requests`, {
-          headers: { Authorization: `${token}` },
+          { withCredentials: true }
         });
 
         if (response.status === 403) {

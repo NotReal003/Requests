@@ -19,9 +19,8 @@ function AdminDetail() {
   useEffect(() => {
     const fetchRequest = async () => {
       try {
-        const token = localStorage.getItem('jwtToken');
         const response = await axios.get(`${API}/admin/requests/${requestId}`, {
-          headers: { Authorization: `${token}` },
+          withCredentials: true
         });
 
         // Success case
