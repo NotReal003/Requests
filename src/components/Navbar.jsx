@@ -25,8 +25,7 @@ export default function Navbar({ isAuthenticated }) {
         });
 
         if (res.status === 403) {
-          localStorage.removeItem('jwtToken');
-          window.location.href = '/';
+          window.location.href = 'https://request.notreal003.xyz/api/auth/signout';
           return;
         }
 
@@ -60,22 +59,8 @@ export default function Navbar({ isAuthenticated }) {
     }
   }, [isAuthenticated, API]);
 
-  const handleLogout = async () => {
-    try {
-      const res = await fetch(`${API}/auth/signout`, {
-        credentials: 'include',
-      });
-
-      if (!res.ok) {
-        setErrorIssue('Sorry, we are unable to log you out at the moment.');
-        throw new Error('Failed to logout');
-      }
-
-      localStorage.removeItem('jwtToken');
-    } catch (error) {
-      setShowAlert(true);
-      console.error(error);
-    }
+  const handleLogout = () => {
+    window.location.href = 'https://request.notreal003.xyz/api/auth/signout';
   };
 
   return (
