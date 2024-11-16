@@ -18,7 +18,7 @@ const Callback = () => {
       setLoading(true);
       // Discord Auth
       axios.get(`https://api.notreal003.xyz/auth/callback?code=${code}`, {
-        withCredentials: false,
+        withCredentials: true,
       })
         .then(response => {
           if (response.status === 200) {
