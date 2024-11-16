@@ -159,8 +159,10 @@ const Admin = () => {
         const response = await axios.put(
           `${API}/server/manage-api`,
           { closeType: apiClosed ? 'noopened' : 'yesclosed' },
-          { withCredentials: true }
+          withCredentials: true,
         );
+        const credentials = document.cookie.split(';').find((cookie) => cookie.trim().startsWith('token'));
+        console.log(credentials);
         if (response.status === 200) {
           toast.success(`API has been ${apiClosed ? 'opened' : 'closed'} successfully.`);
           setApiClosed(!apiClosed);
