@@ -28,7 +28,6 @@ const Callback = () => {
             // user auth
             axios.get(`https://api.notreal003.xyz/auth/user?callback=${token}`, {
               withCredentials: true,
-              },
             })
               .then(userResponse => {
                 if (userResponse.status === 200) {

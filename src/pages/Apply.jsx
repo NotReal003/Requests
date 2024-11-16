@@ -26,7 +26,7 @@ const Apply = () => {
 
     if (!token) {
       toast.warning('You must be logged in to submit an application.');
-      setIsSubmitting(false);
+      setIsLoading(false);
       return;
     }
 
