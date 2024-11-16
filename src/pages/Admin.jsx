@@ -157,7 +157,7 @@ const Admin = () => {
     if (window.confirm(`Are you sure you want to ${confirmMessage}?`)) {
       try {
         const response = await axios.put(
-          `https://api.notreal003.xyz/server/manage-api`,
+          `${API}/server/manage-api`,
           { closeType: apiClosed ? 'noopened' : 'yesclosed' },
           { withCredentials: true }
         );
