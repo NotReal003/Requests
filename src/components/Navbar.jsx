@@ -63,7 +63,7 @@ export default function Navbar({ isAuthenticated }) {
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get(`https://api.notreal003.xyz/auth/callback?code=${code}`, {
+      const res = await axios.get(`https://api.notreal003.xyz/auth/signout`, {
         withCredentials: true,
       });
       const status = res.data.status;
