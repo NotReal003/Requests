@@ -59,8 +59,22 @@ export default function Navbar({ isAuthenticated }) {
     }
   }, [isAuthenticated, API]);
 
-  const handleLogout = () => {
-    window.location.href = 'https://api.notreal003.xyz/auth/signout';
+  const handleLogout = async () => {
+    try {
+      const res = await fetch(`${API}/auth/signout`, {
+        credentials: 'include',
+      });
+
+      if (!res.ok) {
+        setErrorIssue('Sorry, we are unable to log you out at the moment.');
+        throw new Error('Failed to logout');
+      }
+
+      localStorage.removeItem('jwtToken');
+    } catch (error) {
+      setShowAlert(true);
+      console.error(error);
+    }
   };
 
   return (
