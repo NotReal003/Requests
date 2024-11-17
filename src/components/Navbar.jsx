@@ -14,6 +14,7 @@ export default function Navbar({ isAuthenticated }) {
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [errorIssue, setErrorIssue] = useState('');
+  const [logError, setLogError] = useState('');
   const [logMe, setLogMe] = useState(false);
   const API = process.env.REACT_APP_API;
 
@@ -27,12 +28,12 @@ export default function Navbar({ isAuthenticated }) {
         });
 
         if (res.status === 403) {
-          const logsout = await axios.get(`https://api.notreal003.xyz/auth/signout`, {
-        withCredentials: true,
-      });
           document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.xyz; secure';
+          console.log('Cookie cleared');
           setLogMe(true);
-          setErrorIssue('You have been logged out due to inactivity.');
+          setLoading(false);
+          setShowAlert(false);
+          setLogError('You have been logged out due to inactivity.');
         }
 
         if (!res.ok) {
