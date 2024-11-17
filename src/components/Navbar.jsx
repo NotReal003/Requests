@@ -63,7 +63,7 @@ export default function Navbar({ isAuthenticated }) {
     try {
       const res = await fetch(`https://api.notreal003.xyz/auth/signout`, {
       method: 'GET', // Ensure the method matches your backend route
-      credentials: 'include', // Include cookies in the request
+      credentials: 'same-origin', // Include cookies in the request
     });
 
       const status = res.data.status;
