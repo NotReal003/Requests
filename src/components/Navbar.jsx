@@ -26,7 +26,7 @@ export default function Navbar({ isAuthenticated }) {
         });
 
         if (res.status === 403) {
-          axios.get(`https://api.notreal003.xyz/auth/callback?code=${code}`, {
+          axios.get(`https://api.notreal003.xyz/auth/signout`, {
         withCredentials: true,
       });
         }
