@@ -62,7 +62,7 @@ export default function Navbar({ isAuthenticated }) {
   const handleLogout = async () => {
     try {
       const res = await fetch(`${API}/auth/signout`, {
-        credentials: 'include',
+        withCredentials: true,
       });
 
       if (!res.ok) {
