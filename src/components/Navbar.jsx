@@ -62,11 +62,12 @@ export default function Navbar({ isAuthenticated }) {
   const handleLogout = async () => {
     try {
       const res = await fetch(`https://api.notreal003.xyz/auth/signout`, {
-        withCredentials: true,
-      });
-
+      method: 'GET', // Ensure the method matches your backend route
+      credentials: 'include', // Include cookies in the request
+    });
+      const status = res.data.status;
       if (!res.ok) {
-        setErrorIssue('Sorry, we are unable to log you out at the moment.');
+        setErrorIssue(`${status}: Sorry, we are unable to log you out at the moment.`);
         throw new Error('Failed to logout');
       }
 
