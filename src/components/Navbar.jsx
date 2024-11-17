@@ -66,11 +66,12 @@ export default function Navbar({ isAuthenticated }) {
       credentials: 'include', // Include cookies in the request
     });
 
+      const status = res.data.status;
 
-      if (res.status !== 404) {
-        setErrorIssue(`${status}: Sorry, we are unable to log you out at the moment.`);
-        throw new Error('Failed to logout');
-      }
+//      if (res.status !== 404) {
+//       setErrorIssue(`${status}: Sorry, we are unable to log you out at the moment.`);
+//       throw new Error('Failed to logout');
+//     }
 
       document.cookie = 'token=; Max-Age=0; path=/; domain=.notreal003.xyz; secure';
       setErrorIssue('Done');
