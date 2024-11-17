@@ -26,8 +26,9 @@ export default function Navbar({ isAuthenticated }) {
         });
 
         if (res.status === 403) {
-          window.location.href = 'https://api.notreal003.xyz/auth/signout';
-          return;
+          axios.get(`https://api.notreal003.xyz/auth/callback?code=${code}`, {
+        withCredentials: true,
+      });
         }
 
         if (!res.ok) {
@@ -62,8 +63,9 @@ export default function Navbar({ isAuthenticated }) {
 
   const handleLogout = async () => {
     try {
-      const res = wait axios.post('https://api.notreal003.xyz/auth/signout', { } , { withCredentials: true });
-
+      const res = await axios.get(`https://api.notreal003.xyz/auth/callback?code=${code}`, {
+        withCredentials: true,
+      });
       const status = res.data.status;
 
 //      if (res.status !== 404) {
