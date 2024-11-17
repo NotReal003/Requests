@@ -68,7 +68,10 @@ export default function Navbar({ isAuthenticated }) {
       const res = await axios.get(`https://api.notreal003.xyz/auth/signout`, {
         withCredentials: true,
       });
-      const status = res.data.status;
+      if (!res.ok) {
+        setShowAlert(true);
+        setErrorIssue('We are unable to logout you.')
+      }
 
 //      if (res.status !== 404) {
 //       setErrorIssue(`${status}: Sorry, we are unable to log you out at the moment.`);
@@ -76,10 +79,6 @@ export default function Navbar({ isAuthenticated }) {
 //     }
 
       // document.cookie = 'token=; Max-Age=0; path=/; domain=.notreal003.xyz; secure';
-      if (status !== 200) {
-        setShowAlert(true);
-        setErrorIssue('We are unable to logout you.')
-      }
       window.locaiton.reload();
     } catch (error) {
       setShowAlert(true);

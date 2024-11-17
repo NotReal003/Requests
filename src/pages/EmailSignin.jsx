@@ -96,7 +96,7 @@ const EmailSignin = () => {
             <form onSubmit={handleVerifyCode}>
               <div className="mb-4">
                 <input
-                  type="text"
+                  type="number"
                   placeholder="XXXXXX"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
