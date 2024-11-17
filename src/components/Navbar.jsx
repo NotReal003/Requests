@@ -5,6 +5,7 @@ import { IoLogIn } from "react-icons/io5";
 import { ImExit, ImSpinner6 } from "react-icons/im";
 import { MdNavigateNext } from "react-icons/md";
 import { LiaExternalLinkAltSolid } from "react-icons/lia";
+import axios from 'axios';
 import { FcSettings } from "react-icons/fc";
 import toast, { Toaster } from "react-hot-toast";
 
@@ -61,10 +62,7 @@ export default function Navbar({ isAuthenticated }) {
 
   const handleLogout = async () => {
     try {
-      const res = await fetch(`https://api.notreal003.xyz/auth/signout`, {
-      method: 'GET', // Ensure the method matches your backend route
-      credentials: 'same-origin', // Include cookies in the request
-    });
+      const res = wait axios.post('https://api.notreal003.xyz/auth/signout', { } , { withCredentials: true });
 
       const status = res.data.status;
 
