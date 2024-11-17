@@ -14,8 +14,6 @@ export default function Navbar({ isAuthenticated }) {
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [errorIssue, setErrorIssue] = useState('');
-  const [logError, setLogError] = useState('');
-  const [logMe, setLogMe] = useState(false);
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -29,11 +27,11 @@ export default function Navbar({ isAuthenticated }) {
 
         if (res.status === 403) {
           document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.xyz; secure';
+          document.cookie = 'token=; Max-Age=0; path=/; domain=request.notreal003.xyz; secure';
           console.log('Cookie cleared');
-          setLogMe(true);
           setLoading(false);
-          setShowAlert(false);
-          setLogError('You have been logged out due to inactivity.');
+          setShowAlert(true);
+          setErrorIssue('You have been logged out due to inactivity.');
         }
 
         if (!res.ok) {
@@ -72,7 +70,7 @@ export default function Navbar({ isAuthenticated }) {
         withCredentials: true,
       });
       if (!res.ok) {
-        setLogMe(true);
+        setShowAlert(true);
         setErrorIssue('We are unable to logout you.')
       }
 
@@ -107,28 +105,6 @@ export default function Navbar({ isAuthenticated }) {
           </svg>
           <span>
             We are unable to verify you: <strong>{errorIssue}</strong>
-          </span>
-          <div>
-            <button className="btn btn-sm btn-outline btn-warning" onClick={() => window.location.reload()}>Reload</button>
-          </div>
-        </div>
-      )}
-
-      {logMe && (
-        <div role="alert" className="alert">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            className="stroke-info h-6 w-6 shrink-0">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>
-            <strong>{errorIssue}</strong>
           </span>
           <div>
             <button className="btn btn-sm btn-outline btn-warning" onClick={() => window.location.reload()}>Reload</button>
