@@ -37,7 +37,7 @@ const ReportForm = () => {
       ?.split('=')[1];
 
     if (!token) {
-      toast.warn('You must be logged in to submit an application.');
+      toast.error('You must be logged in to submit an application.');
       setIsSubmitting(false);
       return;
     }
