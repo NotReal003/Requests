@@ -65,13 +65,15 @@ export default function Navbar({ isAuthenticated }) {
       method: 'GET', // Ensure the method matches your backend route
       credentials: 'include', // Include cookies in the request
     });
-      const status = res.data.status;
-      if (!res.ok) {
+
+
+      if (res.status !== 404) {
         setErrorIssue(`${status}: Sorry, we are unable to log you out at the moment.`);
         throw new Error('Failed to logout');
       }
 
-      localStorage.removeItem('jwtToken');
+      document.cookie = 'token=; Max-Age=0; path=/; domain=.notreal003.xyz; secure';
+      setErrorIssue('Done');
     } catch (error) {
       setShowAlert(true);
       console.error(error);
