@@ -27,11 +27,12 @@ export default function Navbar({ isAuthenticated }) {
         });
 
         if (res.status === 403) {
-          axios.get(`https://api.notreal003.xyz/auth/signout`, {
+          const logsout = await axios.get(`https://api.notreal003.xyz/auth/signout`, {
         withCredentials: true,
       });
           document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.xyz; secure';
-          window.location.href = '/';
+          setLogMe(true);
+          setErrorIssue('You have been logged out due to inactivity.');
         }
 
         if (!res.ok) {
