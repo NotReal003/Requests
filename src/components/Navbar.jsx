@@ -29,6 +29,8 @@ export default function Navbar({ isAuthenticated }) {
           axios.get(`https://api.notreal003.xyz/auth/signout`, {
         withCredentials: true,
       });
+          setShowAlert(true);
+          setErrorIssue('You must be logged in to access this page, please refesh the page and try again.');
         }
 
         if (!res.ok) {
@@ -73,8 +75,12 @@ export default function Navbar({ isAuthenticated }) {
 //       throw new Error('Failed to logout');
 //     }
 
-      document.cookie = 'token=; Max-Age=0; path=/; domain=.notreal003.xyz; secure';
-      setErrorIssue('Done');
+      // document.cookie = 'token=; Max-Age=0; path=/; domain=.notreal003.xyz; secure';
+      if (status !== 200) {
+        setShowAlert(true);
+        setErrorIssue('We are unable to logout you.')
+      }
+      window.locaiton.reload();
     } catch (error) {
       setShowAlert(true);
       console.error(error);

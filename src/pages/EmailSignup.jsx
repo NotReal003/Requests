@@ -53,9 +53,14 @@ const EmailSignup = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post('https://api.notreal003.xyz/auth/verify-email', { email, code: verificationCode });
+      const response = await axios.post(
+        'https://api.notreal003.xyz/auth/verify-email',
+        { email, code: verificationCode },
+        { withCredentials: true }
+      );
+
       const jwtToken = response.data.jwtToken;
-      localStorage.setItem('jwtToken', jwtToken);
+      document.cookie = `token=${token}; domain=.notreal003.xyz; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
       toast.success('Verifying account...');
       axios.get(`https://api.notreal003.xyz/auth/user?callback=${jwtToken}`, {
         headers: {
