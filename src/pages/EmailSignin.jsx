@@ -46,7 +46,7 @@ const EmailSignin = () => {
       );
 
       const jwtToken = response.data.jwtToken;
-      document.cookie = `token=${token}; domain=.notreal003.xyz; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
+      document.cookie = `token=${jwtToken}; domain=.notreal003.xyz; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
       toast('Sign-in in process...');
       axios.get(`https://api.notreal003.xyz/auth/user?callback=${jwtToken}`, {
         headers: {
