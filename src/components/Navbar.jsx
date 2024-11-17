@@ -79,7 +79,7 @@ export default function Navbar({ isAuthenticated }) {
 //       throw new Error('Failed to logout');
 //     }
 
-       document.cookie = 'token=; Max-Age=0; path=/; domain=.notreal003.xyz; secure';
+       document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.xyz; secure';
       setLogMe(true);
       setErrorIssue('You have been logged out, please refresh the page to continue.');
     } catch (error) {
