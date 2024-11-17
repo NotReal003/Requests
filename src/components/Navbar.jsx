@@ -79,7 +79,7 @@ export default function Navbar({ isAuthenticated }) {
 //     }
 
       // document.cookie = 'token=; Max-Age=0; path=/; domain=.notreal003.xyz; secure';
-      window.locaiton.reload();
+      window.location.href = '/';
     } catch (error) {
       setShowAlert(true);
       console.error(error);
