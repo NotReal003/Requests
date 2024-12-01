@@ -118,7 +118,7 @@ const Support = () => {
             id="additionalInfo"
             name="additionalInfo"
             className="textarea textarea-bordered w-full"
-            rows="1"
+            rows="2"
             placeholder="Feel free to leave this field blank"
             value={additionalInfo}
             onChange={(e) => setAdditionalInfo(e.target.value)}

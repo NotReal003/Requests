@@ -70,7 +70,7 @@ function RequestDetail() {
     const urlParams = new URLSearchParams(window.location.search);
     const requestId = urlParams.get('id');
 
-    const cancelRequestPromise = axios.put(
+    const cancelRequestPromise = axios.patch(
       `${API}/requests/${requestId}/cancel`,
       {
         status: 'CANCELLED',

@@ -114,7 +114,7 @@ const ReportForm = () => {
             value={messageLink}
             onChange={(e) => setMessageLink(e.target.value)}
             required
-            maxLength={200}
+            maxLength={1000}
           />
 
           <label htmlFor="additionalInfo" className="label">Anything else you would like to add?</label>
@@ -125,7 +125,7 @@ const ReportForm = () => {
             rows="4"
             value={additionalInfo}
             onChange={(e) => setAdditionalInfo(e.target.value)}
-            maxLength={1000}
+            maxLength={2000}
           />
 
           <div className="terms m-1">

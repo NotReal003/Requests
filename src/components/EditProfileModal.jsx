@@ -18,7 +18,7 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
       }
       
       setLoading(true);
-      const response = await axios.put(
+      const response = await axios.patch(
         `${API}/users/display`,
         { displayName: newDisplayName },
         { withCredentials: true }

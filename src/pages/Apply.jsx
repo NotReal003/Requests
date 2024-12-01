@@ -61,6 +61,7 @@ const Apply = () => {
 
       if (!response.ok) {
         toast.error(data.message || 'There was an issue submitting your application. Please try again.');
+        setIsLoading(false);
         return;
       }
 
@@ -102,6 +103,7 @@ const Apply = () => {
             placeholder="Enter your in-game name"
             value={inGameName}
             onChange={(e) => setInGameName(e.target.value)}
+            maxLength={17}
             required
           />
 
@@ -114,6 +116,7 @@ const Apply = () => {
             placeholder="Let us know why you want to join"
             value={messageLink}
             onChange={(e) => setMessageLink(e.target.value)}
+            maxLength={2000}
             required
           />
 
@@ -125,6 +128,7 @@ const Apply = () => {
             rows="2"
             placeholder="Feel free to leave this field blank"
             value={additionalInfo}
+            maxLength={2000}
             onChange={(e) => setAdditionalInfo(e.target.value)}
           ></textarea>
           <div className="terms mr-2 mb-2">
