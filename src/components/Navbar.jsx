@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUserCircle } from "react-icons/fa";
 import { IoLogIn } from "react-icons/io5";
-import { ImExit, ImSpinner6 } from "react-icons/im";
+import { ImExit } from "react-icons/im";
+import { LoaderCircle } from 'lucide-reac
 import { MdNavigateNext } from "react-icons/md";
 import { LiaExternalLinkAltSolid } from "react-icons/lia";
 import axios from 'axios';
@@ -182,7 +183,7 @@ export default function Navbar({ isAuthenticated }) {
 
               {loading ? (
                 <div className="flex items-center mr-4">
-                  <ImSpinner6 className="animate-spin h-4 w-4" />
+                  <LoaderCircle className="animate-spin h-4 w-4" />
                 </div>
               ) : (
                 <div className="dropdown dropdown-bottom dropdown-end mr-4 ml-2">
