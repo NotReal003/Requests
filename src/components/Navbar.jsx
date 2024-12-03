@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaUserCircle } from "react-icons/fa";
 import { IoLogIn } from "react-icons/io5";
 import { ImExit } from "react-icons/im";
-import { LoaderCircle } from 'lucide-reac
+import { LoaderCircle } from 'lucide-react';
 import { MdNavigateNext } from "react-icons/md";
 import { LiaExternalLinkAltSolid } from "react-icons/lia";
 import axios from 'axios';
