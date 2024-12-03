@@ -4,7 +4,8 @@ import { IoSend } from "react-icons/io5";
 import { ImExit } from "react-icons/im";
 import { FaPeopleGroup } from "react-icons/fa6";
 import toast, { Toaster } from 'react-hot-toast';
-import { FaSpinner } from "react-icons/fa";
+//import { FaSpinner } from "react-icons/fa";
+import { LoaderCircle } from 'lucide-react';
 
 const Apply = () => {
   const [inGameName, setInGameName] = useState('');
@@ -153,7 +154,7 @@ const Apply = () => {
             <button onClick={() => navigate(-1)} className="btn btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation"><ImExit />Back</button>
             <div className="tooltip tooltip-top overflow-x-auto" data-tip={!agree ? "You must agree to our Terms of Services and Privacy Policy" : ""}>
               <button type="submit" className="btn btn-primary no-animation" disabled={isLoading || !agree}>
-                {isLoading ? <span><FaSpinner className="animate-spin inline-block align-middle mr-2" /> Submit</span> : <><IoSend className="inline-block align-middle mr-2" /> Submit</>}
+                {isLoading ? <span><LoaderCircle className="animate-spin inline-block align-middle mr-2" /> Submit</span> : <><IoSend className="inline-block align-middle mr-2" /> Submit</>}
               </button>
             </div>
           </div>

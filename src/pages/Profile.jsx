@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { IoMdSettings, IoMdListBox } from "react-icons/io";
-import { FaDiscord, FaCheck, FaUserCircle, FaSpinner } from "react-icons/fa";
+import { FaDiscord, FaCheck, FaUserCircle } from "react-icons/fa";
 import axios from 'axios';
 import EditProfileModal from '../components/EditProfileModal';
 import { MdMarkEmailRead, MdAdminPanelSettings } from "react-icons/md";
 import toast, { Toaster } from 'react-hot-toast';
 import { FcLinux } from "react-icons/fc";
 import { FiUserCheck } from "react-icons/fi";
+import { LoaderCircle } from 'lucide-react';
 
 const Profile = () => {
   const [isEditModalOpen, setEditModalOpen] = useState(false);
@@ -54,7 +55,7 @@ const Profile = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-base-200">
-        <FaSpinner className="animate-spin inline-block align-middle" />
+        <LoaderCircle className="animate-spin inline-block align-middle" />
       </div>
     );
   }

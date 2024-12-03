@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaSpinner, FaSave } from 'react-icons/fa';
+import { FaSave } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
+import { LoaderCircle } from 'lucide-react';
 
 const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => {
   const [newDisplayName, setNewDisplayName] = useState(currentDisplayName);
@@ -57,7 +58,7 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
           <button onClick={handleSave} className="btn no-animation btn-primary" disabled={loading}>
             {loading ? (
               <>
-                Save <FaSpinner className="animate-spin mr-2" />
+                Save <LoaderCircle className="animate-spin mr-2" />
               </>
             ) : (
               <>
