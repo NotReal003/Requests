@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaDiscord, FaEnvelope } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 import { IoLogoGithub } from "react-icons/io";
 
 const Login = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     //..
   }, []);
@@ -16,26 +18,26 @@ const Login = () => {
 
         <button
           onClick={() => window.location.href = 'https://api.notreal003.xyz/auth/signin'}
-          className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white"
+          className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
           aria-label="Login with Discord"
         >
           <FaDiscord aria-hidden="true" />
           <span>Login with Discord</span>
         </button>
 
-        <Link
-          to="/email-signin"
-          className="btn btn-outline btn-primary w-full mt-5 flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white"
+        <button
+          onClick={() => navigate('/email-signin')}
+          className="btn btn-outline btn-primary w-full mt-5 flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
           aria-label="Login with Email"
         >
           <FaEnvelope aria-hidden="true" />
           <span>Login with Email</span>
-        </Link>
+        </button>
 
         <div className="tooltip tooltip-info w-full mt-5" data-tip="GitHub Login is currently not accepted.">
           <button
             disabled
-            className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2 transition-all duration-200 cursor-not-allowed"
+            className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2 transition-all duration-200 cursor-not-allowed no-animation"
             aria-label="GitHub login disabled"
           >
             <IoLogoGithub aria-hidden="true" />
@@ -46,9 +48,9 @@ const Login = () => {
         {/* Defer rendering of this non-essential paragraph */}
         <p className="text-center text-white mt-5 lazy-load-content">
           Don’t have an account?{" "}
-          <Link to="/email-signup" className="text-info font-bold hover:underline">
+          <span onClick={() => navigate('/email-signup')} className="text-info font-bold hover:underline">
             Sign up with Email
-          </Link>
+          </span>
         </p>
       </div>
     </div>
