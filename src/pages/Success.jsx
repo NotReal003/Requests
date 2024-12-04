@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CircleCheck, House } from 'lucide-react';
-import { FaDiscord } from "react-icons/fa6";
+import { FaDiscord, FaSpinner } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
 import { BiLoaderCircle } from "react-icons/bi";
 
@@ -61,7 +61,7 @@ const Success = () => {
     return (
       <div className="flex items-center justify-center min-h-screen bg-base-50">
         <div className="text-center">
-          <BiLoaderCircle className="animate-spin inline-block align-middle" />
+          <FaSpinner className="animate-spin inline-block align-middle" />
         </div>
       </div>
     );
