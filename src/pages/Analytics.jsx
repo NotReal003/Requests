@@ -30,11 +30,12 @@ const Analytics = () => {
   const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const API = process.env.REACT_APP_API;
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const response = await axios.get('/api/analytics/visits', { withCredentials: true }); // Important: Include credentials
+        const response = await axios.get(`${API}/collect/visits`, { withCredentials: true }); // Important: Include credentials
         setAnalyticsData(response.data);
       } catch (err) {
         console.error("Error fetching analytics:", err);
