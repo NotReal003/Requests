@@ -54,7 +54,7 @@ const Analytics = () => {
 
 
   if (loading) {
-    return <div style={{ color: 'white' }}>Loading analytics...</div>;
+    return <div style={{ color: 'white' }}>Loading analytics... </div>;
   }
 
   if (error) {
