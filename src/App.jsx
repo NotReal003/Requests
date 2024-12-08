@@ -21,6 +21,7 @@ import EmailSignup from './pages/EmailSignup';
 import EmailSignin from './pages/EmailSignin';
 import GithubCallback from './pages/GithubCallback';
 import About from './pages/About';
+import Analytics from './pages/Analytics';
 
 
 const App = () => {
@@ -76,6 +77,7 @@ const App = () => {
             <Route path="/email-signin" element={isAuthenticated ? <Navigate to="/" /> : <EmailSignin />} />
             <Route path="/github/callback" element={isAuthenticated ? <Navigate to="/" /> : <GithubCallback />} />
               <Route path="/about" element={<About />} />
+            <Route path="/analytics" element={<Analytics />} />
           </Routes>
         </div>
         <Footer />
