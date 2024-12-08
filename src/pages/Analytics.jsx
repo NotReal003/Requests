@@ -1,21 +1,48 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement,
+  ArcElement,
+} from 'chart.js';
+import { Bar, Line, Pie } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  PointElement,
+  LineElement,
+  ArcElement
+);
 
 const Analytics = () => {
-  const [analytics, setAnalytics] = useState(null);
+  const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API = process.env.REACT_APP_API;
 
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const { data } = await axios.get(`${API}/collect/visits`, {
-          withCredentials: true,
-        });
-        setAnalytics(data);
-      } catch {
-        setError("Failed to fetch analytics data.");
+        const response = await axios.get('/api/analytics/visits', { withCredentials: true }); // Important: Include credentials
+        setAnalyticsData(response.data);
+      } catch (err) {
+        console.error("Error fetching analytics:", err);
+        if (err.response && err.response.data && err.response.data.message) {
+          setError(err.response.data.message); 
+        } else {
+          setError("An error occurred while fetching analytics.");
+        }
       } finally {
         setLoading(false);
       }
@@ -24,113 +51,210 @@ const Analytics = () => {
     fetchAnalytics();
   }, []);
 
+
   if (loading) {
-    return <LoadingScreen message="Loading analytics..." />;
+    return <div style={{ color: 'white' }}>Loading analytics...</div>;
   }
 
   if (error) {
-    return <ErrorScreen message={error} />;
+    return <div style={{ color: 'red' }}>{error}</div>;  // Display error message
   }
 
+  if (!analyticsData || !analyticsData.success) {
+    return <div style={{ color: 'white' }}>No analytics data available.</div>; // Or handle other no-data cases
+  }
+
+
+  const {
+    totalVisits,
+    uniqueVisitors,
+    referrerStats,
+    deviceStats,
+    browserStats,
+    dailyTrends,
+    recentVisits,
+    topVisitors,
+  } = analyticsData;
+
+
+
+  // Chart configurations (example - customize as needed)
+  const barChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: { color: 'white' },
+      },
+      title: {
+        display: true,
+        text: 'Device Stats',
+        color: 'white'
+      },
+    },
+    scales: {
+      x: { ticks: { color: 'white' } },
+      y: { ticks: { color: 'white' } },
+    },
+  };
+
+  const barChartData = {
+    labels: Object.keys(deviceStats),
+    datasets: [
+      {
+        label: 'Device Visits',
+        data: Object.values(deviceStats),
+        backgroundColor: 'rgba(54, 162, 235, 0.8)', // Example color
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+
+  // Line chart data and options for daily trends
+  const lineChartData = {
+    labels: Object.keys(dailyTrends),
+    datasets: [
+      {
+        label: 'Daily Visits',
+        data: Object.values(dailyTrends),
+        borderColor: 'rgba(255, 99, 132, 1)', // Example color
+        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Example color
+        tension: 0.4, // Smooths the line a bit
+      },
+    ],
+  };
+
+  const lineChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: { color: 'white' },
+      },
+      title: {
+        display: true,
+        text: 'Daily Visit Trends',
+        color: 'white',
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: 'white',
+        },
+      },
+      y: {
+        ticks: {
+          color: 'white',
+        },
+      },
+    },
+  };
+
+
+
+  // ... (similar configurations for other charts like Pie chart for browser stats)
+  const pieChartData = {
+    labels: Object.keys(browserStats),
+    datasets: [
+      {
+        label: 'Browser Usage',
+        data: Object.values(browserStats),
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.8)',
+          'rgba(54, 162, 235, 0.8)',
+          'rgba(255, 206, 86, 0.8)',
+           // ... more colors as needed
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+           // ... more colors as needed
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+
+  const pieChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: { color: 'white' },
+        position: 'right', // Or 'top', 'bottom', 'left'
+      },
+      title: {
+        display: true,
+        text: 'Browser Usage',
+        color: 'white',
+      },
+    },
+  };
+
+
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-4 shadow-md">
-        <h1 className="text-2xl font-semibold text-center">Website Analytics</h1>
-      </header>
+    <div style={{ backgroundColor: 'black', color: 'white', padding: '20px' }}>
+      <h2>Website Analytics</h2>
 
-      <div className="container mx-auto py-8 px-4">
-        <StatsGrid analytics={analytics} />
-        <TrendsSection trends={analytics.dailyTrends} />
-        <StatsSection title="Device Usage" data={analytics.deviceStats} />
-        <StatsSection title="Browser Usage" data={analytics.browserStats} />
-        <StatsSection title="Referrer Stats" data={analytics.referrerStats} />
+      <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
+        <div>
+          <h3>Total Visits:</h3>
+          <p>{totalVisits}</p>
+        </div>
+        <div>
+          <h3>Unique Visitors:</h3>
+          <p>{uniqueVisitors}</p>
+        </div>
       </div>
-    </div>
-  );
-};
 
-const LoadingScreen = ({ message }) => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-    <div className="text-center">
-      <span className="loading loading-dots loading-lg"></span>
-      <p className="mt-2 text-lg">{message}</p>
-    </div>
-  </div>
-);
+       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}> {/* Responsive grid */}
+        <div>
+          <Bar data={barChartData} options={barChartOptions} />
+        </div>
+        <div>
+          <Line data={lineChartData} options={lineChartOptions} />
+        </div>
+        <div>  {/* Pie chart */}
+          <Pie data={pieChartData} options={pieChartOptions} />
+        </div>
+      </div>
 
-const ErrorScreen = ({ message }) => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-500">
-    <p>{message}</p>
-  </div>
-);
 
-const StatsGrid = ({ analytics }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <StatCard title="Total Visits" value={analytics.totalVisits} />
-    <StatCard title="Unique Visitors" value={analytics.uniqueVisitors} />
-    <StatCard title="Top Referrer" value={getTopKey(analytics.referrerStats)} />
-  </div>
-);
 
-const TrendsSection = ({ trends }) => (
-  <Section title="Daily Trends">
-    {trends && Object.keys(trends).length ? (
-      <table className="table-auto w-full bg-gray-800 p-4 rounded-lg">
+      <h3>Recent Visits</h3>
+      <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white' }}>
         <thead>
-          <tr className="bg-gray-700">
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Visits</th>
+          <tr>
+            <th>IP Address</th>
+            <th>Visit Time</th>
+            <th>Referrer</th>
+            <th>Device</th>
+            <th>Browser</th>
           </tr>
         </thead>
         <tbody>
-          {Object.entries(trends).map(([date, visits], index) => (
-            <tr key={date} className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}>
-              <td className="px-4 py-2">{date}</td>
-              <td className="px-4 py-2">{visits}</td>
+          {recentVisits.map((visit, index) => (
+            <tr key={index}>
+              <td>{visit.ipAddress}</td>
+              <td>{new Date(visit.visitTime).toLocaleString()}</td> {/* Format date/time */}
+              <td>{visit.referrer}</td>
+              <td>{visit.device}</td>
+              <td>{visit.browser}</td>
             </tr>
           ))}
         </tbody>
       </table>
-    ) : (
-      <p>No data available.</p>
-    )}
-  </Section>
-);
 
-const StatsSection = ({ title, data }) => (
-  <Section title={title}>
-    {data && Object.keys(data).length ? (
-      <ul className="space-y-2">
-        {Object.entries(data).map(([key, value]) => (
-          <li key={key} className="flex justify-between">
-            <span>{key}</span>
-            <span>{value}</span>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No data available.</p>
-    )}
-  </Section>
-);
-
-const StatCard = ({ title, value }) => (
-  <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-    <h2 className="text-lg font-semibold">{title}</h2>
-    <p className="text-3xl font-bold mt-2">{value || "N/A"}</p>
-  </div>
-);
-
-const Section = ({ title, children }) => (
-  <section className="mb-8">
-    <h2 className="text-xl font-semibold mb-4">{title}</h2>
-    {children}
-  </section>
-);
-
-const getTopKey = (data) => {
-  if (!data || Object.keys(data).length === 0) return "N/A";
-  return Object.entries(data).reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+      {/* ... other tables/charts for referrerStats, topVisitors, etc. */}
+    </div>
+  );
 };
+
 
 export default Analytics;
