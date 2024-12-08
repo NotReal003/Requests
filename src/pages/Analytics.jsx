@@ -1,42 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { Line } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Analytics = () => {
-  const [pageStats, setPageStats] = useState({});
+  const [analyticsData, setAnalyticsData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const TOKEN = process.env.REACT_APP_TOKEN;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://request.notreal003.xyz/api/visits');
+        const response = await fetch('https://request.notreal003.xyz/api/visits', {
+          credetials: 'include',
+        });
         const data = await response.json();
-        console.log('API Response:', data);
 
         if (data.success) {
-          const cleanedStats = Object.entries(data.pageStats).reduce((acc, [key, value]) => {
-            if (!key.startsWith('$')) {
-              acc[key] = value;
-            }
-            return acc;
-          }, {});
-          setPageStats(cleanedStats);
+          setAnalyticsData(data.counts);
         }
       } catch (error) {
-        console.error('Error fetching visit data:', error);
+        console.error('Error fetching analytics data:', error);
       } finally {
         setLoading(false);
       }
@@ -46,64 +30,34 @@ const Analytics = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg font-semibold text-gray-700">Loading...</div>
-      </div>
-    );
+    return <div className="text-center mt-4">Loading...</div>;
   }
 
-  if (!Object.keys(pageStats).length) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-lg font-semibold text-gray-700">No visit data available.</div>
-      </div>
-    );
+  if (analyticsData.length === 0) {
+    return <div className="text-center mt-4">No analytics data available.</div>;
   }
 
-  const getChartData = (stats) => {
-    return {
-      labels: stats?.daily?.map(([date]) => date) || [],
-      datasets: [
-        {
-          label: 'Daily Visits',
-          data: stats?.daily?.map(([, count]) => count) || [],
-          fill: false,
-          borderColor: 'rgb(75, 192, 192)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          tension: 0.1,
-        },
-        {
-          label: 'Weekly Visits',
-          data: stats?.weekly?.map(([, count]) => count) || [],
-          fill: false,
-          borderColor: 'rgb(153, 102, 255)',
-          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-          tension: 0.1,
-        },
-        {
-          label: 'Monthly Visits',
-          data: stats?.monthly?.map(([, count]) => count) || [],
-          fill: false,
-          borderColor: 'rgb(255, 159, 64)',
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          tension: 0.1,
-        },
-      ],
-    };
-  };
+  const getChartData = (pageData) => ({
+    labels: Array.from(pageData.dailyVisits.keys()),
+    datasets: [
+      {
+        label: 'Daily Visits',
+        data: Array.from(pageData.dailyVisits.values()),
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+      },
+    ],
+  });
 
   return (
-    <div className="container mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Page Visit Analytics</h1>
-      <div className="space-y-8">
-        {Object.entries(pageStats).map(([pageType, stats]) => (
-          <div key={pageType} className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">{pageType}</h2>
-            <Line data={getChartData(stats)} />
-          </div>
-        ))}
-      </div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Analytics Dashboard</h1>
+      {analyticsData.map((page) => (
+        <div key={page.pageType} className="mb-8">
+          <h2 className="text-lg font-semibold">{page.pageType}</h2>
+          <Line data={getChartData(page)} />
+        </div>
+      ))}
     </div>
   );
 };
