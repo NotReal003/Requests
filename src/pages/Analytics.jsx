@@ -11,7 +11,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://request.notreal003.xyz/api/collect/visits', {
+        const response = await fetch('https://request.notreal003.xyz/api/collect/check', {
           withCredentials: true,
         });
         const data = await response.json();
