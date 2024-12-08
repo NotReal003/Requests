@@ -1,132 +1,118 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Bar, Pie, Line } from 'react-chartjs-2';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Bar, Pie, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   ArcElement,
   BarElement,
   LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend,
-  PointElement,
-} from 'chart.js';
+} from "chart.js";
 
 ChartJS.register(
   ArcElement,
   BarElement,
   LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
-  Legend,
-  PointElement,
+  Legend
 );
 
 const Analytics = () => {
-  const [stats, setStats] = useState(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API = process.env.REACT_APP_API;
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/collect/visits`, {
-          withCredentials: true,
-        });
-        setStats(response.data);
+        const response = await axios.get("https://api.notreal003.xyz/collect/visits");
+        setData(response.data);
+        setLoading(false);
       } catch (err) {
         setError(err.message);
-      } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+
+    fetchData();
   }, []);
 
-  if (loading) {
-    return <div className="loading loading-dots loading-lg">Loading...</div>;
-  }
+  if (loading) return <div className="text-white text-center">Loading...</div>;
+  if (error) return <div className="text-red-500 text-center">{error}</div>;
 
-  if (error) {
-    return <div className="text-red-500 text-center">Error: {error}</div>;
-  }
+  const { totalVisits, uniqueVisitors, referrerStats, deviceStats, browserStats, dailyTrends } = data;
 
-  const { totalVisits, uniqueVisitors, referrerStats, deviceStats, browserStats, dailyTrends } = stats;
+  const referrerChart = {
+    labels: Object.keys(referrerStats),
+    datasets: [
+      {
+        label: "Referrers",
+        data: Object.values(referrerStats),
+        backgroundColor: ["#6366F1", "#22D3EE", "#F97316", "#E11D48"],
+      },
+    ],
+  };
 
-  const pieData = {
+  const deviceChart = {
     labels: Object.keys(deviceStats),
     datasets: [
       {
+        label: "Devices",
         data: Object.values(deviceStats),
-        backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+        backgroundColor: ["#14B8A6", "#8B5CF6", "#FACC15"],
       },
     ],
   };
 
-  const barData = {
-    labels: Object.keys(browserStats),
-    datasets: [
-      {
-        label: 'Browser Usage',
-        data: Object.values(browserStats),
-        backgroundColor: '#36A2EB',
-      },
-    ],
-  };
-
-  const lineData = {
+  const dailyChart = {
     labels: Object.keys(dailyTrends),
     datasets: [
       {
-        label: 'Daily Visits',
+        label: "Daily Visits",
         data: Object.values(dailyTrends),
-        borderColor: '#FF6384',
-        fill: false,
+        borderColor: "#22C55E",
+        backgroundColor: "rgba(34, 197, 94, 0.2)",
+        fill: true,
       },
     ],
   };
 
   return (
-    <div className="bg-black text-white min-h-screen p-6">
-      <div className="container mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center">Analytics Dashboard</h1>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-gray-900 shadow-lg p-4 rounded-lg">
-            <h2 className="text-xl font-semibold">Total Visits</h2>
-            <p className="text-4xl font-bold">{totalVisits}</p>
-          </div>
-          <div className="bg-gray-900 shadow-lg p-4 rounded-lg">
-            <h2 className="text-xl font-semibold">Unique Visitors</h2>
-            <p className="text-4xl font-bold">{uniqueVisitors}</p>
-          </div>
-          <div className="bg-gray-900 shadow-lg p-4 rounded-lg">
-            <h2 className="text-xl font-semibold">Referrer Stats</h2>
-            <ul>
-              {Object.entries(referrerStats).map(([referrer, count]) => (
-                <li key={referrer}>
-                  {referrer}: {count}
-                </li>
-              ))}
-            </ul>
-          </div>
+    <div className="bg-black min-h-screen text-white p-8">
+      <h1 className="text-3xl font-bold mb-6">Analytics Dashboard</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold">Total Visits</h2>
+          <p className="text-2xl font-bold">{totalVisits}</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className="bg-gray-900 shadow-lg p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Device Stats</h2>
-            <Pie data={pieData} />
-          </div>
-          <div className="bg-gray-900 shadow-lg p-6 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Browser Stats</h2>
-            <Bar data={barData} />
-          </div>
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold">Unique Visitors</h2>
+          <p className="text-2xl font-bold">{uniqueVisitors}</p>
         </div>
-        <div className="bg-gray-900 shadow-lg p-6 rounded-lg mt-8">
-          <h2 className="text-xl font-semibold mb-4">Daily Trends</h2>
-          <Line data={lineData} />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold mb-4">Referrer Stats</h2>
+          <Pie data={referrerChart} />
         </div>
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold mb-4">Device Stats</h2>
+          <Bar data={deviceChart} />
+        </div>
+      </div>
+
+      <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-6">
+        <h2 className="text-xl font-semibold mb-4">Daily Trends</h2>
+        <Line data={dailyChart} />
       </div>
     </div>
   );
