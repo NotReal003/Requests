@@ -1,46 +1,26 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Bar, Pie, Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  BarElement,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js";
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
-ChartJS.register(
-  ArcElement,
-  BarElement,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  Filler,
-);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Analytics = () => {
-  const [data, setData] = useState(null);
+  const [pageStats, setPageStats] = useState({});
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.notreal003.xyz/collect/visits", {
+        const response = await fetch('https://api.notreal003.xyz/collect/visits', {
           withCredentials: true,
         });
-        setData(response.data);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
+        const data = await response.json();
+        if (data.success) {
+          setPageStats(data.pageStats);
+        }
+      } catch (error) {
+        console.error('Error fetching visit data:', error);
+      } finally {
         setLoading(false);
       }
     };
@@ -48,75 +28,54 @@ const Analytics = () => {
     fetchData();
   }, []);
 
-  if (loading) return <div className="text-white text-center">Loading...</div>;
-  if (error) return <div className="text-red-500 text-center">{error}</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  const { totalVisits, uniqueVisitors, referrerStats, deviceStats, browserStats, dailyTrends } = data;
-
-  const referrerChart = {
-    labels: Object.keys(referrerStats),
-    datasets: [
-      {
-        label: "Referrers",
-        data: Object.values(referrerStats),
-        backgroundColor: ["#6366F1", "#22D3EE", "#F97316", "#E11D48"],
-      },
-    ],
-  };
-
-  const deviceChart = {
-    labels: Object.keys(deviceStats),
-    datasets: [
-      {
-        label: "Devices",
-        data: Object.values(deviceStats),
-        backgroundColor: ["#14B8A6", "#8B5CF6", "#FACC15"],
-      },
-    ],
-  };
-
-  const dailyChart = {
-    labels: Object.keys(dailyTrends),
-    datasets: [
-      {
-        label: "Daily Visits",
-        data: Object.values(dailyTrends),
-        borderColor: "#22C55E",
-        backgroundColor: "rgba(34, 197, 94, 0.2)",
-        fill: true,
-      },
-    ],
+  // Chart.js data and options
+  const getChartData = (pageStats) => {
+    return {
+      labels: pageStats?.daily?.map(([date]) => date) || [],
+      datasets: [
+        {
+          label: 'Daily Visits',
+          data: pageStats?.daily?.map(([, count]) => count) || [],
+          fill: false,
+          borderColor: 'rgb(75, 192, 192)',
+          tension: 0.1,
+        },
+        {
+          label: 'Weekly Visits',
+          data: pageStats?.weekly?.map(([, count]) => count) || [],
+          fill: false,
+          borderColor: 'rgb(153, 102, 255)',
+          tension: 0.1,
+        },
+        {
+          label: 'Monthly Visits',
+          data: pageStats?.monthly?.map(([, count]) => count) || [],
+          fill: false,
+          borderColor: 'rgb(255, 159, 64)',
+          tension: 0.1,
+        },
+      ],
+    };
   };
 
   return (
-    <div className="bg-black min-h-screen text-white p-8">
-      <h1 className="text-3xl font-bold mb-6">Analytics Dashboard</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold">Total Visits</h2>
-          <p className="text-2xl font-bold">{totalVisits}</p>
-        </div>
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold">Unique Visitors</h2>
-          <p className="text-2xl font-bold">{uniqueVisitors}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Referrer Stats</h2>
-          <Pie data={referrerChart} />
-        </div>
-        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Device Stats</h2>
-          <Bar data={deviceChart} />
-        </div>
-      </div>
-
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-6">
-        <h2 className="text-xl font-semibold mb-4">Daily Trends</h2>
-        <Line data={dailyChart} />
+    <div className="container mx-auto p-4">
+      <h1 className="text-xl font-bold">Page Visit Analytics</h1>
+      <div className="mt-4">
+        {Object.keys(pageStats).length === 0 ? (
+          <p>No visit data available.</p>
+        ) : (
+          Object.entries(pageStats).map(([pageType, stats]) => (
+            <div key={pageType} className="mb-8">
+              <h2 className="text-lg font-semibold">{pageType}</h2>
+              <Line data={getChartData(stats)} />
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
