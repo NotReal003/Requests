@@ -11,9 +11,8 @@ const Analytics = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get("/api/analytics", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
-          },
+          withCredentials: true,
+        });
         });
         setAnalyticsData(response.data);
       } catch (err) {
