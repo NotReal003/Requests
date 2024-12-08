@@ -1,108 +1,109 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Analytics = () => {
-  const [analytics, setAnalytics] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const API = process.env.REACT_APP_API;
 
+  // Fetch analytics data from the backend
   useEffect(() => {
-    const fetchAnalytics = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${API}/collect/visits`);
-        setAnalytics(response.data);
+        const response = await axios.get("/api/analytics", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("jwtToken")}`,
+          },
+        });
+        setAnalyticsData(response.data);
       } catch (err) {
-        setError("Failed to fetch analytics data.");
+        setError("Failed to load analytics data.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAnalytics();
+    fetchData();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
-        <div>
+  // Helper to display statistics
+  const StatCard = ({ title, stats }) => (
+    <div className="stat shadow-md p-4 rounded-lg bg-base-200">
+      <h3 className="font-bold text-lg mb-2">{title}</h3>
+      {stats && Object.keys(stats).length > 0 ? (
+        <ul>
+          {Object.entries(stats).map(([key, value]) => (
+            <li key={key} className="text-sm">
+              {key}: {value}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-gray-500">Data Not Available</p>
+      )}
+    </div>
+  );
+
+  // Render the component
+  return (
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">Analytics Dashboard</h1>
+      {loading ? (
+        <div className="text-center">
           <span className="loading loading-dots loading-lg"></span>
-          <p className="mt-2">Loading analytics...</p>
         </div>
-      </div>
-    );
-  }
+      ) : error ? (
+        <div className="alert alert-error">
+          <p>{error}</p>
+        </div>
+      ) : (
+        analyticsData && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <StatCard
+              title="General Stats"
+              stats={{
+                "Total Visits": analyticsData.totalVisits,
+                "Unique Visitors": analyticsData.uniqueVisitors,
+              }}
+            />
+            <StatCard title="Referrer Stats" stats={analyticsData.referrerStats} />
+            <StatCard title="Device Stats" stats={analyticsData.deviceStats} />
+            <StatCard title="Browser Stats" stats={analyticsData.browserStats} />
+            <StatCard title="Daily Trends" stats={analyticsData.dailyTrends} />
+          </div>
+        )
+      )}
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-red-500">
-        <p>{error}</p>
-      </div>
-    );
-  }
+      {/* Recent Visits Section */}
+      {analyticsData?.recentVisits && (
+        <div className="mt-6">
+          <h2 className="text-xl font-bold mb-4">Recent Visits</h2>
+          <ul className="list-disc list-inside">
+            {analyticsData.recentVisits.map((visit, index) => (
+              <li key={index} className="text-sm">
+                Referrer: {visit.referrer || "Direct"}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
-  return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      <header className="p-6 bg-gray-800 shadow-md">
-        <h1 className="text-3xl font-bold text-center">Analytics Dashboard</h1>
-      </header>
-      <main className="container mx-auto py-8 px-4 space-y-8">
-        {analytics.length > 0 ? (
-          analytics.map((data, index) => (
-            <AnalyticsCard key={index} data={data} />
-          ))
-        ) : (
-          <p className="text-center">No analytics data available.</p>
-        )}
-      </main>
+      {/* Top Visitors Section */}
+      {analyticsData?.topVisitors && (
+        <div className="mt-6">
+          <h2 className="text-xl font-bold mb-4">Top Visitors</h2>
+          <ul className="list-disc list-inside">
+            {analyticsData.topVisitors.map((visitor, index) => (
+              <li key={index} className="text-sm">
+                IP Address: {visitor.ipAddress || "N/A"} - Visits:{" "}
+                {visitor.visitCount}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
-};
-
-const AnalyticsCard = ({ data }) => {
-  const {
-    pageType,
-    visits,
-    uniqueVisitors,
-    lastVisit,
-    dailyVisits,
-    weeklyVisits,
-    referrerStats,
-  } = data;
-
-  return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-semibold mb-4 capitalize">{pageType} Analytics</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <InfoItem label="Total Visits" value={visits} />
-        <InfoItem label="Unique Visitors" value={uniqueVisitors} />
-        <InfoItem label="Last Visit" value={lastVisit || "N/A"} />
-        <InfoItem label="Daily Visits" value={formatMap(dailyVisits)} />
-        <InfoItem label="Weekly Visits" value={formatMap(weeklyVisits)} />
-        <InfoItem label="Top Referrer" value={getTopReferrer(referrerStats)} />
-      </div>
-    </div>
-  );
-};
-
-const InfoItem = ({ label, value }) => (
-  <div>
-    <p className="text-sm font-medium">{label}</p>
-    <p className="text-lg font-bold">{value || "N/A"}</p>
-  </div>
-);
-
-const formatMap = (map) => {
-  if (!map || map.size === 0) return "N/A";
-  return Array.from(map.entries())
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(", ");
-};
-
-const getTopReferrer = (referrerStats) => {
-  if (!referrerStats || referrerStats.size === 0) return "N/A";
-  return Array.from(referrerStats.entries())
-    .sort((a, b) => b[1] - a[1])[0]?.[0];
 };
 
 export default Analytics;
