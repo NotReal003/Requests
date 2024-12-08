@@ -17,8 +17,7 @@ const Analytics = () => {
         const data = await response.json();
 
         if (data.success) {
-          setAnalyticsData(data.counts);
-        }
+          setAnalyticsData(data.pageStats);
       } catch (error) {
         console.error('Error fetching analytics data:', error);
       } finally {
