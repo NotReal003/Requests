@@ -18,6 +18,7 @@ const Analytics = () => {
 
         if (data.success) {
           setAnalyticsData(data.pageStats);
+        }
       } catch (error) {
         console.error('Error fetching analytics data:', error);
       } finally {
