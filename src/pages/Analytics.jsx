@@ -21,7 +21,7 @@ const Analytics = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://request.notreal003.xyz/visits`, {
+        const response = await axios.get(`https://request.notreal003.xyz/api/visits`, {
           withCredentials: true,
         });
         const data = await response.json();
