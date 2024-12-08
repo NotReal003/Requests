@@ -10,6 +10,7 @@ import {
   LinearScale,
   Tooltip,
   Legend,
+  Point,
 } from 'chart.js';
 
 ChartJS.register(
@@ -19,7 +20,8 @@ ChartJS.register(
   CategoryScale,
   LinearScale,
   Tooltip,
-  Legend
+  Legend,
+  Point,
 );
 
 const Analytics = () => {
