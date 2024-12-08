@@ -17,17 +17,16 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 const Analytics = () => {
   const [pageStats, setPageStats] = useState({});
   const [loading, setLoading] = useState(true);
+  const TOKEN = process.env.REACT_APP_TOKEN;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`https://request.notreal003.xyz/api/visits`, {
-          withCredentials: true,
-        });
+        const response = await fetch('https://request.notreal003.xyz/api/visits');
         const data = await response.json();
+        console.log('API Response:', data);
 
         if (data.success) {
-          // Clean the data to exclude $-prefixed fields
           const cleanedStats = Object.entries(data.pageStats).reduce((acc, [key, value]) => {
             if (!key.startsWith('$')) {
               acc[key] = value;
