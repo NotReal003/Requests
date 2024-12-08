@@ -32,7 +32,9 @@ const Analytics = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.notreal003.xyz/collect/visits");
+        const response = await axios.get("https://api.notreal003.xyz/collect/visits", {
+          withCredentials: true,
+        });
         setData(response.data);
         setLoading(false);
       } catch (err) {
