@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 const Analytics = () => {
-  const [analytics, setAnalytics] = useState(null);
+  const [analytics, setAnalytics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const API = process.env.REACT_APP_API;
@@ -10,11 +10,9 @@ const Analytics = () => {
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
-        const { data } = await axios.get(`${API}/collect/visits`, {
-          withCredentials: true,
-        });
-        setAnalytics(data);
-      } catch {
+        const response = await axios.get(`${API}/collect/visits`);
+        setAnalytics(response.data);
+      } catch (err) {
         setError("Failed to fetch analytics data.");
       } finally {
         setLoading(false);
@@ -25,112 +23,86 @@ const Analytics = () => {
   }, []);
 
   if (loading) {
-    return <LoadingScreen message="Loading analytics..." />;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+        <div>
+          <span className="loading loading-dots loading-lg"></span>
+          <p className="mt-2">Loading analytics...</p>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <ErrorScreen message={error} />;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-red-500">
+        <p>{error}</p>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <header className="bg-gray-800 p-4 shadow-md">
-        <h1 className="text-2xl font-semibold text-center">Website Analytics</h1>
+    <div className="bg-gray-900 text-white min-h-screen">
+      <header className="p-6 bg-gray-800 shadow-md">
+        <h1 className="text-3xl font-bold text-center">Analytics Dashboard</h1>
       </header>
+      <main className="container mx-auto py-8 px-4 space-y-8">
+        {analytics.length > 0 ? (
+          analytics.map((data, index) => (
+            <AnalyticsCard key={index} data={data} />
+          ))
+        ) : (
+          <p className="text-center">No analytics data available.</p>
+        )}
+      </main>
+    </div>
+  );
+};
 
-      <div className="container mx-auto py-8 px-4">
-        <StatsGrid analytics={analytics} />
-        <TrendsSection trends={analytics.dailyTrends} />
-        <StatsSection title="Device Usage" data={analytics.deviceStats} />
-        <StatsSection title="Browser Usage" data={analytics.browserStats} />
-        <StatsSection title="Referrer Stats" data={analytics.referrerStats} />
+const AnalyticsCard = ({ data }) => {
+  const {
+    pageType,
+    visits,
+    uniqueVisitors,
+    lastVisit,
+    dailyVisits,
+    weeklyVisits,
+    referrerStats,
+  } = data;
+
+  return (
+    <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold mb-4 capitalize">{pageType} Analytics</h2>
+      <div className="grid grid-cols-2 gap-4">
+        <InfoItem label="Total Visits" value={visits} />
+        <InfoItem label="Unique Visitors" value={uniqueVisitors} />
+        <InfoItem label="Last Visit" value={lastVisit || "N/A"} />
+        <InfoItem label="Daily Visits" value={formatMap(dailyVisits)} />
+        <InfoItem label="Weekly Visits" value={formatMap(weeklyVisits)} />
+        <InfoItem label="Top Referrer" value={getTopReferrer(referrerStats)} />
       </div>
     </div>
   );
 };
 
-const LoadingScreen = ({ message }) => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-    <div className="text-center">
-      <span className="loading loading-dots loading-lg"></span>
-      <p className="mt-2 text-lg">{message}</p>
-    </div>
+const InfoItem = ({ label, value }) => (
+  <div>
+    <p className="text-sm font-medium">{label}</p>
+    <p className="text-lg font-bold">{value || "N/A"}</p>
   </div>
 );
 
-const ErrorScreen = ({ message }) => (
-  <div className="min-h-screen flex items-center justify-center bg-gray-900 text-red-500">
-    <p>{message}</p>
-  </div>
-);
+const formatMap = (map) => {
+  if (!map || map.size === 0) return "N/A";
+  return Array.from(map.entries())
+    .map(([key, value]) => `${key}: ${value}`)
+    .join(", ");
+};
 
-const StatsGrid = ({ analytics }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <StatCard title="Total Visits" value={analytics.totalVisits} />
-    <StatCard title="Unique Visitors" value={analytics.uniqueVisitors} />
-    <StatCard title="Top Referrer" value={getTopKey(analytics.referrerStats)} />
-  </div>
-);
-
-const TrendsSection = ({ trends }) => (
-  <Section title="Daily Trends">
-    {trends && Object.keys(trends).length ? (
-      <table className="table-auto w-full bg-gray-800 p-4 rounded-lg">
-        <thead>
-          <tr className="bg-gray-700">
-            <th className="px-4 py-2">Date</th>
-            <th className="px-4 py-2">Visits</th>
-          </tr>
-        </thead>
-        <tbody>
-          {Object.entries(trends).map(([date, visits], index) => (
-            <tr key={date} className={index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"}>
-              <td className="px-4 py-2">{date}</td>
-              <td className="px-4 py-2">{visits}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    ) : (
-      <p>No data available.</p>
-    )}
-  </Section>
-);
-
-const StatsSection = ({ title, data }) => (
-  <Section title={title}>
-    {data && Object.keys(data).length ? (
-      <ul className="space-y-2">
-        {Object.entries(data).map(([key, value]) => (
-          <li key={key} className="flex justify-between">
-            <span>{key}</span>
-            <span>{value}</span>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No data available.</p>
-    )}
-  </Section>
-);
-
-const StatCard = ({ title, value }) => (
-  <div className="bg-gray-800 p-6 rounded-lg shadow-md">
-    <h2 className="text-lg font-semibold">{title}</h2>
-    <p className="text-3xl font-bold mt-2">{value || "N/A"}</p>
-  </div>
-);
-
-const Section = ({ title, children }) => (
-  <section className="mb-8">
-    <h2 className="text-xl font-semibold mb-4">{title}</h2>
-    {children}
-  </section>
-);
-
-const getTopKey = (data) => {
-  if (!data || Object.keys(data).length === 0) return "N/A";
-  return Object.entries(data).reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+const getTopReferrer = (referrerStats) => {
+  if (!referrerStats || referrerStats.size === 0) return "N/A";
+  return Array.from(referrerStats.entries())
+    .sort((a, b) => b[1] - a[1])[0]?.[0];
 };
 
 export default Analytics;
