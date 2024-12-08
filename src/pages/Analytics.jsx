@@ -10,7 +10,7 @@ import {
   LinearScale,
   Tooltip,
   Legend,
-  Point,
+  PointElement,
 } from 'chart.js';
 
 ChartJS.register(
@@ -21,7 +21,7 @@ ChartJS.register(
   LinearScale,
   Tooltip,
   Legend,
-  Point,
+  PointElement,
 );
 
 const Analytics = () => {
