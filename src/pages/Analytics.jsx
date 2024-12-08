@@ -1,6 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Bar, Pie, Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  BarElement,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(
+  ArcElement,
+  BarElement,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend
+);
 
 const Analytics = () => {
   const [stats, setStats] = useState(null);
