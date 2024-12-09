@@ -1,26 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Analytics = () => {
   const [analyticsData, setAnalyticsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedView, setSelectedView] = useState('daily'); // daily, weekly, monthly
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('https://request.notreal003.xyz/api/visits', {
-          credetials: 'include',
+          credentials: 'include',
         });
         const data = await response.json();
 
         if (data.success) {
           setAnalyticsData(data.pageStats);
+        } else {
+          setError('Failed to load analytics data.');
         }
-      } catch (error) {
-        console.error('Error fetching analytics data:', error);
+      } catch (err) {
+        console.error('Error fetching analytics data:', err);
+        setError('An error occurred while fetching analytics data.');
       } finally {
         setLoading(false);
       }
@@ -29,35 +43,115 @@ const Analytics = () => {
     fetchData();
   }, []);
 
+  const getChartData = (pageData) => {
+    const labels =
+      selectedView === 'daily'
+        ? pageData.dailyVisits.map((visit) => visit[0])
+        : selectedView === 'weekly'
+        ? ['This Week']
+        : ['This Month'];
+    const data =
+      selectedView === 'daily'
+        ? pageData.dailyVisits.map((visit) => visit[1])
+        : selectedView === 'weekly'
+        ? [pageData.weeklyVisits]
+        : [pageData.monthlyVisits];
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: `${selectedView.charAt(0).toUpperCase() + selectedView.slice(1)} Visits`,
+          data,
+          borderColor: 'rgb(75, 192, 192)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.4,
+        },
+      ],
+    };
+  };
+
   if (loading) {
-    return <div className="text-center mt-4">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="loading loading-spinner text-primary"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center mt-4 text-red-500">
+        {error}
+      </div>
+    );
   }
 
   if (analyticsData.length === 0) {
     return <div className="text-center mt-4">No analytics data available.</div>;
   }
 
-  const getChartData = (pageData) => ({
-    labels: Array.from(pageData.dailyVisits.keys()),
-    datasets: [
-      {
-        label: 'Daily Visits',
-        data: Array.from(pageData.dailyVisits.values()),
-        borderColor: 'rgb(75, 192, 192)',
-        tension: 0.1,
-      },
-    ],
-  });
-
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Analytics Dashboard</h1>
-      {analyticsData.map((page) => (
-        <div key={page.pageType} className="mb-8">
-          <h2 className="text-lg font-semibold">{page.pageType}</h2>
-          <Line data={getChartData(page)} />
-        </div>
-      ))}
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center text-primary">Analytics Dashboard</h1>
+      <div className="tabs mb-6 justify-center">
+        <button
+          className={`tab tab-bordered ${selectedView === 'daily' && 'tab-active'}`}
+          onClick={() => setSelectedView('daily')}
+        >
+          Daily
+        </button>
+        <button
+          className={`tab tab-bordered ${selectedView === 'weekly' && 'tab-active'}`}
+          onClick={() => setSelectedView('weekly')}
+        >
+          Weekly
+        </button>
+        <button
+          className={`tab tab-bordered ${selectedView === 'monthly' && 'tab-active'}`}
+          onClick={() => setSelectedView('monthly')}
+        >
+          Monthly
+        </button>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {analyticsData.map((page) => (
+          <div key={page.pageType} className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+            <div className="card-body">
+              <h2 className="card-title text-secondary">{page.pageType.toUpperCase()}</h2>
+              <p className="text-sm text-gray-500">Total Visits: {page.totalVisits}</p>
+              <Line
+                data={getChartData(page)}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: (context) => `${context.raw} visits`,
+                      },
+                    },
+                  },
+                  scales: {
+                    x: {
+                      grid: {
+                        display: false,
+                      },
+                    },
+                    y: {
+                      grid: {
+                        color: '#e5e7eb',
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
