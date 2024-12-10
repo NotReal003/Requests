@@ -8,7 +8,7 @@ const AdminManagePage = () => {
   const [tab, setTab] = useState('users'); // tabs: 'users' or 'ips'
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [adminOnly, setAdminOnly] = useState(true);
+  const [adminOnly, setAdminOnly] = useState(false);
 
   // Shared State
   const API = process.env.REACT_APP_API;
@@ -34,10 +34,10 @@ const AdminManagePage = () => {
       setNonBlockedUsers(nonBlocked);
       setError(null);
 
-      if (response.status === 403) {
+    } catch (error) {
+      if (error.response?.data?.status === 403) {
         setAdminOnly(true);
       }
-    } catch (error) {
       setError(error.response?.data?.message || 'Failed to fetch users.');
     } finally {
       setLoading(false);
@@ -52,11 +52,11 @@ const AdminManagePage = () => {
       setBannedIps(response.data);
       setError(null);
 
-      if (response.status === 403) {
+    } catch (error) {
+      if (error.response?.data?.status === 403) {
         setAdminOnly(true);
       }
-    } catch (error) {
-      setError(error.response?.data?.message || 'Failed to fetch IPs.');
+  setError(error.response?.data?.message || 'Failed to fetch IPs.');
     } finally {
       setLoading(false);
     }
@@ -149,7 +149,7 @@ const AdminManagePage = () => {
       <div className="flex flex-col items-center justify-center h-screen bg-black text-white">
         <div className="text-center">
           <div className="mb-4">
-            <ImSpinner6 className="w-16 h-16 mx-auto text-gray-500" />
+            <ImSpinner6 className="animate-spin w-16 h-16 mx-auto text-gray-500" />
           </div>
           <h1 className="text-3xl font-bold">Loading...</h1>
           <p className="text-gray-400 mt-2">Please wait while are checking your info..</p>
