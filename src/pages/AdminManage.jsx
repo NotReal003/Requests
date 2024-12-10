@@ -49,13 +49,11 @@ const AdminManagePage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/ip/banned`, { withCredentials: true });
+      console.log(response.status, response.data.status);
       setBannedIps(response.data);
       setError(null);
 
     } catch (error) {
-      if (error.response?.data?.status === 403) {
-        setAdminOnly(true);
-      }
   setError(error.response?.data?.message || 'Failed to fetch IPs.');
     } finally {
       setLoading(false);
@@ -143,20 +141,6 @@ const AdminManagePage = () => {
     if (tab === 'users') fetchBlockedUsers();
     else fetchBannedIps();
   }, [tab, fetchBlockedUsers, fetchBannedIps]);
-
-  if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-black text-white">
-        <div className="text-center">
-          <div className="mb-4">
-            <ImSpinner6 className="animate-spin w-16 h-16 mx-auto text-gray-500" />
-          </div>
-          <h1 className="text-3xl font-bold">Loading...</h1>
-          <p className="text-gray-400 mt-2">Please wait while are checking your info..</p>
-        </div>
-      </div>
-    );
-  }
 
   if (adminOnly) {
     return <AdminOnly />;
