@@ -18,6 +18,34 @@ function AdminDetail() {
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
 
+  const sanitizeInput = (input) => {
+    const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+
+    if (urlRegex.test(input)) {
+      return input.replace(/[<>&'"]/g, (char) => {
+        switch (char) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case "'": return '&#39;';
+          case '"': return '&quot;';
+          default: return char;
+        }
+      });
+    } else {
+      return input.replace(/[<>&'"]/g, (char) => {
+        switch (char) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case "'": return '&#39;';
+          case '"': return '&quot;';
+          default: return char;
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     const fetchRequest = async () => {
       try {
@@ -44,12 +72,14 @@ function AdminDetail() {
   }, [requestId, API, navigate]);
 
   const handleUpdateAndSendEmail = async () => {
+
+    const sanitizedReviewMessage = sanitizeInput(reviewMessage);
     try {
       const token = localStorage.getItem('jwtToken');
 
       const updateResponse = await axios.put(
         `${API}/admin/${requestId}`,
-        { status, reviewMessage },
+        { status, reviewMessage: sanitizedReviewMessage },
         { withCredentials: true }
       );
 

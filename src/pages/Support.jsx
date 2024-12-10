@@ -17,16 +17,31 @@ const Support = () => {
 
   // Simple sanitizer function
   const sanitizeInput = (input) => {
-    return input.replace(/[<>&'"]/g, (char) => {
-      switch (char) {
-        case '<': return '&lt;';
-        case '>': return '&gt;';
-        case '&': return '&amp;';
-        case "'": return '&#39;';
-        case '"': return '&quot;';
-        default: return char;
-      }
-    });
+    const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+
+    if (urlRegex.test(input)) {
+      return input.replace(/[<>&'"]/g, (char) => {
+        switch (char) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case "'": return '&#39;';
+          case '"': return '&quot;';
+          default: return char;
+        }
+      });
+    } else {
+      return input.replace(/[<>&'"]/g, (char) => {
+        switch (char) {
+          case '<': return '&lt;';
+          case '>': return '&gt;';
+          case '&': return '&amp;';
+          case "'": return '&#39;';
+          case '"': return '&quot;';
+          default: return char;
+        }
+      });
+    }
   };
 
   const handleSubmit = useCallback(async (e) => {

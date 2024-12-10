@@ -37,7 +37,7 @@ const Analytics = () => {
       } catch (err) {
         if (error.response?.status === 403) {
           setAdminOnly(true);
-          setError(null);
+          setError('This page is only available to you, please wait 30 hours...');
         } else {
         console.error('Error fetching analytics data:', err);
         setError('An error occurred while fetching analytics data.');
@@ -88,10 +88,6 @@ const Analytics = () => {
 
   if (adminOnly) {
     return <AdminOnly />;
-  }
-
-  if (analyticsData.length === 0) {
-    return <div className="text-center mt-4">No analytics data available.</div>;
   }
 
   return (
