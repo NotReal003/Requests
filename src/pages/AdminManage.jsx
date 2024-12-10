@@ -27,24 +27,21 @@ const AdminManagePage = () => {
   const fetchBlockedUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API}/users/blocks`, { withCredentials: true, validateStatus: (status) => status === 200 || status === 403, });
-      toast(`status: ${response.status}`)
-      if (response.status === 200) {
+      const response = await axios.get(`${API}/users/blocks`, { withCredentials: true });
       const blocked = response.data.filter((user) => user.blocked === "YES");
       const nonBlocked = response.data.filter((user) => user.blocked !== "YES");
       setBlockedUsers(blocked);
       setNonBlockedUsers(nonBlocked);
       setError(null);
-      } else if (response.status === 401) {
-        setAdminOnly(true);
-        setError(null);
-      }
 
     } catch (error) {
-      if (error.response?.data?.status === 403) {
+      
+      if (error.response?.status === 403) {
         setAdminOnly(true);
+        setError(null);
+      } else {
+        setError(error.response?.data?.message || 'Failed to fetch blocked users.');
       }
-      setError(error.response?.data?.message || 'Failed to fetch users.');
     } finally {
       setLoading(false);
     }
@@ -55,16 +52,15 @@ const AdminManagePage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/ip/banned`, { withCredentials: true, validateStatus: (status) => status === 200 || status === 403, });
-      if (response.status === 200) {
       setBannedIps(response.data);
       setError(null);
-      } else if (response.status === 403) {
+    } catch (error) {
+      if (error.response?.status === 403) {
         setAdminOnly(true);
         setError(null);
+      } else {
+        setError(error.response?.data?.message || 'Failed to fetch IPs.');
       }
-
-    } catch (error) {
-  setError(error.response?.data?.message || 'Failed to fetch IPs.');
     } finally {
       setLoading(false);
     }
