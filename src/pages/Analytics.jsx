@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import AdminOnly from '../components/AdminOnly';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -18,6 +19,7 @@ const Analytics = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedView, setSelectedView] = useState('daily'); // daily, weekly, monthly
+  const [adminOnly, setAdminOnly] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,8 +35,13 @@ const Analytics = () => {
           setError('Failed to load analytics data.');
         }
       } catch (err) {
+        if (error.response?.status === 403) {
+          setAdminOnly(true);
+          setError(null);
+        } else {
         console.error('Error fetching analytics data:', err);
         setError('An error occurred while fetching analytics data.');
+        }
       } finally {
         setLoading(false);
       }
@@ -79,8 +86,12 @@ const Analytics = () => {
     );
   }
 
+  if (adminOnly) {
+    return <AdminOnly />;
+  }
+
   if (error) {
-    return (
+    return ([
       <div className="text-center mt-4 text-red-500">
         {error}
       </div>

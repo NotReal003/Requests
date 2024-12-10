@@ -4,6 +4,7 @@ import axios from 'axios';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import toast, { Toaster } from 'react-hot-toast';
 import { MdDelete, MdUpdate } from 'react-icons/md';
+import AdminOnly from '../components/AdminOnly';
 
 function AdminDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -13,6 +14,7 @@ function AdminDetail() {
   const [status, setStatus] = useState('');
   const [reviewMessage, setReviewMessage] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [adminOnly, setAdminOnly] = useState(false);
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
 
@@ -31,7 +33,7 @@ function AdminDetail() {
         const errorStatus = error.response?.status;
 
         if (errorStatus === 403) {
-          navigate('/404');
+          setAdminOnly(true);
         } else {
           toast.warn('Something went wrong, please try again later');
         }
@@ -75,7 +77,10 @@ function AdminDetail() {
         toast.warn(updateResponse.data.message || 'Request was updated but something might have gone wrong.');
       }
     } catch (error) {
-      if (error.response) {
+      if (error.response?.status === 403) {
+        setAdminOnly(true);
+        setAlert(null);
+      } else if (error.response) {
         toast.error(error.response.data.message || 'Error updating the request.');
         setAlert(error.response.data.message || 'Error updating the request.');
       } else {
@@ -105,6 +110,10 @@ function AdminDetail() {
         <div className="skeleton h-6 w-30"></div>
       </div>
     );
+  }
+
+  if (adminOnly) {
+    return <AdminOnly />;
   }
 
   return (

@@ -200,7 +200,7 @@ const AdminManagePage = () => {
             onChange={(e) => setMyBlockReason(e.target.value)}
             className="input input-bordered w-full mb-2"
           />
-          <button className="btn btn-primary" onClick={blockUser}>
+          <button className="btn btn-primary" onClick={blockUser} disabled={loading}>
             Block User
           </button>
 
@@ -252,7 +252,7 @@ const AdminManagePage = () => {
             onChange={(e) => setReason(e.target.value)}
             className="input input-bordered w-full mb-2"
           />
-          <button className="btn btn-primary" onClick={banIp}>
+          <button className="btn btn-primary" onClick={banIp} disabled={loading}>
             Ban IP
           </button>
 

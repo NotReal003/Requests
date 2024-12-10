@@ -7,6 +7,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { formatDistanceToNow } from 'date-fns';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import toast, { Toaster } from 'react-hot-toast';
+import AdminOnly from '../components/AdminOnly';
 
 // Request Status Component
 const RequestStatus = ({ status }) => {
@@ -147,6 +148,7 @@ const Admin = () => {
   const [userIdFilter, setUserIdFilter] = useState('');
   const [apiClosed, setApiClosed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [adminOnly, setAdminOnly] = useState(false);
   const requestsPerPage = 10;
   const token = localStorage.getItem('jwtToken');
   const navigate = useNavigate();
@@ -182,8 +184,7 @@ const Admin = () => {
         });
 
         if (response.status === 403) {
-          toast.error('You are not authorized to view this page.');
-          navigate('/404');
+          setAdminOnly(true);
         }
 
         // Success case
@@ -206,7 +207,7 @@ const Admin = () => {
 
         // Handle 403 forbidden
         if (errorStatus === 403) {
-          navigate('/404');
+          setAdminOnly(true);
         } else {
           const errorMessage = error.response?.data?.message || 'Failed to load requests. Please try again later.';
           setError(errorMessage);
@@ -248,6 +249,10 @@ const Admin = () => {
 
   const handleNextPage = () => setCurrentPage((prev) => prev + 1);
   const handlePrevPage = () => setCurrentPage((prev) => prev - 1);
+
+  if (adminOnly) {
+    return <AdminOnly />;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center p-2 sm:p-4 md:p-6">
