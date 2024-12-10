@@ -28,12 +28,7 @@ const Analytics = () => {
           credentials: 'include',
         });
         const data = await response.json();
-
-        if (data.success) {
-          setAnalyticsData(data.pageStats);
-        } else if (data.status === 403) {
-          setAdminOnly(true);
-        }
+        setAnalyticsData(data.pageStats);
       } catch (err) {
         if (error.response?.status === 403) {
           setAdminOnly(true);
