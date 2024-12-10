@@ -28,12 +28,17 @@ const AdminManagePage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/users/blocks`, { withCredentials: true });
-      console.log(`API: ${response.status}, ${response.data.status}`);
+      if (response.status === 200) {
       const blocked = response.data.filter((user) => user.blocked === "YES");
       const nonBlocked = response.data.filter((user) => user.blocked !== "YES");
       setBlockedUsers(blocked);
       setNonBlockedUsers(nonBlocked);
       setError(null);
+      }
+      else if (response.status === 401) {
+        setAdminOnly(true);
+        setError(null);
+      }
 
     } catch (error) {
       if (error.response?.data?.status === 403) {
@@ -50,9 +55,14 @@ const AdminManagePage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/ip/banned`, { withCredentials: true });
-      console.log(`API: ${response.status}, ${response.data.status}`);
+      if (response.status === 200) {
       setBannedIps(response.data);
       setError(null);
+      }
+      else if (response.status === 403) {
+        setAdminOnly(true);
+        setError(null);
+      }
 
     } catch (error) {
   setError(error.response?.data?.message || 'Failed to fetch IPs.');
