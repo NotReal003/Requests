@@ -28,6 +28,7 @@ const AdminManagePage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/users/blocks`, { withCredentials: true });
+      console.log(`API: ${response.status}, ${response.data.status}`);
       const blocked = response.data.filter((user) => user.blocked === "YES");
       const nonBlocked = response.data.filter((user) => user.blocked !== "YES");
       setBlockedUsers(blocked);
@@ -49,7 +50,7 @@ const AdminManagePage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/ip/banned`, { withCredentials: true });
-      console.log(response.status, response.data.status);
+      console.log(`API: ${response.status}, ${response.data.status}`);
       setBannedIps(response.data);
       setError(null);
 
