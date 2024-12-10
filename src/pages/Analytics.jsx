@@ -31,8 +31,8 @@ const Analytics = () => {
 
         if (data.success) {
           setAnalyticsData(data.pageStats);
-        } else {
-          setError('Failed to load analytics data.');
+        } else if (data.status === 403) {
+          setAdminOnly(true);
         }
       } catch (err) {
         if (error.response?.status === 403) {
@@ -90,20 +90,17 @@ const Analytics = () => {
     return <AdminOnly />;
   }
 
-  if (error) {
-    return (
-      <div className="text-center mt-4 text-red-500">
-        {error}
-      </div>
-    );
-  }
-
   if (analyticsData.length === 0) {
     return <div className="text-center mt-4">No analytics data available.</div>;
   }
 
   return (
     <div className="container mx-auto p-6">
+      {error && (
+        <div className="text-center mt-4 text-red-500">
+          {error}
+        </div>
+      )}
       <h1 className="text-3xl font-bold mb-6 text-center text-primary">Analytics Dashboard</h1>
       <div className="tabs mb-6 justify-center">
         <button
