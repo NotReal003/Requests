@@ -28,6 +28,7 @@ const AdminManagePage = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/users/blocks`, { withCredentials: true, validateStatus: (status) => status === 200 || status === 403, });
+      toast(`status: ${response.status}`)
       if (response.status === 200) {
       const blocked = response.data.filter((user) => user.blocked === "YES");
       const nonBlocked = response.data.filter((user) => user.blocked !== "YES");
