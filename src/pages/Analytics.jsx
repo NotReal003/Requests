@@ -91,7 +91,7 @@ const Analytics = () => {
   }
 
   if (error) {
-    return ([
+    return (
       <div className="text-center mt-4 text-red-500">
         {error}
       </div>
