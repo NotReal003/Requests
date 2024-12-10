@@ -103,6 +103,10 @@ function AdminDetail() {
     setShowDeleteModal(false);
   };
 
+  if (!request && adminOnly) {
+    return <AdminOnly />;
+  }
+
   if (!request) {
     return (
       <div className="flex w-52 flex-col gap-4 container mx-auto px-4 py-8">
@@ -110,10 +114,6 @@ function AdminDetail() {
         <div className="skeleton h-6 w-30"></div>
       </div>
     );
-  }
-
-  if (adminOnly) {
-    return <AdminOnly />;
   }
 
   return (
