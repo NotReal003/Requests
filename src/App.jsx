@@ -36,7 +36,7 @@ const App = () => {
   return (
     <Router>
      <div className="App">
-      <OfflineWarning className="p-2"/>
+      <OfflineWarning className="p-2" />
        <Navbar isAuthenticated={isAuthenticated} />
           <div className="container mx-auto p-2">
            <Routes>
