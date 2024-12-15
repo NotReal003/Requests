@@ -35,7 +35,7 @@ const App = () => {
     <Router>
       <div className="App">
         <Navbar isAuthenticated={isAuthenticated} />
-        <div>
+        <div className="container mx-auto p-2">
           <Routes>
             <Route exact path="/" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
             <Route path="/report" element={isAuthenticated ? <ReportForm /> : <Navigate to="/login" />} />
