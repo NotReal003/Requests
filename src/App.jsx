@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Navbar, Footer } from './components';
+import { Navbar, Footer, OfflineWarning } from './components';
 import routeConfig from './routes';
 
 const App = () => {
@@ -27,18 +27,6 @@ const App = () => {
       }
     }
     setLoading(false);
-
-    // Connectivity
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
 
   if (loading) {
@@ -47,23 +35,20 @@ const App = () => {
 
   return (
     <Router>
-      <div className="App">
-        {!isOnline && (
-          <div className="bg-red-600 text-white text-center py-2">
-            You are offline. Please check your internet connection.
-          </div>
-        )}
-        <Navbar isAuthenticated={isAuthenticated} />
-        <div>
-          <Routes>
-            {routeConfig(isAuthenticated).map((route, index) => (
-              <Route key={index} path={route.path} element={route.element} />
-            ))}
-          </Routes>
-        </div>
-        <Footer />
-      </div>
-    </Router>
+     <div className="App">
+      <OfflineWarning />
+       <Navbar isAuthenticated={isAuthenticated} />
+          <div>
+           <Routes>
+           {routeConfig(isAuthenticated).map((route, index) => (
+             <Route key={index} path={route.path} element={route.element} />
+           ))}
+         </Routes>
+       </div>
+       <Footer />
+     </div>
+   </Router>
+
   );
 };
 
