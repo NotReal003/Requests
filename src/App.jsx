@@ -43,10 +43,6 @@ const App = () => {
     return <div className="loading loading-spinner text-info"></div>;
   }
 
-  if (!isOnline) {
-    return <OfflineWarning />
-  }
-
   return (
     <Router>
      <div className="App">
@@ -56,7 +52,10 @@ const App = () => {
            {routeConfig(isAuthenticated).map((route, index) => (
              <Route key={index} path={route.path} element={route.element} />
            ))}
-         </Routes>
+        </Routes>
+          {!isOnline && (
+           <OfflineWarning />
+          )}
        </div>
        <Footer />
      </div>
