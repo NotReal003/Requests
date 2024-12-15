@@ -4,7 +4,7 @@ import { MdWifiOff } from "react-icons/md";
 const OfflineWarning = () => {
   return (
     <div className="fixed inset-0 bg-black-900 bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-gray-800 p-8 rounded-lg shadow-xl text-gray-100 text-center max-w-sm w-full mx-4">
+      <div className="bg-black-800 p-8 rounded-lg shadow-xl text-gray-100 text-center max-w-sm w-full mx-4">
         <div className="mb-6">
           <MdWifiOff className="w-20 h-20 mx-auto text-red-500 animate-pulse" />
         </div>
