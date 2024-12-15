@@ -1,28 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import ReportForm from './pages/ReportForm';
-import Support from './pages/Support';
-import Apply from './pages/Apply';
-import NotFound from './pages/404';
-import Login from './pages/Login';
-import Success from './pages/Success';
-import One from './pages/One';
-import Admin from './pages/Admin';
-import RequestDetail from './pages/RequestDetail';
-import AdminDetail from './pages/AdminDetail';
-import Callback from './pages/Callback';
-import Profile from './pages/Profile';
-import Note from './pages/Note';
-import AdminManage from './pages/AdminManage';
-import Footer from './components/Footer';
-import EmailSignup from './pages/EmailSignup';
-import EmailSignin from './pages/EmailSignin';
-import GithubCallback from './pages/GithubCallback';
-import About from './pages/About';
-import Analytics from './pages/Analytics';
-
+import { Navbar, Footer } from './components';
+import { Home, ReportForm, Support, Apply, NotFound, Login, Success, One, Admin, RequestDetail, AdminDetail, Callback, Profile, Note, AdminManage, EmailSignup, EmailSignin, GithubCallback, About, Analytics } from './pages';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -36,13 +15,13 @@ const App = () => {
       setIsAuthenticated(true);
       window.history.replaceState({}, document.title, "/");
     } else {
-        const storedToken = document.cookie
-          .split('; ')
-          .find(row => row.startsWith('token='))
-          ?.split('=')[1];
+      const storedToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))
+        ?.split('=')[1];
 
-        if (storedToken) {
-          setIsAuthenticated(true);
+      if (storedToken) {
+        setIsAuthenticated(true);
       }
     }
     setLoading(false);
@@ -63,15 +42,15 @@ const App = () => {
             <Route path="/support" element={isAuthenticated ? <Support /> : <Navigate to="/login" />} />
             <Route path="/apply" element={isAuthenticated ? <Apply /> : <Navigate to="/login" />} />
             <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
-            <Route path="/Success" element={isAuthenticated ? <Success /> : <Navigate to="/login" />} />
-            <Route path="/One" element={isAuthenticated ? <One /> : <Navigate to="/login" />} />
-            <Route path="/Admin" element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} />
-            <Route path="/RequestDetail" element={isAuthenticated ? <RequestDetail /> : <Navigate to="/login" />} />
-            <Route path="/AdminDetail" element={isAuthenticated ? <AdminDetail /> : <Navigate to="/login" />} />
+            <Route path="/success" element={isAuthenticated ? <Success /> : <Navigate to="/login" />} />
+            <Route path="/one" element={isAuthenticated ? <One /> : <Navigate to="/login" />} />
+            <Route path="/admin" element={isAuthenticated ? <Admin /> : <Navigate to="/login" />} />
+            <Route path="/requestdetail" element={isAuthenticated ? <RequestDetail /> : <Navigate to="/login" />} />
+            <Route path="/admindetail" element={isAuthenticated ? <AdminDetail /> : <Navigate to="/login" />} />
             <Route path="*" element={isAuthenticated ? <NotFound /> : <Navigate to="/login" />} />
             <Route path="/callback" element={<Callback />} />
             <Route path="/profile" element={isAuthenticated ? <Profile /> : <Navigate to="/login" />} />
-            <Route path="/Admin/Manage" element={isAuthenticated ? <AdminManage /> : <Navigate to="/login" />} />"
+            <Route path="/admin/manage" element={isAuthenticated ? <AdminManage /> : <Navigate to="/login" />} />
             <Route path="/note" element={isAuthenticated ? <Note /> : <Navigate to="/login" />} />
             <Route path="/email-signup" element={isAuthenticated ? <Navigate to="/" /> : <EmailSignup />} />
             <Route path="/email-signin" element={isAuthenticated ? <Navigate to="/" /> : <EmailSignin />} />
