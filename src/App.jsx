@@ -27,16 +27,29 @@ const App = () => {
       }
     }
     setLoading(false);
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
   }, []);
 
   if (loading) {
     return <div className="loading loading-spinner text-info"></div>;
   }
 
+  if (!isOnline) {
+    return <OfflineWarning />
+  }
+
   return (
     <Router>
      <div className="App">
-      <OfflineWarning className="p-2" />
        <Navbar isAuthenticated={isAuthenticated} />
           <div className="container mx-auto p-2">
            <Routes>
