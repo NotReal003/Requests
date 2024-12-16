@@ -185,7 +185,7 @@ function AdminDetail() {
           <div className="form-control">
             <label className="label">From User</label>
             <textarea
-              value={`${request.username} / ${request.displayName}`}
+              value={`${request.username} / ${request.id}`}
               readOnly
               className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
             />
@@ -246,7 +246,7 @@ function AdminDetail() {
           <div className="form-control mt-4">
             <button
               onClick={() => setShowDeleteModal(true)}
-              className="btn btn-error"
+              className="btn btn-outline hover:btn-error no-animation"
             >
               <MdDelete /> Delete Request
             </button>
