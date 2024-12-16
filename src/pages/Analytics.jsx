@@ -18,25 +18,34 @@ const Analytics = () => {
   const [analyticsData, setAnalyticsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedView, setSelectedView] = useState('daily'); // daily, weekly, monthly
+  const [selectedView, setSelectedView] = useState('daily'); // 'daily', 'weekly', 'monthly'
   const [adminOnly, setAdminOnly] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const response = await fetch('https://request.notreal003.xyz/api/visits', {
           credentials: 'include',
         });
+
+        if (response.status === 403) {
+          setAdminOnly(true);
+          setError('This page is only available to you. please wait 30 hours....');
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch analytics data.');
+        }
+
         const data = await response.json();
         setAnalyticsData(data.pageStats);
       } catch (err) {
-        if (error.response?.status === 403) {
-          setAdminOnly(true);
-          setError('This page is only available to you, please wait 30 hours...');
-        } else {
         console.error('Error fetching analytics data:', err);
-        setError('An error occurred while fetching analytics data.');
-        }
+        setError(err.message || 'An error occurred while fetching analytics data.');
       } finally {
         setLoading(false);
       }
@@ -46,18 +55,19 @@ const Analytics = () => {
   }, []);
 
   const getChartData = (pageData) => {
-    const labels =
-      selectedView === 'daily'
-        ? pageData.dailyVisits.map((visit) => visit[0])
-        : selectedView === 'weekly'
-        ? ['This Week']
-        : ['This Month'];
-    const data =
-      selectedView === 'daily'
-        ? pageData.dailyVisits.map((visit) => visit[1])
-        : selectedView === 'weekly'
-        ? [pageData.weeklyVisits]
-        : [pageData.monthlyVisits];
+    let labels = [];
+    let data = [];
+
+    if (selectedView === 'daily') {
+      labels = pageData.dailyVisits.map(([date]) => date);
+      data = pageData.dailyVisits.map(([_, visits]) => visits);
+    } else if (selectedView === 'weekly') {
+      labels = pageData.weeklyVisits.map(([week]) => `Week of ${week}`);
+      data = pageData.weeklyVisits.map(([_, visits]) => visits);
+    } else if (selectedView === 'monthly') {
+      labels = pageData.monthlyVisits.map(([month]) => `Month: ${month}`);
+      data = pageData.monthlyVisits.map(([_, visits]) => visits);
+    }
 
     return {
       labels,
