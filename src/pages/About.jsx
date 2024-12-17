@@ -3,120 +3,125 @@ import React from 'react';
 const About = () => {
   return (
     <div className="container mx-auto p-6">
-      <header className="text-center mb-8 bg-base-100">
-        <h1 className="text-xl font-bold mb-4">Request Management Portal</h1>
-        <p className="text-md font-serif">
+      {/* Header Section */}
+      <header className="text-center mb-12 bg-base-100 shadow-md p-6 rounded-lg">
+        <h1 className="text-3xl font-bold mb-4 text-primary">Request Management Portal</h1>
+        <p className="text-lg font-serif text-gray-600">
           A comprehensive platform to manage user requests with authentication, notifications, and admin control.
         </p>
       </header>
 
+      {/* Overview Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Overview</h2>
-        <p className="font-serif">
-          This project is a fully functional request management system, including both backend and frontend components. It is designed for users to submit different types of requests such as Discord reports, support requests, and guild applications. Administrators can manage these requests with advanced control options.
+        <h2 className="text-2xl font-semibold mb-6 text-secondary">Overview</h2>
+        <p className="font-serif text-gray-700">
+          This project is a fully functional request management system that seamlessly integrates backend and frontend components. Users can submit various types of requests, such as Discord reports, support queries, and guild applications. Administrators enjoy advanced control options for reviewing and managing these requests.
+        </p>
+        <p className="mt-4">
+          Discover more details about this project on our{' '}
+          <a
+            href="https://github.com/NotReal003/Requests"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline hover:text-primary-focus"
+          >
+            GitHub Repository
+          </a>.
         </p>
       </section>
 
+      {/* Key Features Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Key Features</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-secondary">Key Features</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-base-100 shadow-lg rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Frontend</h3>
-            <ul className="list-disc list-inside">
-              <li>Request Form Pages: Submit Discord reports, support requests, guild applications.</li>
-              <li>JWT-based login/logout with dynamic navbar status display.</li>
-              <li>Admin Panel for managing requests with review messages and status updates.</li>
-              <li>Responsive Design: Mobile-friendly with modern design practices.</li>
-              <li>We provide authentication options to users with Github, Discord & Email.</li>
+          <div className="bg-base-100 shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <h3 className="text-xl font-semibold mb-4 text-primary">Frontend</h3>
+            <ul className="list-disc list-inside text-gray-700">
+              <li>Submit Discord reports, support requests, and guild applications.</li>
+              <li>Dynamic authentication with JWT-based login/logout.</li>
+              <li>Admin Panel with options for managing requests and review messages.</li>
+              <li>Responsive, mobile-friendly design with a modern interface.</li>
+              <li>Multiple authentication options: GitHub, Discord, and email.</li>
             </ul>
           </div>
 
-          {/* Backend Features */}
-          <div className="bg-base-100 shadow-lg rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Backend</h3>
-            <ul className="list-disc list-inside">
-              <li>Request Routes: Handles support, Discord report, guild application requests.</li>
-              <li>JWT Authentication: Secure token-based access control.</li>
-              <li>Admin Routes: Manage requests and users.</li>
-              <li>Email Notifications: Automatic notifications for request status updates.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* Tech Stack */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Tech Stack</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-base-100 shadow-lg rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Frontend</h3>
-            <ul className="list-disc list-inside">
-              <li>React</li>
-              <li>React Router</li>
-              <li>DaisyUI/TailwindCSS</li>
-              <li>Axios</li>
-              <li>React Toastify</li>
-            </ul>
-          </div>
-          <div className="bg-base-100 shadow-lg rounded-lg p-6">
-            <h3 className="text-xl font-semibold mb-4">Backend</h3>
-            <ul className="list-disc list-inside">
-              <li>Node.js</li>
-              <li>Express.js</li>
-              <li>MongoDB</li>
-              <li>JWT Authentication</li>
-              <li>Nodemailer</li>
+          <div className="bg-base-100 shadow-lg rounded-lg p-6 hover:shadow-xl transition-shadow duration-300">
+            <h3 className="text-xl font-semibold mb-4 text-primary">Backend</h3>
+            <ul className="list-disc list-inside text-gray-700">
+              <li>Request handling routes for support, Discord reports, and guild applications.</li>
+              <li>Secure JWT-based authentication system.</li>
+              <li>Dedicated admin routes for managing requests and users.</li>
+              <li>Automated email notifications for request updates.</li>
             </ul>
           </div>
         </div>
       </section>
 
-      {/* API Endpoints */}
+      {/* Support Us Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">API Endpoints</h2>
-
-        <div className="bg-base-100 shadow-lg rounded-lg p-6">
-          <h3 className="text-xl font-semibold mb-4">User Authentication</h3>
-          <ul className="list-disc list-inside">
-            <li>GET /auth/signin: Login With Discord</li>
-            <li>GET /auth/github: Login With GitHub</li>
-            <li>GET /auth/email-signup: SignUp With Email</li>
-            <li>GET /auth/email-signin: Login With Email</li>
-            <li>GET /auth/email-verify: Verify SignUp Email</li>
-            <li>GET /auth/verify-signin-email: Verify SignIn Email</li>
-            <li>GET /auth/callback: Verify Discord Code</li>
-            <li>GET /auth/github/callback: Verify Github Code</li>
-            <li>GET /users/@me: Get current user details.</li>
-            <li>GET /auth/signout: Logout user.</li>
-            <li>And other routes</li>
-          </ul>
-        </div>
-
-        <div className="bg-base-100 shadow-lg rounded-lg p-6 mt-6">
-          <h3 className="text-xl font-semibold mb-4">Requests</h3>
-          <ul className="list-disc list-inside">
-            <li>POST /requests/report: Submit a Discord report request.</li>
-            <li>POST /requests/support: Submit a support request.</li>
-            <li>POST /requests/guild-application: Submit a guild application request.</li>
-            <li>GET /requests: Get all requests for the current user.</li>
-            <li>PUT /requests/:requestId: Update request status (Admin only).</li>
-            <li>And many more routes.</li>
-          </ul>
-        </div>
+        <h2 className="text-2xl font-semibold mb-6 text-secondary">Support Us</h2>
+        <p className="text-gray-700">
+          If you find this project helpful and want to support its development, consider donating. Your contributions help us keep the platform running and improve its features.
+        </p>
+        <a
+          href="https://patreon.com/NotNT77"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn btn-primary mt-6"
+        >
+          Donate Now
+        </a>
       </section>
+
+      {/* Links Section */}
       <section className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Admin Actions</h2>
-        <ul className="list-disc list-inside">
-          <li>Approve, reject, or cancel requests and leave review messages.</li>
-          <li>Block/unblock users as needed.</li>
-          <li>Update request statuses directly from the admin dashboard.</li>
+        <h2 className="text-2xl font-semibold mb-6 text-secondary">Links</h2>
+        <ul className="list-disc list-inside text-gray-700">
+          <li>
+            <a
+              href="https://github.com/NotReal003/Requests"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline hover:text-primary-focus"
+            >
+              GitHub Repository
+            </a>
+          </li>
+          <li>
+            <a
+              href="/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline hover:text-primary-focus"
+            >
+              API Documentation (Comming Soon)
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://github.com/NotReal003/Requests/API"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline hover:text-primary-focus"
+              >
+              API Repository
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://support.notreal003.xyz/terms"
+              className="text-primary underline hover:text-primary-focus"
+            >
+              Terms and Conditions
+            </a>
+          </li>
         </ul>
       </section>
+
+      {/* Footer Section */}
       <footer className="text-center py-6 border-t mt-12">
-        <p>
-          © 2024 NotReal003
-        </p>
+        <p className="text-gray-600">© 2024 NotReal003. All rights reserved.</p>
       </footer>
     </div>
   );
