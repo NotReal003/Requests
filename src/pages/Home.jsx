@@ -38,76 +38,69 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center p-6 min-h-screen bg-base-200">
-      <div className="bg-base-100 rounded-lg p-8 w-full max-w-lg mx-auto shadow-lg">
-        <h1 className="text-3xl font-bold mb-8 text-center text-primary">Requests</h1>
+    <div className="flex flex-col justify-center items-center p-6 min-h-screen bg-gray-100">
+      <div className="bg-white rounded-xl p-8 w-full max-w-lg shadow-md">
+        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Requests</h1>
 
-        <div className="space-y-6">
+        <div className="space-y-4">
           <button
-            className="btn btn-info btn-lg btn-block transition-all duration-200 hover:bg-info hover:border-info hover:text-white"
+            className="w-full py-4 px-6 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all"
             onClick={() => handleNavigation('/one')}
           >
-            <span className="flex items-center justify-center">
-              <IoShieldCheckmark className="mr-2 text-lg" /> Your Requests
-            </span>
+            <IoShieldCheckmark className="mr-3 text-xl" />
+            Your Requests
           </button>
 
-          <h2 className="text-2xl font-semibold text-secondary text-center">New Request</h2>
+          <h2 className="text-xl font-semibold text-gray-700 text-center mt-4">New Request</h2>
 
           <button
-            className="btn btn-warning btn-lg btn-block transition-all duration-200 hover:bg-warning hover:border-warning hover:text-white"
+            className="w-full py-4 px-6 bg-yellow-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all"
             onClick={() => handleNavigation('/report')}
           >
-            <span className="flex items-center justify-center">
-              <FaDiscord className="mr-2 text-lg" /> Discord Report
-            </span>
+            <FaDiscord className="mr-3 text-xl" />
+            Discord Report
           </button>
 
           <button
-            className="btn btn-secondary btn-lg btn-block transition-all duration-200 hover:bg-secondary hover:border-secondary hover:text-white"
+            className="w-full py-4 px-6 bg-purple-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-purple-700 transition-all"
             onClick={() => handleNavigation('/apply')}
           >
-            <span className="flex items-center justify-center">
-              <IoMdMail className="mr-2 text-lg" /> Guild Application
-            </span>
+            <IoMdMail className="mr-3 text-xl" />
+            Guild Application
           </button>
 
           <button
-            className="btn btn-accent btn-lg btn-block transition-all duration-200 hover:bg-accent hover:border-accent hover:text-white"
+            className="w-full py-4 px-6 bg-teal-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-teal-700 transition-all"
             onClick={() => handleNavigation('/support')}
           >
-            <span className="flex items-center justify-center">
-              <MdSupportAgent className="mr-2 text-lg" /> Support Request
-            </span>
+            <MdSupportAgent className="mr-3 text-xl" />
+            Support Request
           </button>
 
           {isStaff && (
             <button
-              className="btn btn-error btn-lg btn-block transition-all duration-200 hover:bg-error hover:border-error hover:text-white"
+              className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all"
               onClick={() => handleNavigation('/admin')}
             >
-              <span className="flex items-center justify-center">
-                Requests Dashboard / Staff Area
-              </span>
+              Requests Dashboard / Staff Area
             </button>
           )}
 
           {isAdmin && (
-            <button
-              className="btn btn-error btn-lg btn-block transition-all duration-200 hover:bg-error hover:border-error hover:text-white"
-              onClick={() => handleNavigation('/admin/manage')}
-            >
-              <span className="flex items-center justify-center">Admin Manage Dash</span>
-            </button>
-          )}
-
-          {isAdmin && (
-            <button
-              className="btn btn-error btn-lg btn-block transition-all duration-200 hover:bg-error hover:border-error hover:text-white"
-              onClick={() => handleNavigation('/Analytics')}
-            >
-              <span className="flex items-center justify-center">Analytics</span>
-            </button>
+            <>
+              <button
+                className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all"
+                onClick={() => handleNavigation('/admin/manage')}
+              >
+                Admin Manage Dash
+              </button>
+              <button
+                className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all"
+                onClick={() => handleNavigation('/Analytics')}
+              >
+                Analytics
+              </button>
+            </>
           )}
         </div>
       </div>
