@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaDiscord } from 'react-icons/fa';
-import { MdSupportAgent } from 'react-icons/md';
-import { IoMdMail } from 'react-icons/io';
-import { IoShieldCheckmark } from 'react-icons/io5';
+import { MdSupportAgent } from "react-icons/md";
+import { IoMdMail } from "react-icons/io";
+import { IoShieldCheckmark } from "react-icons/io5";
 import axios from 'axios';
 
 const Home = () => {
@@ -15,12 +15,11 @@ const Home = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken');
-    axios
-      .get(`${API}/users/@me`, {
-        withCredentials: true,
-      })
-      .then((response) => {
-        if (response.data.staff === true) {
+    axios.get(`${API}/users/@me`, {
+      withCredentials: true,
+    })
+      .then(response => {
+        if (response.data.staff === true) { //
           setIsStaff(true);
         }
         if (response.data.id === ADMINW || response.data.staff === true) {
@@ -28,7 +27,7 @@ const Home = () => {
           setIsStaff(true);
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error('Failed to check admin status:', error);
       });
   }, [API, ADMINW]);
@@ -38,69 +37,43 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center p-6 min-h-screen bg-gray-100">
-      <div className="bg-white rounded-xl p-8 w-full max-w-lg shadow-md">
-        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">Requests</h1>
+    <div className="flex flex-col justify-center p-4 min-h-screen">
+      <div className="bg rounded-lg p-8 w-full max-w-md md:max-w-lg mx-auto shadow-lg">
+        <h1 className="text-2xl font-bold mb-6">Requests</h1>
 
-        <div className="space-y-4">
-          <button
-            className="w-full py-4 px-6 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all"
-            onClick={() => handleNavigation('/one')}
-          >
-            <IoShieldCheckmark className="mr-3 text-xl" />
-            Your Requests
+        <div className="space-y-6">
+          <button onClick={() => handleNavigation('/one')} className="w-full py-4 px-6 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
+            <span className="flex"><IoShieldCheckmark className="mr-2" />Your Requests</span>
           </button>
 
-          <h2 className="text-xl font-semibold text-gray-700 text-center mt-4">New Request</h2>
+          <h2 className="text-xl font-bold">New Request</h2>
 
-          <button
-            className="w-full py-4 px-6 bg-yellow-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all"
-            onClick={() => handleNavigation('/report')}
-          >
-            <FaDiscord className="mr-3 text-xl" />
-            Discord Report
+          <button onClick={() => handleNavigation('/report')} className="w-full py-4 px-6 bg-yellow-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
+            <span className="flex"><FaDiscord className="mr-2" />Discord Report</span>
           </button>
 
-          <button
-            className="w-full py-4 px-6 bg-purple-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-purple-700 transition-all"
-            onClick={() => handleNavigation('/apply')}
-          >
-            <IoMdMail className="mr-3 text-xl" />
-            Guild Application
+          <button onClick={() => handleNavigation('/apply')} className="w-full py-4 px-6 bg-purple-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-purple-700 transition-all">
+            <span className="flex"><IoMdMail className="mr-2" />Guild Application</span>
           </button>
 
-          <button
-            className="w-full py-4 px-6 bg-teal-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-teal-700 transition-all"
-            onClick={() => handleNavigation('/support')}
-          >
-            <MdSupportAgent className="mr-3 text-xl" />
-            Support Request
+          <button onClick={() => handleNavigation('/support')} className="w-full py-4 px-6 bg-teal-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-teal-700 transition-all">
+            <span className="flex"><MdSupportAgent className="mr-2" />Support Request</span>
           </button>
 
           {isStaff && (
-            <button
-              className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all"
-              onClick={() => handleNavigation('/admin')}
-            >
-              Requests Dashboard / Staff Area
+            <button onClick={() => handleNavigation('/admin')} className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+              <span className="flex items-center">Requests Dashboard / Staff Area</span>
             </button>
           )}
-
           {isAdmin && (
-            <>
-              <button
-                className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all"
-                onClick={() => handleNavigation('/admin/manage')}
-              >
-                Admin Manage Dash
-              </button>
-              <button
-                className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all"
-                onClick={() => handleNavigation('/Analytics')}
-              >
-                Analytics
-              </button>
-            </>
+            <button onClick={() => handleNavigation('/admin/manage')} className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+              <span className="flex items-center">Admin Manage Dash</span>
+            </button>
+          )}
+          {isAdmin && (
+          <button onClick={() => handleNavigation('/Analytics')} className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+            <span className="flex items-center">Analytics</span>
+          </button>
           )}
         </div>
       </div>
