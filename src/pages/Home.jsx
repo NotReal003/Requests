@@ -37,41 +37,41 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center p-4 min-h-screen">
+    <div className="flex flex-col justify-center p-2 min-h-screen">
       <div className="bg rounded-lg p-8 w-full max-w-md md:max-w-lg mx-auto shadow-lg">
         <h1 className="text-2xl font-bold mb-6">Requests</h1>
 
         <div className="space-y-6">
-          <button onClick={() => handleNavigation('/one')} className="w-full py-4 px-6 bg-blue-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
+          <button onClick={() => handleNavigation('/one')} className="w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
             <span className="flex"><IoShieldCheckmark className="mr-2" />Your Requests</span>
           </button>
 
           <h2 className="text-xl font-bold">New Request</h2>
 
-          <button onClick={() => handleNavigation('/report')} className="w-full py-4 px-6 bg-yellow-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
+          <button onClick={() => handleNavigation('/report')} className="w-full bg-yellow-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
             <span className="flex"><FaDiscord className="mr-2" />Discord Report</span>
           </button>
 
-          <button onClick={() => handleNavigation('/apply')} className="w-full py-4 px-6 bg-purple-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-purple-700 transition-all">
+          <button onClick={() => handleNavigation('/apply')} className="w-full bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-purple-700 transition-all">
             <span className="flex"><IoMdMail className="mr-2" />Guild Application</span>
           </button>
 
-          <button onClick={() => handleNavigation('/support')} className="w-full py-4 px-6 bg-teal-600 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-teal-700 transition-all">
+          <button onClick={() => handleNavigation('/support')} className="w-full bg-teal-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-teal-700 transition-all">
             <span className="flex"><MdSupportAgent className="mr-2" />Support Request</span>
           </button>
 
           {isStaff && (
-            <button onClick={() => handleNavigation('/admin')} className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+            <button onClick={() => handleNavigation('/admin')} className="w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
               <span className="flex items-center">Requests Dashboard / Staff Area</span>
             </button>
           )}
           {isAdmin && (
-            <button onClick={() => handleNavigation('/admin/manage')} className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+            <button onClick={() => handleNavigation('/admin/manage')} className="w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
               <span className="flex items-center">Admin Manage Dash</span>
             </button>
           )}
           {isAdmin && (
-          <button onClick={() => handleNavigation('/Analytics')} className="w-full py-4 px-6 bg-red-500 text-white text-lg font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+          <button onClick={() => handleNavigation('/Analytics')} className="w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
             <span className="flex items-center">Analytics</span>
           </button>
           )}
