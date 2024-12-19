@@ -37,7 +37,7 @@ const Home = () => {
         <h1 className="text-2xl font-bold mb-6">Requests</h1>
 
         <div className="space-y-6">
-          <Link to="/one" className="btn btn-info btn-outline transition-all duration-200 hover:bg-info hover:info-primary hover:text-white no-animation w-full">
+          <Link to="/one" className="btn btn-info btn-outline transition-all duration-200 hover:bg-info hover:border-info hover:text-white no-animation w-full">
             <span className="flex"><IoShieldCheckmark className="mr-2" />Your Requests</span>
           </Link>
 
