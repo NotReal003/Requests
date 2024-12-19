@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import AdminOnly from '../components/AdminOnly';
+import { FaSpinner } from 'react-icons/fa';
 
 const Analytics = () => {
   const [analyticsData, setAnalyticsData] = useState([]);
@@ -62,7 +63,7 @@ const Analytics = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="loading loading-spinner text-primary"></div>
+        <FaSpinner className="animate-spin inline-block align-middle" />
       </div>
     );
   }
