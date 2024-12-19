@@ -33,10 +33,6 @@ const Analytics = () => {
           return;
         }
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch analytics data.');
-        }
-
         const data = await response.json();
         setAnalyticsData(data.pageStats);
       } catch (err) {
