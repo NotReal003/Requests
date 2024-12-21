@@ -54,7 +54,7 @@ const App = () => {
            ))}
         </Routes>
           {!isOnline && (
-           <OfflineWarning />
+           <OfflineWarning className="bg-black-900" />
           )}
        </div>
        <Footer />
