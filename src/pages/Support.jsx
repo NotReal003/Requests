@@ -71,7 +71,7 @@ const Support = () => {
 
     try {
       setIsSubmitting(true);
-      const response = await fetch(${API}/requests/support, {
+      const response = await fetch('${API}/requests/support', {
         method: 'POST',
         credetials: 'include',
         headers: {
