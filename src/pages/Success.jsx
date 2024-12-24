@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { CircleCheck, House } from 'lucide-react';
 import { FaDiscord, FaSpinner } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
@@ -12,6 +12,7 @@ const Success = () => {
   const [request, setRequest] = useState(null);
   const [error, setError] = useState(null);
   const [myUser, setMyUser] = useState(null);
+  const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -57,6 +58,10 @@ const Success = () => {
     fetchRequestDetails();
   }, [requestId, API]);
 
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-base-50">
@@ -86,15 +91,15 @@ const Success = () => {
         <h1 className="text-2xl font-bold mb-2">Success</h1>
         <p>Thanks for submitting {request.typeName} <strong>{request.username}</strong>. We will notify you on your email <strong>{myUser.email}</strong>. Join our Discord Server so we may contact you :)</p>
         <p className="text-xs">Your request ID: {request._id}</p>
-        <Link to="/one" className="btn no-animation mt-4 w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
+        <button onClick={() => handleNavigation('/one')} className="btn no-animation mt-4 w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
           <CircleCheck className='size-4' /> Your Requests
-        </Link>
+        </button>
         <a rel="noreferrer" target="_blank" href="https://discord.gg/sqVBrMVQmp" className="btn mt-4 no-animation w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
           <FaDiscord /> Join our Discord Server
         </a>
-        <Link to="/" className="btn no-animation mt-4 w-full bg-yellow-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
+        <button onClick={() => handleNavigation('/')} className="btn no-animation mt-4 w-full bg-yellow-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
           <House className='size-4' /> Back to Home Page
-        </Link>
+        </button>
       </div>
     </div>
   );
