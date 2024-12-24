@@ -131,7 +131,7 @@ const One = () => {
                   <RequestIcon type={request.type} />
                   <div>
                     <h2 className="text-lg font-bold">
-                      {request.type === 'report' ? `Discord Report` : request.type === 'guild-application' ? 'Guild Application' : 'Support Request'} <RequestStatus status={request.status} />
+                      {request.type === 'report' ? `Discord Report` : request.type === 'guild-application' ? 'Application' : 'Support Request'} <RequestStatus status={request.status} />
                     </h2>
                     <p className="text-sm">
                       {formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}

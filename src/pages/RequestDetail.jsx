@@ -179,7 +179,7 @@ function RequestDetail() {
           {request.type === 'guild-application' && (
             <>
               <div className="form-control">
-                <label className="label">In-Game Name (required)</label>
+                <label className="label">Username (required)</label>
                 <textarea
                   value={request.inGameName}
                   readOnly
