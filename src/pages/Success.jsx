@@ -86,13 +86,13 @@ const Success = () => {
         <h1 className="text-2xl font-bold mb-2">Success</h1>
         <p>Thanks for submitting {request.typeName} <strong>{request.username}</strong>. We will notify you on your email <strong>{myUser.email}</strong>. Join our Discord Server so we may contact you :)</p>
         <p className="text-xs">Your request ID: {request._id}</p>
-        <Link to="/one" className="btn btn-outline btn-info mt-4 w-full">
+        <Link to="/one" className="btn no-animation w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
           <CircleCheck className='size-4' /> Your Requests
         </Link>
-        <a rel="noreferrer" target="_blank" href="https://discord.gg/sqVBrMVQmp" className="btn btn-outline btn-primary w-full mt-5">
+        <a rel="noreferrer" target="_blank" href="https://discord.gg/sqVBrMVQmp" className="btn no-animation w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
           <FaDiscord /> Join our Discord Server
         </a>
-        <Link to="/" className="btn btn-outline btn-warning mt-4 w-full">
+        <Link to="/" className="btn no-animation w-full bg-yellow-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
           <House className='size-4' /> Back to Home Page
         </Link>
       </div>

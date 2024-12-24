@@ -121,10 +121,10 @@ const Apply = () => {
           <FaPeopleGroup className="size-6 mr-2" /> Application
         </h1>
         <div role="alert" className="alert alert-info">
-          <span>Please make sure you provide us your exact username or we may will be not able to invite you to the Guild, also fill in your answers.</span>
+          <span>Please make sure you provide us your exact username or we may will be not able to invite you, also please fill in your answers.</span>
         </div>
         <form id="guildApplicationForm" onSubmit={handleSubmit}>
-          <label htmlFor="inGameName" className="label">In-Game Name (required)</label>
+          <label htmlFor="inGameName" className="label">Username (required)</label>
           <input
             id="inGameName"
             name="inGameName"
@@ -137,7 +137,7 @@ const Apply = () => {
             required
           />
 
-          <label htmlFor="messageLink" className="label">Reason for joining the guild? (required)</label>
+          <label htmlFor="messageLink" className="label">Reason for joining the team? (required)</label>
           <textarea
             id="messageLink"
             name="messageLink"
