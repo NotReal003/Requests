@@ -47,7 +47,7 @@ const App = () => {
     <Router>
      <div className="App">
        <Navbar isAuthenticated={isAuthenticated} />
-          <div className="container mx-auto p-2">
+          <div className="container mx-auto">
            <Routes>
            {routeConfig(isAuthenticated).map((route, index) => (
              <Route key={index} path={route.path} element={route.element} />
