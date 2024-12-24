@@ -21,7 +21,7 @@ const Success = () => {
         const requestId = urlParams.get('request');
         const token = localStorage.getItem('jwtToken');
         const res = await fetch(`${API}/requests/${requestId}`, {
-          withCredentials: true,
+//          withCredentials: true,
         });
 
         if (!res.ok) {
