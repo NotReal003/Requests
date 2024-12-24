@@ -71,7 +71,7 @@ const Support = () => {
 
     try {
       setIsSubmitting(true);
-      const response = await fetch('${API}/requests/support', {
+      const response = await fetch(`${API}/requests/support`, {
         method: 'POST',
         credetials: 'include',
         headers: {
@@ -91,7 +91,7 @@ const Support = () => {
         setMessageLink('');
         setAdditionalInfo('');
         setAgree(false);
-        navigate(/success?request=${data.requestId});
+        navigate(`/success?request=${data.requestId}`);
       } else {
         toast.error(data.message || 'There was an issue submitting your request.');
       }
