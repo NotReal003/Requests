@@ -53,7 +53,7 @@ const Home = () => {
           </button>
 
           <button onClick={() => handleNavigation('/apply')} className="btn no-animation w-full bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-purple-700 transition-all">
-            <span className="flex"><IoMdMail className="mr-2" />Guild Application</span>
+            <span className="flex"><IoMdMail className="mr-2" />Application</span>
           </button>
 
           <button onClick={() => handleNavigation('/support')} className="btn no-animation w-full bg-teal-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-teal-700 transition-all">

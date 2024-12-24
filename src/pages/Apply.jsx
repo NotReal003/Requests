@@ -118,13 +118,10 @@ const Apply = () => {
       <Toaster />
       <div className="form-container w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-4">
         <h1 className="text-2xl font-bold mb-4 fill-current flex items-center justify-center">
-          <FaPeopleGroup className="size-6 mr-2" /> Guild Application
+          <FaPeopleGroup className="size-6 mr-2" /> Application
         </h1>
         <div role="alert" className="alert alert-info">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info h-6 w-6 shrink-0">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>Please make sure you provide us your exact In-Game-Name or we may will be not able to invite you to the Guild, also fill in your answers.</span>
+          <span>Please make sure you provide us your exact username or we may will be not able to invite you to the Guild, also fill in your answers.</span>
         </div>
         <form id="guildApplicationForm" onSubmit={handleSubmit}>
           <label htmlFor="inGameName" className="label">In-Game Name (required)</label>
