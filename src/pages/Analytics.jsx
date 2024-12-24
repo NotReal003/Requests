@@ -114,7 +114,7 @@ const Analytics = () => {
                     <Tooltip />
                     <Line
                       type="monotone"
-                      dataKey='visits'
+                      dataKey="visits"
                       stroke="#4ADE80"
                       strokeWidth={2}
                       dot={{ r: 4 }}
