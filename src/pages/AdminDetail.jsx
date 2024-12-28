@@ -21,8 +21,10 @@ function AdminDetail() {
   const sanitizeInput = (input) => {
     const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
 
-    if (urlRegex.test(input)) {
-      return input.replace(/[<>&'"]/g, (char) => {
+    const normalizeNewlines = (text) => text.replace(/\n{2,}/g, '\n');
+
+    const sanitizeHtml = (text) =>
+      text.replace(/[<>&'"]/g, (char) => {
         switch (char) {
           case '<': return '&lt;';
           case '>': return '&gt;';
@@ -32,18 +34,10 @@ function AdminDetail() {
           default: return char;
         }
       });
-    } else {
-      return input.replace(/[<>&'"]/g, (char) => {
-        switch (char) {
-          case '<': return '&lt;';
-          case '>': return '&gt;';
-          case '&': return '&amp;';
-          case "'": return '&#39;';
-          case '"': return '&quot;';
-          default: return char;
-        }
-      });
-    }
+
+    const sanitizedInput = urlRegex.test(input) ? sanitizeHtml(input) : sanitizeHtml(input);
+
+    return normalizeNewlines(sanitizedInput);
   };
 
   useEffect(() => {
