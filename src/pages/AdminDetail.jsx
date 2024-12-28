@@ -126,7 +126,6 @@ function AdminDetail() {
         withCredentials: true,
       });
       toast.success('Request deleted successfully.');
-      navigate('/admin'); // Redirect back to the admin dashboard
     } catch (error) {
       toast.error('Error deleting the request.');
     }
@@ -162,10 +161,16 @@ function AdminDetail() {
             <label className="label">Review Message</label>
             <textarea
               value={reviewMessage}
-              onChange={(e) => setReviewMessage(e.target.value)}
+              onChange={(e) => {
+                setReviewMessage(e.target.value);
+                e.target.style.height = "auto"; // 
+                e.target.style.height = `${e.target.scrollHeight}px`; //
+              }}
               className="textarea text-white textarea-bordered bg-orange-600 focus:outline-none"
               placeholder="Enter your review message"
+              style={{ overflow: "hidden", resize: "none" }} //
             />
+
           </div>
           <div className="form-control">
             <label className="label">Request Status</label>
