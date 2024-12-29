@@ -82,8 +82,8 @@ function RequestDetail() {
     toast.promise(
       cancelRequestPromise,
       {
-        loading: 'Cancelling your request...',
-        success: 'Request cancelled successfully',
+        loading: 'Cancelling this request...',
+        success: cancelRequestPromise.message || 'Request cancelled successfully',
         error: (err) => err.response?.data?.message || 'An error occurred while cancelling your request',
       }
     );
@@ -142,7 +142,7 @@ function RequestDetail() {
       )}
       <div className="card w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-4">
         <div className="card-body">
-          <h2 className="card-title">Request Details ({request.status})</h2>
+          <h2 className="card-title">{request.typeName} ({request.status})</h2>
           {request.reviewed === 'true' && (
             <div className="form-control">
               <label className="label">Review Message</label>
