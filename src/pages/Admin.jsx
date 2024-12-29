@@ -158,7 +158,7 @@ const Admin = () => {
     const confirmMessage = apiClosed ? 'open the API' : 'close the API';
     if (window.confirm(`Are you sure you want to ${confirmMessage}?`)) {
       try {
-        const response = await axios.put(
+        const response = await axios.patch(
           `${API}/server/manage-api`,
           { closeType: apiClosed ? 'noopened' : 'yesclosed' },
           { withCredentials: true }
