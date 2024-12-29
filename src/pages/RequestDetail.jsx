@@ -140,7 +140,7 @@ function RequestDetail() {
           <p className="text-sm text-gray-400 m-2">Your request is currently being reviewed by the admin.</p>
         </div>
       )}
-      <div className="card w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-4">
+      <div className="card w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-2">
         <div className="card-body">
           <h2 className="card-title">{request.typeName} ({request.status})</h2>
           {request.reviewed === 'true' && (
@@ -150,7 +150,7 @@ function RequestDetail() {
                 ref={reviewMessageRef}
                 value={request.reviewMessage || `Your request was ${request.status}.`}
                 readOnly
-                className="textarea text-white textarea-bordered bg-orange-500 focus:outline-none"
+                className="textarea text-white textarea-bordered font-bold bg-orange-500 focus:outline-none"
               />
             </div>
           )}
