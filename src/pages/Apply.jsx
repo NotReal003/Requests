@@ -114,9 +114,9 @@ const Apply = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-2 min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <Toaster />
-      <div className="form-container w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-4">
+      <div className="form-container w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg">
         <h1 className="text-2xl font-bold mb-4 fill-current flex items-center justify-center">
           <FaPeopleGroup className="size-6 mr-2" /> Application
         </h1>

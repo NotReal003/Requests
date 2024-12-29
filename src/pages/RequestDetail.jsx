@@ -133,7 +133,7 @@ function RequestDetail() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-2 min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <Toaster />
       {request.reviewed === 'false' && (
         <div className="flex items-center m-2">

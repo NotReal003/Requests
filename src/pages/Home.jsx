@@ -37,7 +37,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center p-2 min-h-screen">
+    <div className="flex flex-col justify-center min-h-screen">
       <div className="bg rounded-lg p-8 w-full max-w-md md:max-w-lg mx-auto shadow-lg">
         <h1 className="text-2xl font-bold mb-6">Requests</h1>
 
