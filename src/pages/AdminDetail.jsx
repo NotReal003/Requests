@@ -71,7 +71,7 @@ function AdminDetail() {
     try {
       const token = localStorage.getItem('jwtToken');
 
-      const updateResponse = await axios.put(
+      const updateResponse = await axios.patch(
         `${API}/admin/${requestId}`,
         { status, reviewMessage: sanitizedReviewMessage },
         { withCredentials: true }
