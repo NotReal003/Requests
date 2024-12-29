@@ -150,7 +150,7 @@ function RequestDetail() {
                 ref={reviewMessageRef}
                 value={request.reviewMessage || `Your request was ${request.status}.`}
                 readOnly
-                className="textarea text-white textarea-bordered font-bold bg-orange-500 focus:outline-none"
+                className="textarea text-white textarea-bordered font-semibold bg-orange-500 focus:outline-none"
               />
             </div>
           )}
