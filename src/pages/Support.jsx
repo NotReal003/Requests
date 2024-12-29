@@ -158,10 +158,26 @@ const Support = () => {
           <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-1 border-t-slate-100 flex justify-between items-center rounded-lg p-2">
             <button onClick={() => navigate(-1)} className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation"><ImExit />Back</button>
             <div className="tooltip tooltip-top overflow-auto" data-tip={!agree ? "You must agree to the Terms of Services and to our Privacy Policy." : ""}>
-              <button type="submit" className="btn btn-primary no-animation" disabled={isSubmitting || !agree}>
-                {isSubmitting ? <span><FaSpinner className="animate-spin inline-block align-middle mr-2" /> Submit</span> : <><IoSend className="inline-block align-middle mr-2" /> Submit</>}
-              </button>
             </div>
+          </div>
+          <div className="sticky bottom-0 bg-white shadow-md p-4">
+            <button 
+              type="submit" 
+              className="btn btn-primary no-animation w-full" 
+              disabled={isSubmitting || !agree}
+            >
+              {isSubmitting ? (
+                <span>
+                  <FaSpinner className="animate-spin inline-block align-middle mr-2" /> 
+                  Submit
+                </span>
+              ) : (
+                <>
+                  <IoSend className="inline-block align-middle mr-2" /> 
+                  Submit
+                </>
+              )}
+            </button>
           </div>
         </form>
       </div>
