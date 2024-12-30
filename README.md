@@ -3,7 +3,7 @@
 # PLEASE NOTE
 API / Backend source code which can be found [HERE](https://github.com/NotReal003/API).
 ## Overview
-This project is a fully functional request management system, designed for users to submit various types of requests such as Discord reports, support requests, and guild applications. Administrators can manage these requests with advanced control options. Additionally, the system incorporates a cryptocurrency payment feature, allowing users to support the project using different crypto wallets.
+This project is a fully functional request management system, designed for users to submit various types of requests such as Discord reports, support requests, and Applications. Administrators can manage these requests with advanced control options. Additionally, the system incorporates a cryptocurrency payment feature, allowing users to support the project using different crypto wallets.
 
 The system utilizes React for the frontend and Node.js with MongoDB for the backend. Features include JWT-based authentication, email notifications, request status updates, and an admin dashboard for managing user requests.
 
@@ -29,7 +29,6 @@ For more info, please visit **https://pay.notreal003.xyz** :)
 - **Authentication**: JWT-based login/logout with dynamic status display in the navbar.
 - **Admin Panel**: Admins can view, approve, reject, or cancel requests and leave review messages.
 - **User Dashboard**: Users can view their request history and status updates.
-- **Crypto Support**: Integrated cryptocurrency payment system for user support.
 - **Responsive Design**: Optimized for various devices using modern design practices.
 
 ### Backend
@@ -48,7 +47,7 @@ For more info, please visit **https://pay.notreal003.xyz** :)
 - **DaisyUI/TailwindCSS**: For UI components and styling.
 - **Axios**: For API requests.
 - **React-Icons**: For scalable icons.
-- **React Toastify**: For notifications.
+- **React Hot-Toast**: For notifications.
 
 ### Backend
 - **Node.js**: Server-side runtime.
@@ -56,38 +55,39 @@ For more info, please visit **https://pay.notreal003.xyz** :)
 - **MongoDB**: NoSQL database.
 - **JWT**: For authentication.
 - **Nodemailer**: For sending emails.
-- **Cloudflare Workers**: For hosting the backend API. (optional)
+- **Cloudflare Workers**: For hosting the backend API. (optional and might not work as we hope)
 
 ## Features Breakdown
 
 ### User Authentication
-- **Login/Logout**: JWT-based authentication via Discord OAuth.
+- **Login/Logout**: JWT-based authentication via Discord OAuth / Email Auth.
 - **Protected Routes**: Restricted access to certain pages based on authentication.
 - **Token Verification**: Validates JWT for secure access.
 
 ### Request Submission Forms
-- **Forms**: For Discord reports, support requests, and guild applications.
+- **Forms**: For Discord reports, support requests, and Applications.
 - **Validation & Sanitization**: Ensures correct input and prevents malicious data.
 
 ### Admin Features
-- **Request Management**: View, approve, reject, or cancel requests. Leave review messages.
-- **User Management**: Block/unblock users.
-- **Status Updates**: Admins can update request statuses and send notifications.
+- **Request Management**: View, approve, reject, cancel or delete requests. Leave review messages.
+- **User Management**: Block/unblock users (blocking ip addresses is under development).
+- **Status Updates**: Admins can update request statuses and send notifications to the user's email.
 
 ### Email Notifications
 - **Auto-notifications**: Sends emails on request status updates.
-- **Custom Messages**: Admins can include custom messages in notifications.
+- **Custom Messages**: Admins can include custom review messages in notifications.
 
 ### Request History
 - **User Dashboard**: View request history and status updates.
 - **Admin Dashboard**: Manage requests and user actions.
 
 ### Cryptocurrency Payment System
-- **Crypto Wallet Integration**: Users can support the project through various cryptocurrencies (e.g., Bitcoin, Ethereum, Litecoin).
-- **QR Code Generation**: Users can scan QR codes to make payments easily.
-- **Transaction Notifications**: Users can receive confirmation messages after successful transactions.
+- **Support Us Using Crypto**: Users can support the project through various cryptocurrencies (e.g., Bitcoin, Ethereum, Litecoin).
+- **QR Code**: Users can scan QR codes to make payments easily.
 
-## Backend API EndPoints (OutDated by now)
+## Backend API EndPoints
+
+> OutDated by now and many other routes are also added / updated
 
 ### User Authentication
 - **GET `/auth/login`**: Login and return JWT token.
@@ -158,7 +158,7 @@ G_SECRET=github_client_secret
 ## Usage
 
 ### User Actions
-1. **Login**: Authenticate via Discord OAuth.
+1. **Login**: Authenticate via Discord OAuth or SignUp / SignIn using Email.
 2. **Submit Request**: Fill out and submit request forms.
 3. **View Requests**: Check request history and status updates.
 4. **Email Notifications**: Receive email updates on request status.
@@ -170,7 +170,7 @@ G_SECRET=github_client_secret
 3. **User Management**: Block/unblock users as needed.
 4. **Request Status**: Update request statuses directly from the dashboard.
 
-## Security
+### Security
 - **JWT Authentication**: Secures routes and user access.
 - **Sanitization**: Prevents malicious input.
 - **IP Logging**: Tracks user IP addresses for security.
