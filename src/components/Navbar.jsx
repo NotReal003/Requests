@@ -46,6 +46,8 @@ export default function Navbar({ isAuthenticated }) {
         setUser(userData);
         if (userData.staff === true) {
           toast('Welcome Staff Member');
+        } else {
+          toast('Happy New Year!')
         }
       } catch (error) {
         console.error(error);

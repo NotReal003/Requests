@@ -119,7 +119,7 @@ const About = () => {
 
       {/* Footer Section */}
       <footer className="text-center py-6 border-t border-gray-700 mt-12">
-        <p className="text-gray-500">© 2024 NotReal003. All rights reserved.</p>
+        <p className="text-gray-500">© 2025 NotReal003. All rights reserved.</p>
       </footer>
     </div>
   );
