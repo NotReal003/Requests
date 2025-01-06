@@ -1,13 +1,14 @@
 # Request Management Portal
 
-# PLEASE NOTE
-API / Backend source code which can be found [HERE](https://github.com/NotReal003/API).
-## Overview
+## Backend API
+API / Backend source code which can be found **[HERE](https://github.com/NotReal003/API)**.
+
+### Overview
 This project is a fully functional request management system, designed for users to submit various types of requests such as Discord reports, support requests, and Applications. Administrators can manage these requests with advanced control options. Additionally, the system incorporates a cryptocurrency payment feature, allowing users to support the project using different crypto wallets.
 
 The system utilizes React for the frontend and Node.js with MongoDB for the backend. Features include JWT-based authentication, email notifications, request status updates, and an admin dashboard for managing user requests.
 
-## Support Me
+### Support Me
 
 I've spent a lot of time on this, to keep me working and for motivation, you can support me by paying with Crypto Currency 💲 
 
@@ -117,7 +118,7 @@ For more info, please visit **https://pay.notreal003.xyz** :)
 
 ### Frontend Setup
 1. Clone the repository:  
-   `git clone https://github.com/NotReal003/REQUEST_PAGE.git`
+   `git clone https://github.com/NotReal003/REQUESTS.git`
 2. Install dependencies:  
    `npm install`
 3. Create a `.env` file and add your API URL:  
@@ -128,7 +129,7 @@ CI=false
 
 ### Backend Setup
 1. Clone the repository:  
-`git clone https://github.com/NotReal003/REQUEST_PAGE_API.git`
+`git clone https://github.com/NotReal003/API.git`
 2. Install dependencies:  
 `npm install`
 3. Configure environment variables:
@@ -148,8 +149,8 @@ SESSION_SECRET=...
 WEB_TOKEN=an_webhook_url(please test it)
 USER_AUTH_WEBTOKEN=user_auth_logger_webhookurl
 ADMIN_ID=theAdminId(user_id)
-G_ID=github_client_id
-G_SECRET=github_client_secret
+G_ID=github_client_id(not required)
+G_SECRET=github_client_secret(not required)
 ```
 (please note that the GitHub Auth is not available for now so just for optional)
 5. Start the backend server:  
