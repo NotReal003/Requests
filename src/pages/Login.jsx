@@ -11,7 +11,7 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-4">
+    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
       <div className="bg-black bg-opacity-50 p-8 rounded-lg shadow-lg w-full max-w-sm">
         <h1 className="text-2xl font-bold mb-4 text-center text-white">Login</h1>
         <p className="text-center text-white mb-8">Choose a login method to continue.</p>
