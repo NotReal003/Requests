@@ -106,7 +106,7 @@ const Support = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <Toaster />
-      <div className="form-container w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-4">
+      <div className="form-container w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-2">
         <h1 className="text-2xl font-bold mb-4 fill-current flex items-center justify-center">
           <IoMdMail className="size-6 mr-2" />Support
         </h1>

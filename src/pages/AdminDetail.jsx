@@ -148,7 +148,7 @@ function AdminDetail() {
           </div>
         </div>
       )}
-      <div className="card shadow-lg bg-base-100">
+      <div className="card p-2 shadow-lg bg-base-100">
         <div className="card-body">
           <h2 className="card-title">Request Details ({request.status})</h2>
           <div className="form-control">

@@ -153,7 +153,7 @@ const AdminManagePage = () => {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container p-2 mx-auto">
       <Toaster />
       <h1 className="text-3xl font-bold mb-6">Admin Management Panel</h1>
 

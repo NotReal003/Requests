@@ -257,7 +257,7 @@ const Admin = () => {
   return (
     <div className="flex flex-col items-center justify-center sm:p-4 md:p-6">
       <Toaster />
-      <div className="rounded-lg shadow-sm w-full max-w-3xl">
+      <div className="rounded-lg p-2 shadow-sm w-full max-w-3xl">
         <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center">Admin Dashboard - Manage Requests/Users</h1>
         <FilterControls
           statusFilter={statusFilter}

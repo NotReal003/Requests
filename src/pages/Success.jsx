@@ -84,7 +84,7 @@ const Success = () => {
 
   return (
     <div className="flex flex flex-col items-center justify-center max-w-md md:max-w-lg mx-auto shadow-lg bg-base-50 min-h-screen">
-      <div className="text-center">
+      <div className="text-center p-2">
         <div className="flex items-center justify-center mb-4">
           <IoShieldCheckmark className="w-20 h-20 text-green-500 animate-pulse" />
         </div>
