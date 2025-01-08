@@ -34,6 +34,7 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
         setError(response.data.message || 'Failed to update display name.');
       }
     } catch (err) {
+      console.error('Error updating display name:', err);
       setError(err.response?.data?.message || 'An error occurred while updating the display name.');
       toast.error(err.response?.data?.message || 'An error occurred while updating the display name.');
     } finally {
