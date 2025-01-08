@@ -21,17 +21,23 @@ const Profile = () => {
       try {
 
         // Fetch user info
-        const userResponse = await axios.get(`${API}/users/@me`, {
-          withCredentials: true,
-        });
+        let userResponse = localStores.get('user');
+
+        if (!userResponse) {
+          userResponse = await axios.get(`${API}/users/@me`, {
+            withCredentials: true,
+          });
+        }
 
         // Fetch request count
-        const requestsResponse = await axios.get(`${API}/requests`, {
-          withCredentials: true,
-        });
+        //const requestsResponse = await axios.get(`${API}/requests`, {
+        //  withCredentials: true,
+        //});
 
         setUser(userResponse.data);
-        setRequestCount(requestsResponse.data.length);
+        const TotalRequests = 'Under Devlopment';
+        setRequestCount(TotalRequests);
+        //setRequestCount(requestsResponse.data.length);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching profile data:', error);
