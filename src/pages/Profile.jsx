@@ -22,6 +22,8 @@ const Profile = () => {
 
         // Fetch user info
         let userResponse = JSON.parse(localStorage.getItem('user'));
+        console.log(userResponse);
+        console.log(userResponse.dispName);
 
         if (!userResponse) {
           userResponse = await axios.get(`${API}/users/@me`, {
