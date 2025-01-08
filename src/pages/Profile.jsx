@@ -20,26 +20,16 @@ const Profile = () => {
     const fetchProfileData = async () => {
       try {
 
-        // Fetch user info
-        let userResponse = JSON.parse(localStorage.getItem('user'));
-        console.log(userResponse);
-        console.log(userResponse.dispName);
-
-        if (!userResponse) {
-          userResponse = await axios.get(`${API}/users/@me`, {
+          const userResponse = await axios.get(`${API}/users/@me`, {
             withCredentials: true,
           });
-        }
 
         // Fetch request count
-        //const requestsResponse = await axios.get(`${API}/requests`, {
-        //  withCredentials: true,
-        //});
-
+        const requestsResponse = await axios.get(`${API}/requests`, {
+          withCredentials: true,
+        });
         setUser(userResponse.data);
-        const TotalRequests = 'Under Devlopment';
-        setRequestCount(TotalRequests);
-        //setRequestCount(requestsResponse.data.length);
+        setRequestCount(requestsResponse.data.length);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching profile data:', error);
