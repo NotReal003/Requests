@@ -52,12 +52,12 @@ const Profile = () => {
 
     fetchProfileData();
   }, [API]);
-  const handleUpdateDisplayName = (newDisplayName) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      displayName: newDisplayName,
-    }));
-  };
+//  const handleUpdateDisplayName = (newDisplayName) => {
+//    setUser((prevUser) => ({
+//      ...prevUser,
+//      displayName: newDisplayName,
+//    }));
+//  };
 
   if (loading) {
     return (
