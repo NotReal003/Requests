@@ -165,7 +165,7 @@ const Profile = () => {
         isOpen={isEditModalOpen}
         onClose={() => setEditModalOpen(false)}
         currentDisplayName={user?.displayName || user?.username}
-        onUpdate={handleUpdateDisplayName}
+        //onUpdate={handleUpdateDisplayName}
       />
       {user.authType === 'discord' && (
       <div className="flex items-center justify-center mt-2">
