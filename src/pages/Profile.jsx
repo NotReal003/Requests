@@ -21,7 +21,7 @@ const Profile = () => {
       try {
 
         // Fetch user info
-        let userResponse = localStorage.get('user');
+        let userResponse = JSON.parse(localStorage.getItem('user'));
 
         if (!userResponse) {
           userResponse = await axios.get(`${API}/users/@me`, {
@@ -41,7 +41,7 @@ const Profile = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching profile data:', error);
-        const errorMessage = error || 'Failed to find your profile.';
+        const errorMessage = error.message || 'Failed to find your profile.';
         toast.error(errorMessage);
         setError(errorMessage);
         setLoading(false);
