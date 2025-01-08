@@ -44,7 +44,7 @@ export default function Navbar({ isAuthenticated }) {
 
         const userData = await res.json();
         setUser(userData);
-        localstorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('user', JSON.stringify(userData));
         if (userData.staff === true) {
           toast('Welcome Staff Member');
         } else {
