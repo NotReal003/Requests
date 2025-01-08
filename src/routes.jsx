@@ -36,7 +36,7 @@ const routes = (isAuthenticated) => [
   { path: "/callback", element: <Callback /> },
   { path: "/profile", element: isAuthenticated ? <Profile /> : <Login /> },
   { path: "/admin/manage", element: isAuthenticated ? <AdminManage /> : <Login /> },
-  { path: "/note", element: isAuthenticated ? <Note /> : <Login /> },
+  { path: "/note", element: <Note /> },
   { path: "/email-signup", element: isAuthenticated ? <Home /> : <EmailSignup /> },
   { path: "/email-signin", element: isAuthenticated ? <Home /> : <EmailSignin /> },
   { path: "/github/callback", element: isAuthenticated ? <Home /> : <GithubCallback /> },
