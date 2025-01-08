@@ -21,7 +21,7 @@ const Profile = () => {
       try {
 
         // Fetch user info
-        let userResponse = localStores.get('user');
+        let userResponse = localStorage.get('user');
 
         if (!userResponse) {
           userResponse = await axios.get(`${API}/users/@me`, {
