@@ -22,10 +22,10 @@ const Note = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black-100 p-4">
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-4">Your Note</h1>
-        <p className="text-gray-700 bg-gray-50 p-4 rounded-md border">{text || 'No text provided.'}</p>
+        <h1 className="text-2xl font-semibold text-gray-100 mb-4">Your Note</h1>
+        <p className="text-gray-200 bg-gray-50 p-4 rounded-md border">{text || 'No text provided.'}</p>
         <button
           onClick={handleCopy}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"

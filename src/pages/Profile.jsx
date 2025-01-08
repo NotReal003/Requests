@@ -41,7 +41,7 @@ const Profile = () => {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching profile data:', error);
-        const errorMessage = error.response?.data?.message || 'Failed to find your profile.';
+        const errorMessage = error || 'Failed to find your profile.';
         toast.error(errorMessage);
         setError(errorMessage);
         setLoading(false);
