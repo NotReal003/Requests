@@ -266,7 +266,7 @@ function AdminDetail() {
             <h3 className="font-bold text-lg">Confirm Deletion</h3>
             <p>Are you sure you want to delete this request? This action cannot be undone.</p>
             <div className="modal-action">
-              <button onClick={handleDelete} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-allr">
+              <button onClick={handleDelete} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all">
                 Confirm Delete
               </button>
               <button

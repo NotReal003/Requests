@@ -211,7 +211,7 @@ function RequestDetail() {
             <div className="mt-4">
               <p className="text-center mb-2 text-gray-400 text-xs">Something is wrong?</p>
               <button
-                className="btn text-white bg-orange-500 hover:bg-orange-600 w-full btn-sm no-animation"
+                className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all btn-sm"
                 onClick={() => setShowCancelModal(true)}
               >
                 Cancel Request
@@ -228,13 +228,13 @@ function RequestDetail() {
             <p className="py-4 font-serif">Are you sure you want to cancel your request?</p>
             <div className="modal-action">
               <button
-                className="btn btn-info no-animation"
+                className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all"
                 onClick={() => setShowCancelModal(false)}
               >
                 No, keep it
               </button>
               <button
-                className="btn btn-error no-animation"
+                className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all"
                 disabled={isCancelling}
                 onClick={handleCancelRequest}
               >
