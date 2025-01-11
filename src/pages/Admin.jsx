@@ -91,7 +91,7 @@ const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserId
       </select>
       <input
         type="text"
-        placeholder="Filter by User ID"
+        placeholder="Search a User"
         value={userIdFilter}
         className="input input-bordered w-full"
         onChange={(e) => setUserIdFilter(e.target.value)}
