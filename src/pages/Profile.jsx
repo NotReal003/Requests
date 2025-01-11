@@ -142,13 +142,13 @@ const Profile = () => {
 
       <div className="flex justify-between items-center mt-8">
         {user.authType === 'discord' && (
-        <button className="btn btn-outline btn-info btn-sm flex items-center"
+        <button className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all btn-sm flex items-center"
           onClick={() => window.location.href = `discord:/users/${user.id}`}
         >
           <FaDiscord className="mr-2" /> View Discord Profile
         </button>
       )}
-        <button className="btn btn-outline btn-secondary btn-sm" onClick={() => setEditModalOpen(true)}><IoMdSettings /> Edit Profile
+        <button className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all btn-sm" onClick={() => setEditModalOpen(true)}><IoMdSettings /> Edit Profile
         </button>
       </div>
       <EditProfileModal
