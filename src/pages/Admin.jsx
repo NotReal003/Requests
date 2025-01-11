@@ -77,7 +77,7 @@ const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserId
   <div className="mb-4 flex flex-col sm:flex-row justify-between">
     <div className="space-x-2">
       <select
-        className="select select-bordered select-md mb-2"
+        className="select select-bordered select-md w-full mb-2"
         value={statusFilter}
         onChange={(e) => setStatusFilter(e.target.value)}
       >
@@ -101,7 +101,7 @@ const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserId
           <span className="label-text text-md">API Status:</span>
           <input
             type="checkbox"
-            className="toggle toggle-info w-full"
+            className="toggle toggle-info"
             checked={!apiClosed}
             onChange={handleToggleApiStatus}
           />
