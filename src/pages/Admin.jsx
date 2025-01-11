@@ -75,7 +75,7 @@ const ErrorAlert = ({ message }) => (
 
 const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserIdFilter, handleToggleApiStatus, apiClosed }) => (
   <div className="mb-4 flex flex-col sm:flex-row justify-between">
-    <div className="space-x-2">
+    <div>
       <select
         className="select select-bordered select-md w-full mb-2"
         value={statusFilter}
@@ -294,14 +294,14 @@ const Admin = () => {
         </div>
         <div className="flex justify-between mt-4">
           <button
-            className="btn btn-primary btn-outline"
+            className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all"
             onClick={handlePrevPage}
             disabled={currentPage === 1}
           >
             Previous
           </button>
           <button
-            className="btn btn-primary btn-outline"
+            className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all"
             onClick={handleNextPage}
             disabled={paginatedRequests.length < requestsPerPage}
           >
@@ -309,7 +309,7 @@ const Admin = () => {
           </button>
         </div>
         <div className="mt-4">
-          <button className="btn btn-primary btn-outline" onClick={() => navigate('/')}>
+          <button className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all" onClick={() => navigate('/')}>
             <IoMdArrowRoundBack className="mr-2" title="Go back to home page" /> Go Back
           </button>
         </div>
