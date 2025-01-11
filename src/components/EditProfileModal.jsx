@@ -55,8 +55,8 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
         />
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="flex justify-end space-x-2 gap-x-2">
-          <button onClick={onClose} className="btn btn-secondary">Cancel</button>
-          <button onClick={handleSave} className="btn no-animation btn-primary" disabled={loading}>
+          <button onClick={onClose} className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all">Cancel</button>
+          <button onClick={handleSave} className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all" disabled={loading}>
             {loading ? (
               <>
                 Save <FaSpinner className="animate-spin mr-2" />
