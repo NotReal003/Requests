@@ -93,7 +93,7 @@ const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserId
         type="text"
         placeholder="Filter by User ID"
         value={userIdFilter}
-        className="input input-bordered w-full sm:w-auto"
+        className="input input-bordered w-full"
         onChange={(e) => setUserIdFilter(e.target.value)}
       />
       <div className="mb-2 mt-2">
@@ -101,7 +101,7 @@ const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserId
           <span className="label-text text-md">API Status:</span>
           <input
             type="checkbox"
-            className="toggle toggle-info"
+            className="toggle toggle-info w-full"
             checked={!apiClosed}
             onChange={handleToggleApiStatus}
           />
