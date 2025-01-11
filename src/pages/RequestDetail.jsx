@@ -211,7 +211,7 @@ function RequestDetail() {
             <div className="mt-4">
               <p className="text-center mb-2 text-gray-400 text-xs">Something is wrong?</p>
               <button
-                className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all btn-sm"
+                className="btn no-animation w-full bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all btn-sm"
                 onClick={() => setShowCancelModal(true)}
               >
                 Cancel Request
