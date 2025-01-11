@@ -294,14 +294,14 @@ const Admin = () => {
         </div>
         <div className="flex justify-between mt-4">
           <button
-            className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all"
+            className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all"
             onClick={handlePrevPage}
             disabled={currentPage === 1}
           >
             Previous
           </button>
           <button
-            className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all"
+            className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all"
             onClick={handleNextPage}
             disabled={paginatedRequests.length < requestsPerPage}
           >
