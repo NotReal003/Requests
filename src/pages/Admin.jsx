@@ -85,7 +85,7 @@ const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserId
         <option value="PENDING">Pending</option>
         <option value="APPROVED">Approved</option>
         <option value="DENIED">Denied</option>
-        <option value="RESUBMIT_REQUIRED">Resubmit Required</option>
+        <option value="RESUBMIT_REQUIRED">Resubmit Required (Comming Soon)</option>
         <option value="CANCELLED">Cancelled</option>
         <option value="RESOLVED">Resolved</option>
       </select>
@@ -125,7 +125,7 @@ const RequestItem = ({ request, handleRequestClick, getGradientClass }) => (
       <div>
         <h1 className="text-md sm:text-base md:text-xs font-bold">{request.username}</h1>
         <h2 className="text-sm sm:text-base md:text-lg font-bold">
-          {request.type === 'report' ? `Discord Report` : request.type === 'guild-application' ? 'Guild Application' : 'Support Request'}{' '}
+          {request.type === 'report' ? `Discord Report` : request.type === 'guild-application' ? 'Application' : 'Support Request'}{' '}
           <RequestStatus status={request.status} />
         </h2>
         <p className="text-xs sm:text-sm">
