@@ -98,7 +98,7 @@ function AdminDetail() {
           toast.error('Unable to send email :/');
         }
       } else {
-        toast.warn(updateResponse.data.message || 'Request was updated but something might have gone wrong.');
+        toast.error(updateResponse.data.message || 'Request was updated but something might have gone wrong.');
       }
     } catch (error) {
       if (error.response?.status === 403) {
@@ -120,6 +120,7 @@ function AdminDetail() {
         withCredentials: true,
       });
       toast.success('Request deleted successfully.');
+      navigate('/');
     } catch (error) {
       toast.error('Error deleting the request.');
     }
@@ -238,7 +239,7 @@ function AdminDetail() {
             />
           </div>
           <div className="form-control mt-4">
-            <button onClick={handleUpdateAndSendEmail} className="btn btn-info">
+            <button onClick={handleUpdateAndSendEmail} className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all">
               <MdUpdate /> Update Request & Send Email
             </button>
           </div>
@@ -253,7 +254,7 @@ function AdminDetail() {
         </div>
       </div>
       <div className="mt-4">
-        <button className="btn btn-info btn-outline" onClick={() => navigate(-1)}>
+        <button className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all" onClick={() => navigate(-1)}>
           <IoMdArrowRoundBack /> Back
         </button>
       </div>
@@ -265,12 +266,12 @@ function AdminDetail() {
             <h3 className="font-bold text-lg">Confirm Deletion</h3>
             <p>Are you sure you want to delete this request? This action cannot be undone.</p>
             <div className="modal-action">
-              <button onClick={handleDelete} className="btn btn-error">
+              <button onClick={handleDelete} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-allr">
                 Confirm Delete
               </button>
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="btn"
+                className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all"
               >
                 Cancel
               </button>
