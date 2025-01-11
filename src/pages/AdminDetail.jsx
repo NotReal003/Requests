@@ -120,7 +120,7 @@ function AdminDetail() {
         withCredentials: true,
       });
       toast.success('Request deleted successfully.');
-      navigate('/');
+      navigate('/admin');
     } catch (error) {
       toast.error('Error deleting the request.');
     }
