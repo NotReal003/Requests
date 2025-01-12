@@ -1,6 +1,6 @@
 # Request Management Portal
 
-## Frontend Web Application
+## Backend API
 The source code for the backend API can be found [here](https://github.com/NotReal003/API).
 
 ### Overview
