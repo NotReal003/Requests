@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar, Footer, OfflineWarning } from './components';
 import routeConfig from './routes';
+import axios from 'axios';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,11 +12,10 @@ const App = () => {
   useEffect(() => {
     // Check authentication
     const urlParams = new URLSearchParams(window.location.search);
-    const callback = urlParams.get('callback');
-    if (callback) {
-      localStorage.setItem('jwtToken', callback);
-      setIsAuthenticated(true);
-      window.history.replaceState({}, document.title, "/");
+    const callback = urlParams.get('ref');
+    if (ref === "producthunt") {
+      axios.get(`${API}/collect/request/producthunt`);
+      console.log("ProductHunt referral");
     } else {
       const storedToken = document.cookie
         .split('; ')
