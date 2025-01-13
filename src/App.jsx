@@ -8,11 +8,12 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isOnline, setIsOnline] = useState(navigator.onLine); // status
+  const API = process.env.REACT_APP_API;
 
   useEffect(() => {
     // Check authentication
     const urlParams = new URLSearchParams(window.location.search);
-    const callback = urlParams.get('ref');
+    const ref = urlParams.get('ref');
     if (ref === "producthunt") {
       axios.get(`${API}/collect/request/producthunt`);
       console.log("ProductHunt referral");
