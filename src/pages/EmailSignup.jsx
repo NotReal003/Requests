@@ -11,6 +11,7 @@ const EmailSignup = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // Step 1: Signup, Step 2: Verify code
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const API = process.env.REACT_APP_API;
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,7 +33,7 @@ const EmailSignup = () => {
 
     try {
       setLoading(true);
-      await axios.post('https://api.notreal003.xyz/auth/email-signup', { email, username });
+      await axios.post(`${API}/auth/email-signup`, { email, username });
       toast.success('Verification code sent! Please check your email.');
       setStep(2); // Move to verification step
       setLoading(false);
@@ -54,7 +55,7 @@ const EmailSignup = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        'https://api.notreal003.xyz/auth/verify-email',
+        `${API}/auth/verify-email`,
         { email, code: verificationCode },
         { withCredentials: true }
       );
@@ -62,7 +63,7 @@ const EmailSignup = () => {
       const jwtToken = response.data.jwtToken;
       document.cookie = `token=${jwtToken}; domain=notreal003.xyz; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
       toast.success('Verifying account...');
-      axios.get(`https://api.notreal003.xyz/auth/user?callback=${jwtToken}`, {
+      axios.get(`${API}/auth/user?callback=${jwtToken}`, {
         headers: {
           'Authorization': `Account ${jwtToken}`,
         },

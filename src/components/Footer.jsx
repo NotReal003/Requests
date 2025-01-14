@@ -20,18 +20,18 @@ const Footer = () => {
                 <a href="https://support.notreal003.xyz" class="hover:underline">Support</a>
               </li>
               <li class="mt-2 mb-2">
-                <a href="https://github.com/NotReal003/Requests" class="hover:underline">Open Source API</a>
+                <a href="https://github.com/NotReal003/api" class="hover:underline">Backend Source Code</a>
               </li>
                 <li class="mb-2 mt-2">
                   <Link to="/about" class="hover:underline">About This Portal</Link>
                 </li>
                 <li class="mt-2">
-                  <a href="https://github.com/NotReal003/Requests" class="hover:underline">Github open Source</a>
+                  <a href="https://github.com/NotReal003/Requests" class="hover:underline">Frontend Source Code</a>
                 </li>
               </ul>
             </div>
             <div>
-              <h2 class="mb-4 text-sm font-semibold text-gray-400 uppercase dark:text-white">Follow me</h2>
+              <h2 class="mb-4 text-sm font-semibold text-gray-400 uppercase dark:text-white">Follow Us</h2>
               <ul class="text-gray-500 dark:text-gray-400 font-medium">
 
                 <li class="mt-2 mb-2">
@@ -94,6 +94,21 @@ const Footer = () => {
               <span class="sr-only">GitHub account</span>
             </a>
           </div>
+        </div>
+        <div className="flex justify-center mt-6">
+          <a
+            href="https://www.producthunt.com/posts/request-managemen-portal?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-request&#0045;managemen&#0045;portal"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=780187&theme=dark&t=1736833524097"
+              alt="Request&#0032;Managemen&#0032;Portal - A&#0032;comprehensive&#0032;platform&#0032;for&#0032;submitting&#0032;and&#0032;managing&#0032;request | Product Hunt"
+              style={{ width: '250px', height: '54px' }}
+              width="250"
+              height="54"
+            />
+          </a>
         </div>
       </div>
     </footer>
