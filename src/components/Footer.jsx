@@ -58,13 +58,13 @@ const Footer = () => {
               <h2 class="mb-6 text-sm font-semibold text-gray-400 uppercase dark:text-white">Important</h2>
               <ul class="text-gray-500 dark:text-gray-400 font-medium">
                 <li class="mb-4">
-                  <a href="https://pay.notreal003.xyz" class="hover:underline">Support This Project</a>
-                </li>
-                <li class="mb-4">
                   <a href="https://support.notreal003.xyz/privacy" class="hover:underline">Privacy Policy</a>
                 </li>
-                <li>
+                <li class="mb-4">
                   <a href="https://support.notreal003.xyz/terms" class="hover:underline">Terms of Service</a>
+                </li>
+                <li class="mb-4">
+                  <a href="https://pay.notreal003.xyz" class="hover:underline">Support This Project</a>
                 </li>
               </ul>
             </div>
