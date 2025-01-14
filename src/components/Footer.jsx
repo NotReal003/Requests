@@ -97,12 +97,12 @@ const Footer = () => {
         </div>
         <div className="flex justify-center mt-6">
           <a
-            href="https://www.producthunt.com/products/request-managemen-portal"
+            href="https://producthunt.com/posts/request-managemen-portal?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-request&#0045;managemen&#0045;portal"
             target="_blank"
             rel="noopener noreferrer"
           >
             <img
-              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=780187&theme=dark&t=1736833524097"
+              src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=780187&theme=light&t=1736846709096"
               alt="Request&#0032;Managemen&#0032;Portal - A&#0032;comprehensive&#0032;platform&#0032;for&#0032;submitting&#0032;and&#0032;managing&#0032;request | Product Hunt"
               style={{ width: '250px', height: '54px' }}
               width="250"
