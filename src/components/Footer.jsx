@@ -19,14 +19,14 @@ const Footer = () => {
               <li class="mt-2 mb-2">
                 <a href="https://support.notreal003.xyz" class="hover:underline">Support</a>
               </li>
-              <li class="mt-2 mb-2">
-                <a href="https://github.com/NotReal003/api" class="hover:underline">Backend Source Code</a>
-              </li>
-                <li class="mb-2 mt-2">
+                <li class="mb-2">
                   <Link to="/about" class="hover:underline">About This Portal</Link>
                 </li>
-                <li class="mt-2">
+                <li class="mt-2 mb-2">
                   <a href="https://github.com/NotReal003/Requests" class="hover:underline">Frontend Source Code</a>
+                </li>
+                <li class="mt-2">
+                <a href="https://github.com/NotReal003/api" class="hover:underline">Backend Source Code</a>
                 </li>
               </ul>
             </div>
@@ -97,7 +97,7 @@ const Footer = () => {
         </div>
         <div className="flex justify-center mt-6">
           <a
-            href="https://www.producthunt.com/posts/request-managemen-portal?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-request&#0045;managemen&#0045;portal"
+            href="https://www.producthunt.com/products/request-managemen-portal"
             target="_blank"
             rel="noopener noreferrer"
           >
