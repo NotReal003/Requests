@@ -17,31 +17,16 @@ const Apply = () => {
   const API = process.env.REACT_APP_API;
 
   const sanitizeInput = (input) => {
-    const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
-
-    if (urlRegex.test(input)) {
-      return input.replace(/[<>&'"]/g, (char) => {
-        switch (char) {
-          case '<': return '&lt;';
-          case '>': return '&gt;';
-          case '&': return '&amp;';
-          case "'": return '&#39;';
-          case '"': return '&quot;';
-          default: return char;
-        }
-      });
-    } else {
-      return input.replace(/[<>&'"]/g, (char) => {
-        switch (char) {
-          case '<': return '&lt;';
-          case '>': return '&gt;';
-          case '&': return '&amp;';
-          case "'": return '&#39;';
-          case '"': return '&quot;';
-          default: return char;
-        }
-      });
-    }
+    return input.replace(/[<>&'"]/g, (char) => {
+      switch (char) {
+        case '<': return '&lt;';
+        case '>': return '&gt;';
+        case '&': return '&amp;';
+        case "'": return '&#39;';
+        case '"': return '&quot;';
+        default: return char;
+      }
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -130,7 +115,7 @@ const Apply = () => {
             name="inGameName"
             className="input input-bordered w-full"
             type="text"
-            placeholder="Enter your in-game name"
+            placeholder="Enter your username"
             value={inGameName}
             onChange={(e) => setInGameName(e.target.value)}
             maxLength={17}
