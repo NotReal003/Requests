@@ -8,6 +8,10 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     //..
+    const handleLogin = () => {
+      const authWindow = window.open('about:blank', '_blank');
+      authWindow.location.href = 'https://api.notreal003.xyz/auth/signin';
+    };
   }, []);
 
   return (
@@ -17,7 +21,7 @@ const Login = () => {
         <p className="text-center text-white mb-8">Choose a login method to continue.</p>
 
         <button
-          onClick={() => window.location.href = 'https://api.notreal003.xyz/auth/signin'}
+          onClick={handleLogin}
           className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
           aria-label="Login with Discord"
         >
