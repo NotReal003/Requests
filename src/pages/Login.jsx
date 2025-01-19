@@ -12,7 +12,7 @@ const Login = () => {
   }, []);
 
   const handleLogin = () => {
-    const authWindow = window.open('about:blank');
+    const authWindow = window.open('about:blank', '_blank',);
     setTimeout(() => {
       authWindow.location.href = `${API}/auth/signin`;
     }, 1000);
