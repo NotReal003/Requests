@@ -14,7 +14,7 @@ const Login = () => {
   const handleLogin = () => {
     const authWindow = window.open('about:blank', '_blank',);
     setTimeout(() => {
-      authWindow.location.href = `${API}/auth/signin`;
+      authWindow.location.href = `${API}/api/auth/signin`;
     }, 1000);
   };
 
