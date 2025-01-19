@@ -8,11 +8,12 @@ const Login = () => {
   const navigate = useNavigate();
   useEffect(() => {
     //..
-    const handleLogin = () => {
-      const authWindow = window.open('about:blank', '_blank');
-      authWindow.location.href = 'https://api.notreal003.xyz/auth/signin';
-    };
   }, []);
+
+  const handleLogin = () => {
+    const authWindow = window.open('about:blank', '_blank');
+    authWindow.location.href = 'https://api.notreal003.xyz/auth/signin';
+  };
 
   return (
     <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
