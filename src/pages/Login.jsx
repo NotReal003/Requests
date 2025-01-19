@@ -6,13 +6,16 @@ import { IoLogoGithub } from "react-icons/io";
 
 const Login = () => {
   const navigate = useNavigate();
+  const API = process.env.REACT_APP_API;
   useEffect(() => {
     //..
   }, []);
 
   const handleLogin = () => {
-    const authWindow = window.open('about:blank', '_blank');
-    authWindow.location.href = 'https://api.notreal003.xyz/auth/signin';
+    const authWindow = window.open('about:blank');
+    setTimeout(() => {
+      authWindow.location.href = `${API}/auth/signin`;
+    }, 1000);
   };
 
   return (
