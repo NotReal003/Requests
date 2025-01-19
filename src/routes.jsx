@@ -26,7 +26,7 @@ const routes = (isAuthenticated) => [
   { path: "/report", element: isAuthenticated ? <ReportForm /> : <Login /> },
   { path: "/support", element: isAuthenticated ? <Support /> : <Login /> },
   { path: "/apply", element: isAuthenticated ? <Apply /> : <Login /> },
-  { path: "/login", element: isAuthenticated ? <Home /> : <Login /> },
+  { path: "/login", element: <Login /> },
   { path: "/success", element: isAuthenticated ? <Success /> : <Login /> },
   { path: "/one", element: isAuthenticated ? <One /> : <Login /> },
   { path: "/admin", element: isAuthenticated ? <Admin /> : <Login /> },
@@ -41,7 +41,7 @@ const routes = (isAuthenticated) => [
   { path: "/email-signin", element: isAuthenticated ? <Home /> : <EmailSignin /> },
   { path: "/github/callback", element: isAuthenticated ? <Home /> : <GithubCallback /> },
   { path: "/about", element: <About /> },
-  { path: "/analytics", element: <Analytics /> },
+  { path: "/analytics", element: isAuthenticated ? <Analytics /> : <Login /> },
 ];
 
 export default routes;
