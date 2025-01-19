@@ -6,7 +6,7 @@ import { IoLogoGithub } from "react-icons/io";
 
 const Login = () => {
   const navigate = useNavigate();
-  const API = process.env.REACT_APP_API;
+  const API = process.env.REACT_APP_MAIN_API;
   useEffect(() => {
     //..
   }, []);
