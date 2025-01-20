@@ -12,7 +12,7 @@ const Login = () => {
   }, []);
 
   const handleLogin = () => {
-    const authWindow = window.open('https://discord.com/oauth2/authorize?client_id=1263403561442873466&response_type=code&redirect_uri=https%3A%2F%2Frequest.notreal003.xyz%2Fcallback&scope=identify+email');
+    window.location.href(`${API}/auth/signin`);
   };
 
   return (
