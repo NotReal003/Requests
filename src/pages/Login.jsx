@@ -12,7 +12,7 @@ const Login = () => {
   }, []);
 
   const handleLogin = () => {
-    window.location.href(`${API}/auth/signin`);
+    window.location.href = `${API}/auth/signin`;
   };
 
   return (
