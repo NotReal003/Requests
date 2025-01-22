@@ -8,8 +8,9 @@ const Note = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const textFromUrl = urlParams.get('text');
 
-    if (textFromUrl === 'id') {
-      setText('1118558664');
+    if (textFromUrl === 'user') {
+      const userData = localStorage.getItem('user');
+      setText(userData);
     }
       
     if (textFromUrl) {
