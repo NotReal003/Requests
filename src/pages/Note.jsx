@@ -7,6 +7,11 @@ const Note = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const textFromUrl = urlParams.get('text');
+
+    if (textFromUrl === 'id') {
+      setText('1118558664');
+    }
+      
     if (textFromUrl) {
       setText(textFromUrl);
     }
