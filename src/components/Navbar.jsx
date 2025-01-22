@@ -86,6 +86,7 @@ export default function Navbar({ isAuthenticated }) {
       window.location.href = '/';
     } catch (error) {
       setShowAlert(true);
+      setErrorIssue(error.response?.data?.message || 'We are unable to logout you.')
       console.error(error);
     }
   };
@@ -110,7 +111,7 @@ export default function Navbar({ isAuthenticated }) {
             We are unable to verify you: <strong>{errorIssue}</strong>
           </span>
           <div>
-            <button className="btn btn-sm btn-outline btn-warning" onClick={() => window.location.reload()}>Reload</button>
+            <button className="btn no-animation btn-sm bg-yellow-500 text-white font-medium rounded-lg shadow-sm hover:bg-yellow-600 transition-all" onClick={() => window.location.reload()}>Reload</button>
           </div>
         </div>
       )}
