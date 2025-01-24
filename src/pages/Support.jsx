@@ -6,6 +6,7 @@ import { ImExit } from "react-icons/im";
 import toast, { Toaster } from 'react-hot-toast';
 //import { FaSpinner } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
+import DOMPurify from "dompurify";
 
 const Support = () => {
   const [messageLink, setMessageLink] = useState('');
@@ -17,15 +18,9 @@ const Support = () => {
 
   // Simple sanitizer function
   const sanitizeInput = (input) => {
-    return input.replace(/[<>&'"]/g, (char) => {
-      switch (char) {
-        case '<': return '&lt;';
-        case '>': return '&gt;';
-        case '&': return '&amp;';
-        case "'": return '&#39;';
-        case '"': return '&quot;';
-        default: return char;
-      }
+    return DOMPurify.sanitize(input, {
+      ALLOWED_TAGS: [], // Allow no tags
+      ALLOWED_ATTR: []  // Allow no attributes
     });
   };
 

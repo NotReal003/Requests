@@ -19,6 +19,7 @@
     "daisyui": "^4.12.14",
     "data-fns": "^1.1.0",
     "date-fns": "^4.1.0",
+    "dompurify": "^3.2.3",
     "dotenv": "^16.4.5",
     "glob": "^11.0.0",
     "lucide-react": "^0.454.0",
