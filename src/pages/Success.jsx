@@ -61,6 +61,9 @@ const Success = () => {
   const handleNavigation = (path) => {
     navigate(path);
   };
+  const handleWindowLocation = (path) => {
+    window.location.href = path;
+  }
 
   if (loading) {
     return (
@@ -94,9 +97,11 @@ const Success = () => {
         <button onClick={() => handleNavigation('/one')} className="btn no-animation mt-4 w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
           <CircleCheck className='size-4' /> Your Requests
         </button>
-        <a rel="noreferrer" target="_blank" href="https://discord.gg/sqVBrMVQmp" className="btn mt-4 no-animation w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
+        <button
+          onClick={() => handleWindowLocation('https://discord.gg/sqVBrMVQmp')}
+          className="btn mt-4 no-animation w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
           <FaDiscord /> Join our Discord Server
-        </a>
+        </button>
         <button onClick={() => handleNavigation('/')} className="btn no-animation mt-4 w-full bg-yellow-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
           <House className='size-4' /> Back to Home Page
         </button>
