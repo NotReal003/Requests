@@ -5,6 +5,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaSpinner } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
 import { MdCancel } from "react-icons/md";
+import AdminOnly from '../components/AdminOnly';
 
 function RequestDetail() {
   const { requestId } = useParams();
@@ -12,6 +13,7 @@ function RequestDetail() {
   const [loading, setLoading] = useState(true);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [userOnly, setUserOnly] = useState(false);
   const [errorMesssage, setErrorMesssage] = useState(null);
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
@@ -32,12 +34,21 @@ function RequestDetail() {
         if (response.status === 200) {
           setRequest(response.data);
           setLoading(false);
-        } else {
+        }
+          if (response.status === 403) {
+            setUserOnly(true);
+            return;
+          } else {
           setErrorMesssage(response.data.message || 'An error occurred while fetching the request.');
           toast.error(response.data.message || 'An error occurred while fetching the request.');
           setLoading(false);
         }
       } catch (error) {
+
+        if (error.response && error.response.status === 403) {
+          setUserOnly(true);
+          return;
+        }
         setErrorMesssage(error.response?.data?.message || 'An error occurred while fetching the request.');
         toast.error(error.response?.data?.message || 'You do not have permission to check this request');
         setLoading(false);
@@ -130,6 +141,10 @@ function RequestDetail() {
       <div className="flex flex-col items-center justify-center p-4 max-w-md md:max-w-lg mx-auto shadow-lg min-h-screen">
       </div>
     );
+  }
+
+  if (userOnly) {
+    return <AdminOnly />;
   }
 
   return (
