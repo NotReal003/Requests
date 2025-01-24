@@ -40,7 +40,7 @@ const RequestIcon = ({ type }) => {
   if (type === 'report') {
     return <FaDiscord className="text-4xl mr-4" title="Discord Report" />;
   } else if (type === 'guild-application') {
-    return <FaPeopleGroup className="text-4xl mr-4" title="Guild Application" />;
+    return <FaPeopleGroup className="text-4xl mr-4" title="Application" />;
   } else if (type === 'support') {
     return <MdSupportAgent className="text-4xl mr-4" title="Support Request" />;
   }

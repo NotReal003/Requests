@@ -137,7 +137,7 @@ function RequestDetail() {
       <Toaster />
       {request.reviewed === 'false' && (
         <div className="flex items-center m-2">
-          <p className="text-sm text-gray-400 m-2">Your request is currently being reviewed by the admin.</p>
+          <p className="text-sm text-gray-400 m-2">Your request is currently being reviewed by the staff team.</p>
         </div>
       )}
       <div className="card w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-2">
