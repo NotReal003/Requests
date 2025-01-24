@@ -44,6 +44,7 @@ function RequestDetail() {
           setLoading(false);
         }
       } catch (error) {
+        console.error('Error fetching request:', error);
 
         if (error.response && error.response.status === 403) {
           setUserOnly(true);
