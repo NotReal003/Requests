@@ -48,6 +48,7 @@ function RequestDetail() {
 
         if (error.response && error.response.status === 403) {
           setUserOnly(true);
+          setLoading(false);
           return;
         }
         setErrorMesssage(error.response?.data?.message || 'An error occurred while fetching the request.');
