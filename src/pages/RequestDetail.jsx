@@ -37,6 +37,7 @@ function RequestDetail() {
         }
           if (response.status === 403) {
             setUserOnly(true);
+            setLoading(false);
             return;
           } else {
           setErrorMesssage(response.data.message || 'An error occurred while fetching the request.');
@@ -44,7 +45,7 @@ function RequestDetail() {
           setLoading(false);
         }
       } catch (error) {
-        console.error('Error fetching request:', error);
+        console.log('Error fetching request:', error, error.response);
 
         if (error.response && error.response.status === 403) {
           setUserOnly(true);
@@ -111,6 +112,10 @@ function RequestDetail() {
     }
   };
 
+  if (userOnly) {
+    return <AdminOnly />;
+  }
+
   if (loading) {
     return (
       <div className="flex w-52 flex-col gap-4 container mx-auto px-4 py-8">
@@ -128,6 +133,7 @@ function RequestDetail() {
     );
   }
 
+
   if (errorMesssage) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-base-200">
@@ -143,10 +149,6 @@ function RequestDetail() {
       <div className="flex flex-col items-center justify-center p-4 max-w-md md:max-w-lg mx-auto shadow-lg min-h-screen">
       </div>
     );
-  }
-
-  if (userOnly) {
-    return <AdminOnly />;
   }
 
   return (
