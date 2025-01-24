@@ -34,11 +34,7 @@ function RequestDetail() {
         if (response.status === 200) {
           setRequest(response.data);
           setLoading(false);
-        } else if (response.status === 403) {
-            setUserOnly(true);
-            setLoading(false);
-            return;
-          } else {
+        } else {
           setErrorMesssage(response.data.message || 'An error occurred while fetching the request.');
           toast.error(response.data.message || 'An error occurred while fetching the request.');
           setLoading(false);
