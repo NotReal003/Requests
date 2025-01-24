@@ -34,8 +34,7 @@ function RequestDetail() {
         if (response.status === 200) {
           setRequest(response.data);
           setLoading(false);
-        }
-          if (response.status === 403) {
+        } else if (response.status === 403) {
             setUserOnly(true);
             setLoading(false);
             return;
