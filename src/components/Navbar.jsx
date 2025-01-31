@@ -8,7 +8,7 @@ import { LiaExternalLinkAltSolid } from "react-icons/lia";
 import axios from 'axios';
 import { FcSettings } from "react-icons/fc";
 import toast, { Toaster } from "react-hot-toast";
-import LogoutModal from "./LogoutModal";
+import LogoutModal from './LogoutModal';
 
 export default function Navbar({ isAuthenticated }) {
   const [user, setUser] = useState(null);
