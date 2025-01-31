@@ -1,32 +1,36 @@
 import React from "react";
 import FocusLock from "react-focus-lock";
 
-const Modal = ({ isOpen, onClose }) => {
+const LogoutModal = ({ isOpen, onConfirm, onCancel }) => {
   if (!isOpen) return null;
 
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-      onClick={onClose} // Close modal when clicking outside
+      onClick={onCancel} // Close modal when clicking outside
     >
       <div
-        className="modal-box"
+        className="bg-gray-800 text-white rounded-lg shadow-lg p-6 max-w-sm w-full"
         onClick={(e) => e.stopPropagation()} // Prevent click bubbling
       >
-        {/* FocusLock traps focus */}
         <FocusLock>
-          <h3 className="font-bold text-lg text-center">Focus-Locked Modal</h3>
-          <p className="py-4 text-center">
-            This modal traps focus. Use "Tab" to navigate within it.
+          <h3 className="text-lg font-semibold">Are you sure?</h3>
+          <p className="text-gray-400 mt-2">
+            Do you really want to logout? You’ll need to log back in to access your account.
           </p>
-          <div className="modal-action">
+          <div className="flex justify-end mt-4 space-x-3">
             <button
-              className="btn btn-primary"
-              onClick={onClose}
+              className="px-4 py-2 bg-gray-700 rounded text-gray-300 hover:bg-gray-600 focus:ring focus:ring-gray-500"
+              onClick={onCancel}
             >
-              Close
+              Cancel
             </button>
-            <button className="btn btn-outline">Another Action</button>
+            <button
+              className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:ring focus:ring-red-500"
+              onClick={onConfirm}
+            >
+              Logout
+            </button>
           </div>
         </FocusLock>
       </div>
@@ -34,4 +38,4 @@ const Modal = ({ isOpen, onClose }) => {
   );
 };
 
-export default Modal;
+export default LogoutModal;
