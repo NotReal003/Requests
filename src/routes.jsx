@@ -19,6 +19,7 @@ import {
   GithubCallback,
   About,
   Analytics,
+  Focus,
 } from './pages';
 
 const routes = (isAuthenticated) => [
@@ -42,6 +43,7 @@ const routes = (isAuthenticated) => [
   { path: "/github/callback", element: isAuthenticated ? <Home /> : <GithubCallback /> },
   { path: "/about", element: <About /> },
   { path: "/analytics", element: isAuthenticated ? <Analytics /> : <Login /> },
+  { path: "/focus", element: <Focus /> }
 ];
 
 export default routes;
