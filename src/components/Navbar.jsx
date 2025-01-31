@@ -15,7 +15,7 @@ export default function Navbar({ isAuthenticated }) {
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [errorIssue, setErrorIssue] = useState('');
-  const [Logoutmodal, setLogoutmodal] = useState(false);
+  const [LogoutModal, setLogoutmodal] = useState(false);
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -188,7 +188,7 @@ export default function Navbar({ isAuthenticated }) {
                           </Link>
                         </li>
                         <li>
-                          <span onClick={() => setLogoutmodal(true)} className="flex items-center gap-x-3 hover:text-red-500 cursor-pointer">
+                          <span onClick={() => setLogoutModal(true)} className="flex items-center gap-x-3 hover:text-red-500 cursor-pointer">
                             <ImExit className="size-3" /> <span>Sign out</span>
                           </span>
                         </li>
@@ -220,7 +220,7 @@ export default function Navbar({ isAuthenticated }) {
             <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
             <p>Are you sure you want to log out?</p>
             <div className="flex justify-end gap-3 mt-4">
-              <button onClick={() => setShowLogoutModal(false)} className="btn btn-outline">Cancel</button>
+              <button onClick={() => setLogoutmodal(false)} className="btn btn-outline">Cancel</button>
               <button onClick={handleLogout} className="btn bg-red-500 text-white hover:bg-red-600">Logout</button>
             </div>
           </div>
