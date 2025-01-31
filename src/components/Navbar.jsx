@@ -215,13 +215,13 @@ export default function Navbar({ isAuthenticated }) {
         </div>
       </nav>
       {LogoutModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
-            <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
-            <p>Are you sure you want to log out?</p>
+        <div className="fixed inset-0 flex items-center justify-center bg-bage-100 z-50">
+          <div className="bg-base-100 rounded-lg p-6 w-96 shadow-lg">
+            <h2 className="text-lg font-semibold text-white mb-4">Confirm Logout</h2>
+            <p className="text-white">Are you sure you want to log out?</p>
             <div className="flex justify-end gap-3 mt-4">
-              <button onClick={() => setLogoutModal(false)} className="btn btn-outline">Cancel</button>
-              <button onClick={handleLogout} className="btn bg-red-500 text-white hover:bg-red-600">Logout</button>
+              <button onClick={handleLogout} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all">Logout</button>
+              <button onClick={() => setLogoutModal(false)} className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all">Cancel</button>
             </div>
           </div>
         </div>
