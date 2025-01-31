@@ -18,4 +18,3 @@ export { default as EmailSignin } from './EmailSignin';
 export { default as GithubCallback } from './GithubCallback';
 export { default as About } from './About';
 export { default as Analytics } from './Analytics';
-export { default as Focus } from './Focus';

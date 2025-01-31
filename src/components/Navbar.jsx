@@ -8,12 +8,14 @@ import { LiaExternalLinkAltSolid } from "react-icons/lia";
 import axios from 'axios';
 import { FcSettings } from "react-icons/fc";
 import toast, { Toaster } from "react-hot-toast";
+import LogoutModal from "./LogoutModal";
 
 export default function Navbar({ isAuthenticated }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [errorIssue, setErrorIssue] = useState('');
+  const [LogOutModal, setLogOutModal] = useState(false);
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -186,7 +188,7 @@ export default function Navbar({ isAuthenticated }) {
                           </Link>
                         </li>
                         <li>
-                          <span onClick={handleLogout} className="flex items-center gap-x-3 hover:text-red-500 cursor-pointer">
+                          <span onClick={() => setLogOutModal(false)} className="flex items-center gap-x-3 hover:text-red-500 cursor-pointer">
                             <ImExit className="size-3" /> <span>Sign out</span>
                           </span>
                         </li>
