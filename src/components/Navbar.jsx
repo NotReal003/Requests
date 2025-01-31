@@ -92,7 +92,7 @@ export default function Navbar({ isAuthenticated }) {
       window.location.href = '/';
     } catch (error) {
       setShowAlert(true);
-      setLogOut(false);
+      setLogout(false);
       setLogoutModal(false);
       setErrorIssue(error.response?.data?.message || 'We are unable to logout you.')
       console.error(error);
