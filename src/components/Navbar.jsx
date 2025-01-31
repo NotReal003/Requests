@@ -16,6 +16,7 @@ export default function Navbar({ isAuthenticated }) {
   const [showAlert, setShowAlert] = useState(false);
   const [errorIssue, setErrorIssue] = useState('');
   const [LogoutModal, setLogoutModal] = useState(false);
+  const [logout, setLogout] = useState(false);
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -71,12 +72,15 @@ export default function Navbar({ isAuthenticated }) {
 
   const handleLogout = async () => {
     try {
+      setLogout(true);
       const res = await axios.get(`https://api.notreal003.xyz/auth/signout`, {
         withCredentials: true,
       });
       if (!res.ok) {
         setShowAlert(true);
-        setErrorIssue('We are unable to logout you.')
+        setErrorIssue('We are unable to logout you.');
+        setLogout(false);
+        setLogoutModal(false);
       }
 
 //      if (res.status !== 404) {
@@ -88,6 +92,8 @@ export default function Navbar({ isAuthenticated }) {
       window.location.href = '/';
     } catch (error) {
       setShowAlert(true);
+      setLogOut(false);
+      setLogoutModal(false);
       setErrorIssue(error.response?.data?.message || 'We are unable to logout you.')
       console.error(error);
     }
@@ -220,7 +226,7 @@ export default function Navbar({ isAuthenticated }) {
             <h2 className="text-lg font-bold text-white mb-4">Confirm Logout</h2>
             <p className="text-white font-semibold">Are you sure you want to log out?</p>
             <div className="flex justify-end gap-3 mt-4">
-              <button onClick={handleLogout} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all">Logout <ImExit /></button>
+              <button onClick={handleLogout} disabled={logout} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all">Logout {logout ? <FaSpinner className="animate-spin inline-block align-middle" /> : <ImExit />}</button>
               <button onClick={() => setLogoutModal(false)} className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all">Cancel</button>
             </div>
           </div>
