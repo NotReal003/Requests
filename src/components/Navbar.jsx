@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaSpinner } from "react-icons/fa";
 import { IoLogIn } from "react-icons/io5";
 import { ImExit } from "react-icons/im";
@@ -17,6 +17,7 @@ export default function Navbar({ isAuthenticated }) {
   const [errorIssue, setErrorIssue] = useState('');
   const [LogoutModal, setLogoutModal] = useState(false);
   const [logout, setLogout] = useState(false);
+  const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -189,9 +190,9 @@ export default function Navbar({ isAuthenticated }) {
                     {isAuthenticated ? (
                       <>
                         <li>
-                          <Link to="/profile" className="flex items-center gap-x-3">
+                          <span onClick={() => navigate('/profile')} className="flex items-center gap-x-3">
                             <FcSettings /> Profile
-                          </Link>
+                          </span>
                         </li>
                         <li>
                           <span onClick={() => setLogoutModal(true)} className="flex items-center gap-x-3 hover:text-red-500 cursor-pointer">
