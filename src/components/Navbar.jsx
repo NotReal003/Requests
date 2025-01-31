@@ -8,14 +8,14 @@ import { LiaExternalLinkAltSolid } from "react-icons/lia";
 import axios from 'axios';
 import { FcSettings } from "react-icons/fc";
 import toast, { Toaster } from "react-hot-toast";
-import LogoutModal from "./../LogoutModal";
+//import LogoutModal from "../../LogoutModal"; // still try
 
 export default function Navbar({ isAuthenticated }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [errorIssue, setErrorIssue] = useState('');
-  const [LogOutModal, setLogOutModal] = useState(false);
+  const [Logoutmodal, setLogoutmodal] = useState(false);
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -188,7 +188,7 @@ export default function Navbar({ isAuthenticated }) {
                           </Link>
                         </li>
                         <li>
-                          <span onClick={() => setLogOutModal(false)} className="flex items-center gap-x-3 hover:text-red-500 cursor-pointer">
+                          <span onClick={() => setLogoutmodal(true)} className="flex items-center gap-x-3 hover:text-red-500 cursor-pointer">
                             <ImExit className="size-3" /> <span>Sign out</span>
                           </span>
                         </li>
@@ -214,6 +214,18 @@ export default function Navbar({ isAuthenticated }) {
           </div>
         </div>
       </nav>
+      {LogoutModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 w-96 shadow-lg">
+            <h2 className="text-lg font-semibold mb-4">Confirm Logout</h2>
+            <p>Are you sure you want to log out?</p>
+            <div className="flex justify-end gap-3 mt-4">
+              <button onClick={() => setShowLogoutModal(false)} className="btn btn-outline">Cancel</button>
+              <button onClick={handleLogout} className="btn bg-red-500 text-white hover:bg-red-600">Logout</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
