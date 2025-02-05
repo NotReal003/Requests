@@ -9,7 +9,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 
 const RequestStatus = ({ status }) => {
   const statusStyles = {
-    DENIED: 'bg-red-600 text-white',
+    DENIED: 'bg-white text-red-600',
     APPROVED: 'bg-green-600 text-white',
     RESUBMIT_REQUIRED: 'bg-orange-600 text-white',
     PENDING: 'bg-yellow-600 text-white',
