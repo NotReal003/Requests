@@ -28,7 +28,7 @@ const RequestStatus = ({ status }) => {
 
   return (
     <span
-      className={`rounded-lg px-2 p-2 text-xs font-bold ${statusStyles[status]}`}
+      className={`rounded-lg px-2 py-1 text-xs font-bold ${statusStyles[status]}`}
       title={statusTooltips[status]}
     >
       {status}
@@ -124,13 +124,13 @@ const One = () => {
             requests.map((request) => (
               <div
                 key={request._id}
-                className={`flex justify-between items-center p-4 bg rounded-lg shadow-lg max-w-md md:max-w-lg mx-auto text-white shadow-lg ${getGradientClass(request.status)} cursor-pointer`}
+                className={`flex justify-between items-center p-2 bg rounded-lg shadow-lg max-w-md md:max-w-lg mx-auto text-white shadow-lg ${getGradientClass(request.status)} cursor-pointer`}
                 onClick={() => handleRequestClick(request._id)}
               >
                 <div className="flex items-center">
                   <RequestIcon type={request.type} />
                   <div>
-                    <h2 className="text-lg font-bold">
+                    <h2 className="text-md font-bold">
                       {request.type === 'report' ? `Discord Report` : request.type === 'guild-application' ? 'Application' : 'Support Request'} <RequestStatus status={request.status} />
                     </h2>
                     <p className="text-sm">
