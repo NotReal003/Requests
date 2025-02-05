@@ -28,7 +28,7 @@ const RequestStatus = ({ status }) => {
 
   return (
     <span
-      className={`rounded-lg px-2 py-1 text-xs font-bold ${statusStyles[status]}`}
+      className={`rounded-lg px-1 py-1 text-xs font-bold ${statusStyles[status]}`}
       title={statusTooltips[status]}
     >
       {status}
