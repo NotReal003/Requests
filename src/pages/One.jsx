@@ -12,7 +12,7 @@ const RequestStatus = ({ status }) => {
     DENIED: 'bg-white text-red-600',
     APPROVED: 'bg-white text-green-600',
     RESUBMIT_REQUIRED: 'bg-orange-600 text-white',
-    PENDING: 'bg-yellow-600 text-white',
+    PENDING: 'bg-white text-yellow-600',
     CANCELLED: 'bg-white text-orange-600',
     RESOLVED: 'bg-white text-green-600',
   };
