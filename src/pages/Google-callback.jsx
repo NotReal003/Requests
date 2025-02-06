@@ -62,7 +62,7 @@ const Callback = () => {
       <Toaster />
       <div className="flex items-center space-x-4">
         <FaLock className="h-14 w-14 m-4" />
-        <span className="text-3xl m-4 mr-4">+</span>
+        <span className="text-3xl m-4 mr-4 ml-4">+</span>
         <FaGoogle className="h-16 w-16 m-4 ml-4" />
       </div>
       {loading && (
