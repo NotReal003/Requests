@@ -10,7 +10,7 @@ import {
   Admin,
   RequestDetail,
   AdminDetail,
-  Callback,
+  Discord-Callback,
   Profile,
   Note,
   AdminManage,
@@ -20,6 +20,7 @@ import {
   About,
   Analytics,
   Focus,
+  Google-Callback,
 } from './pages';
 
 const routes = (isAuthenticated) => [
@@ -34,7 +35,8 @@ const routes = (isAuthenticated) => [
   { path: "/requestdetail", element: isAuthenticated ? <RequestDetail /> : <Login /> },
   { path: "/admindetail", element: isAuthenticated ? <AdminDetail /> : <Login /> },
   { path: "*", element: isAuthenticated ? <NotFound /> : <Login /> },
-  { path: "/callback", element: <Callback /> },
+  { path: "/callback", element: <Discord-Callback /> },
+  { path: "/google/callback", element: <Google-Callback /> },
   { path: "/profile", element: isAuthenticated ? <Profile /> : <Login /> },
   { path: "/admin/manage", element: isAuthenticated ? <AdminManage /> : <Login /> },
   { path: "/note", element: <Note /> },
