@@ -208,8 +208,8 @@ export default function Navbar({ isAuthenticated }) {
                           </Link>
                         </li>
                         <li>
-                          <Link to="https://request.notreal003.xyz/email-signin" className="flex items-center gap-x-2 hover:text-blue-500">
-                            <IoLogIn className="size-4" /> <span>Sign in with Email</span>
+                          <Link to="https://api.notreal003.xyz/auth/google" className="flex items-center gap-x-2 hover:text-blue-500">
+                            <IoLogIn className="size-4" /> <span>Sign in with Google</span>
                           </Link>
                         </li>
                       </>
