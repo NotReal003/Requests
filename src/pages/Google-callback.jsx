@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaSpinner, FaLock } from "react-icons/fa";
+import { FaSpinner } from "react-icons/fa";
 import toast, { Toaster } from 'react-hot-toast';
-import { FcGoogle } from "react-icons/fc";
+import { FcGoogle, FcLock } from "react-icons/fc";
 
 const Callback = () => {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const Callback = () => {
     <div className="flex flex-col items-center justify-center min-h-screen shadow-lg">
       <Toaster />
       <div className="flex items-center space-x-4">
-        <FaLock className="h-14 w-14 m-4" />
+        <FcLock className="h-14 w-14 m-4" />
         <span className="text-3xl m-4 mr-4 ml-4">+</span>
         <FcGoogle className="h-16 w-16 m-4 ml-4" />
       </div>
