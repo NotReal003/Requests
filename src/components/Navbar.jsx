@@ -178,7 +178,8 @@ export default function Navbar({ isAuthenticated }) {
                   <button tabIndex={0} className="flex items-center justify-center">
                     {user && user.avatarHash ? (
                       <img
-                        src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatarHash}.webp?size=128`}
+                        src={`${user.avatarHash}`}
+                        //src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatarHash}.webp?size=128`}
                         className="size-6 object-cover rounded-full border-blue-500"
                         alt="user"
                       />
