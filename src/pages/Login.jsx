@@ -59,8 +59,11 @@ const Login = () => {
         {/* Defer rendering of this non-essential paragraph */}
         <p className="text-center text-white mt-5 lazy-load-content">
           Don’t have an account?{" "}
-          <span onClick={() => navigate('/email-signup')} className="text-info font-bold hover:underline">
-            Sign up with Email
+          <span
+            className="hover:underline"
+            //onClick={() => navigate('/email-signup')} className="text-info font-bold hover:underline"
+            >
+            Sign up with Email (Not Available)
           </span>
         </p>
       </div>
