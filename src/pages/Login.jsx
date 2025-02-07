@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaDiscord, FaEnvelope } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
 import { IoLogoGithub } from "react-icons/io";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,6 +14,10 @@ const Login = () => {
 
   const handleLogin = () => {
     window.location.href = `${API}/auth/signin`;
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${API}/auth/google`;
   };
 
   return (
@@ -31,12 +36,13 @@ const Login = () => {
         </button>
 
         <button
-          onClick={() => navigate('/email-signin')}
+          //onClick={() => navigate('/email-signin')}
+          onClick={handleGoogleLogin}
           className="btn btn-outline btn-primary w-full mt-5 flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
-          aria-label="Login with Email"
+          aria-label="Login with Google"
         >
-          <FaEnvelope aria-hidden="true" />
-          <span>Login with Email</span>
+          <FcGoogle aria-hidden="true" />
+          <span>Login with Google</span>
         </button>
 
         <div className="tooltip tooltip-info w-full mt-5" data-tip="GitHub Login is currently not accepted.">
