@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaSpinner, FaLock } from "react-icons/fa";
 import toast, { Toaster } from 'react-hot-toast';
-import { FaGoogle } from "react-icons/fa6";
+import { FcGoogle } from "react-icons/fc";
 
 const Callback = () => {
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ const Callback = () => {
       <div className="flex items-center space-x-4">
         <FaLock className="h-14 w-14 m-4" />
         <span className="text-3xl m-4 mr-4 ml-4">+</span>
-        <FaGoogle className="h-16 w-16 m-4 ml-4" />
+        <FcGoogle className="h-16 w-16 m-4 ml-4" />
       </div>
       {loading && (
         <div className="flex items-center mt-8 m-4">
