@@ -28,7 +28,7 @@ const Login = () => {
 
         <button
           onClick={handleLogin}
-          className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
+          className="btn btn-outline btn-primary font-bold w-full flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
           aria-label="Login with Discord"
         >
           <FaDiscord aria-hidden="true" />
@@ -38,7 +38,7 @@ const Login = () => {
         <button
           //onClick={() => navigate('/email-signin')}
           onClick={handleGoogleLogin}
-          className="btn btn-outline btn-primary w-full mt-5 flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
+          className="btn btn-outline btn-primary font-bold w-full mt-5 flex items-center justify-center gap-2 transition-all duration-200 hover:bg-primary hover:border-primary hover:text-white no-animation"
           aria-label="Login with Google"
         >
           <FcGoogle aria-hidden="true" />
