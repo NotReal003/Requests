@@ -61,9 +61,9 @@ const Callback = () => {
     <div className="flex flex-col items-center justify-center min-h-screen shadow-lg">
       <Toaster />
       <div className="flex items-center space-x-4">
-        <FcLock className="h-14 w-14 m-4" />
-        <span className="text-3xl m-4 mr-4 ml-4">+</span>
-        <FcGoogle className="h-16 w-16 m-4 ml-4" />
+        <FcLock className="h-16 w-16 m-4" />
+        <span className="text-3xl m-4">+</span>
+        <FcGoogle className="h-16 w-16 m-4" />
       </div>
       {loading && (
         <div className="flex items-center mt-8 m-4">
