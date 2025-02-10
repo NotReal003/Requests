@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaDiscord, FaSpinner, FaLock } from "react-icons/fa";
+import { FaSpinner, FaLock } from "react-icons/fa";
+import { FcLock } from "react-icons/fc";
 import toast, { Toaster } from 'react-hot-toast';
 
 const Callback = () => {
@@ -62,7 +63,7 @@ const Callback = () => {
   
   {/* Icons Section */}
   <div className="flex items-center space-x-6 mb-6">
-    <FaLock className="h-14 w-14 text-gray-700" />
+    <FcLock className="h-14 w-14 text-gray-700" />
     <span className="text-3xl font-semibold">+</span>
     <FaDiscord className="h-16 w-16 text-blue-600" />
   </div>
