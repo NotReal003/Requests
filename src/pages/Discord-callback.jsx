@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { FaSpinner, FaLock } from "react-icons/fa";
+import { FaSpinner, FaDiscord } from "react-icons/fa";
 import { FcLock } from "react-icons/fc";
 import toast, { Toaster } from 'react-hot-toast';
 
