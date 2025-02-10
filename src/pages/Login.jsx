@@ -61,7 +61,8 @@ const Login = () => {
           Don’t have an account?{" "}
           <span
             className="hover:underline"
-            //onClick={() => navigate('/email-signup')} className="text-info font-bold hover:underline"
+            //onClick={() => navigate('/email-signup')}
+            className="text-info font-bold hover:underline"
             >
             Sign up with Email (Not Available)
           </span>
