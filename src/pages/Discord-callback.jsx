@@ -57,27 +57,34 @@ const Callback = () => {
   }, [navigate]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen shadow-lg">
-      <Toaster />
-      <div className="flex items-center space-x-4">
-        <FaLock className="h-14 w-14 m-4" />
-        <span className="text-3xl m-4 mr-4">+</span>
-        <FaDiscord className="h-16 w-16 m-4 ml-4" />
-      </div>
-      {loading && (
-        <div className="flex items-center mt-8 m-4">
-          <div className="flex items-center justify-center">
-            <FaSpinner className="animate-spin inline-block align-middle m-4" />
-          </div>
-          <p className="font-serif">Please wait while we are securely connecting your Discord account.</p>
-        </div>
-      )}
-      {error && (
-        <div className="mt-8 m-4 font-serif text-red-500 justify-center">
-          <strong>{error}</strong>
-        </div>
-      )}
+    <div className="flex flex-col items-center justify-center min-h-screen px-6 py-8 shadow-lg">
+  <Toaster />
+  
+  {/* Icons Section */}
+  <div className="flex items-center space-x-6 mb-6">
+    <FaLock className="h-14 w-14 text-gray-700" />
+    <span className="text-3xl font-semibold">+</span>
+    <FaDiscord className="h-16 w-16 text-blue-600" />
+  </div>
+
+  {/* Loading State */}
+  {loading && (
+    <div className="flex flex-col items-center mt-6 space-y-4">
+      <FaSpinner className="h-6 w-6 animate-spin text-gray-600" />
+      <p className="font-serif text-center text-gray-700">
+        Please wait while we are securely connecting your Discord account.
+      </p>
     </div>
+  )}
+
+  {/* Error Message */}
+  {error && (
+    <div className="mt-6 px-4 py-2 text-center font-serif text-red-500 border border-red-400 rounded-md bg-red-100">
+      <strong>{error}</strong>
+    </div>
+  )}
+</div>
+
   );
 };
 
