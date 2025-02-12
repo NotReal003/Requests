@@ -45,6 +45,17 @@ const Login = () => {
           <span>Login with Google</span>
         </button>
 
+        <div className="tooltip tooltip-info w-full mt-5" data-tip="Email Login is currently not accepted.">
+          <button
+            disabled
+            className="btn btn-outline btn-primary w-full flex items-center justify-center gap-2 transition-all duration-200 cursor-not-allowed no-animation"
+            aria-label="Email login disabled"
+          >
+            <FaEnvelope aria-hidden="true" />
+            <span>Login with Email</span>
+          </button>
+        </div>
+
         <div className="tooltip tooltip-info w-full mt-5" data-tip="GitHub Login is currently not accepted.">
           <button
             disabled
