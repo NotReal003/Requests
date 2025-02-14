@@ -75,7 +75,7 @@ const Login = () => {
             onClick={() => navigate('/email-signup')}
             className="text-info font-bold hover:underline"
             >
-            Sign up with Email (Not Available)
+            Sign up with Email.
           </span>
         </p>
       </div>
