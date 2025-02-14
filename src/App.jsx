@@ -53,9 +53,9 @@ const App = () => {
     toast.error('No Internet connection');
   }
 
-  if (isOnline) {
-    toast.success('Connected with the server');
-  }
+//  if (isOnline) {
+//    toast.success('Connected with the server');
+//  }
 
   return (
     <Router>
