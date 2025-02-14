@@ -23,7 +23,7 @@ const NotFound = () => {
           transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
           className="text-6xl sm:text-8xl font-bold leading-tight mb-4 text-gray-300"
         >
-          404
+          Comming Soon
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -31,7 +31,7 @@ const NotFound = () => {
           transition={{ delay: 0.4, duration: 0.6 }}
           className="text-2xl mb-8 text-gray-400"
         >
-          Page Not Found
+          This future is being developed, please wait until we finish it.
         </motion.p>
         <motion.div
           whileHover={{ scale: 1.05 }}
