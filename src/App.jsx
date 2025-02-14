@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Navbar, Footer, OfflineWarning } from './components';
 import routeConfig from './routes';
 import axios from 'axios';
+import toast, { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,6 +35,10 @@ const App = () => {
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
 
+//    {!isOnline && (
+//           <OfflineWarning className="bg-black-100" />
+//          )}
+
     return () => {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
@@ -42,6 +47,10 @@ const App = () => {
 
   if (loading) {
     return <div className="loading loading-spinner text-info"></div>;
+  }
+
+  if (!isOnline) {
+    toast.error('No Internet connection');
   }
 
   return (
@@ -54,11 +63,9 @@ const App = () => {
              <Route key={index} path={route.path} element={route.element} />
            ))}
         </Routes>
-          {!isOnline && (
-           <OfflineWarning className="bg-black-100" />
-          )}
        </div>
        <Footer />
+       <Toaster />
      </div>
    </Router>
   );
