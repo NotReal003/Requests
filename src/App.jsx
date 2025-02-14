@@ -53,6 +53,10 @@ const App = () => {
     toast.error('No Internet connection');
   }
 
+  if (isOnline) {
+    toast.success('Connected with the server');
+  }
+
   return (
     <Router>
      <div className="App">
