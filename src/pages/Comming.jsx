@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-const NotFound = () => {
+const CommingSoon = () => {
   const navigate = useNavigate();
   return (
     <motion.div
@@ -49,4 +49,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default CommingSoon;

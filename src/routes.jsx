@@ -21,6 +21,7 @@ import {
   Analytics,
   Focus,
   Google_Callback,
+  Comming,
 } from './pages';
 
 const routes = (isAuthenticated) => [
@@ -40,8 +41,10 @@ const routes = (isAuthenticated) => [
   { path: "/profile", element: isAuthenticated ? <Profile /> : <Login /> },
   { path: "/admin/manage", element: isAuthenticated ? <AdminManage /> : <Login /> },
   { path: "/note", element: <Note /> },
-  { path: "/email-signup", element: isAuthenticated ? <Home /> : <EmailSignup /> },
-  { path: "/email-signin", element: isAuthenticated ? <Home /> : <EmailSignin /> },
+//  { path: "/email-signup", element: isAuthenticated ? <Home /> : <EmailSignup /> },
+  { path: "/email-signup", element: <Comming /> },
+  { path: "email-signin", element: <Comming /> },
+//  { path: "/email-signin", element: isAuthenticated ? <Home /> : <EmailSignin /> },
   { path: "/github/callback", element: isAuthenticated ? <Home /> : <GithubCallback /> },
   { path: "/about", element: <About /> },
   { path: "/analytics", element: isAuthenticated ? <Analytics /> : <Login /> },
