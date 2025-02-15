@@ -41,7 +41,9 @@ const AdminUsers = () => {
         const response = await axios.get(`${API}/manage/users/all`, {
           withCredentials: true,
         });
-        setUsers(response.data);
+
+        const userJson = (response.data.users);
+        setUsers(userJson);
       } catch (error) {
         if (error.response?.status === 403) {
           setLoading(false); 
@@ -62,7 +64,7 @@ const AdminUsers = () => {
   return (
     <div className="flex flex-col items-center justify-center max-w-md md:max-w-lg mx-auto min-h-screen p-4 shadow-lg">
       <div className="rounded-lg shadow-sm p-2">
-        <h1 className="text-2xl font-bold mb-4">Admin Users</h1>
+        <h1 className="text-2xl font-bold mb-4">Users</h1>
       </div>
 
       <div className="w-full max-w-3xl">
