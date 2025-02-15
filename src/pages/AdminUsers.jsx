@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { FaUserShield, FaUser, FaSpinner } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { formatDistanceToNow } from "date-fns";
@@ -12,13 +11,8 @@ const RoleBadge = ({ role }) => {
     moderator: "bg-blue-600 text-white",
     user: "bg-green-600 text-white",
   };
-
   return (
-    <span
-      className={`rounded-lg px-2 py-1 text-xs font-bold ${
-        roleStyles[role] || "bg-gray-600 text-white"
-      }`}
-    >
+    <span className={`rounded-lg px-2 py-1 text-xs font-bold ${roleStyles[role] || "bg-gray-600 text-white"}`}>
       {role.toUpperCase()}
     </span>
   );
@@ -37,28 +31,20 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [adminOnly, setAdminOnly] = useState(false);
-  const navigate = useNavigate();
+  const [selectedUser, setSelectedUser] = useState(null); // Selected user state
   const API = process.env.REACT_APP_API;
-  const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${API}/manage/users/all`, {
-          withCredentials: true,
-        });
-
-        // Convert object into an array and assign roles
+        const response = await axios.get(`${API}/manage/users/all`, { withCredentials: true });
         const userList = Object.values(response.data.users).map((user) => ({
           ...user,
           role: user.admin ? "admin" : user.staff ? "moderator" : "user",
         }));
-
         setUsers(userList);
       } catch (error) {
-        if (error.response?.status === 403) {
-          setAdminOnly(true);
-        }
+        if (error.response?.status === 403) setAdminOnly(true);
         console.error(error);
         setError("Failed to fetch users.");
       } finally {
@@ -66,31 +52,39 @@ const AdminUsers = () => {
       }
     };
     fetchUsers();
-  }, [token, API]);
+  }, [API]);
+
+  const fetchUserDetails = async (id) => {
+    try {
+      const response = await axios.get(`${API}/manage/users/${id}`, { withCredentials: true });
+      setSelectedUser(response.data); // Store the full user details
+    } catch (error) {
+      console.error("Failed to fetch user details:", error);
+    }
+  };
 
   if (adminOnly) return <AdminOnly />;
 
   return (
     <div className="flex flex-col items-center justify-center max-w-md md:max-w-lg mx-auto min-h-screen p-4 shadow-lg">
-      <div className="rounded-lg shadow-sm p-2">
-        <h1 className="text-2xl font-bold mb-4">Users</h1>
-      </div>
+      <h1 className="text-2xl font-bold mb-4">Users</h1>
 
-      <div className="w-full max-w-3xl">
-        <div className="space-y-4">
-          {loading ? (
-            <div className="flex items-center justify-center space-x-2">
-              <FaSpinner className="animate-spin inline-block align-middle mr-2" />
-              <p>Loading users...</p>
-            </div>
-          ) : error ? (
-            <p className="text-center text-red-600 font-bold">{error}</p>
-          ) : users.length > 0 ? (
-            users.map((user) => (
-              <div
-                key={user.id}
-                className="flex justify-between items-center p-4 bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg shadow-lg text-white cursor-pointer"
-              >
+      <div className="w-full max-w-3xl space-y-4">
+        {loading ? (
+          <div className="flex items-center justify-center space-x-2">
+            <FaSpinner className="animate-spin inline-block align-middle mr-2" />
+            <p>Loading users...</p>
+          </div>
+        ) : error ? (
+          <p className="text-center text-red-600 font-bold">{error}</p>
+        ) : users.length > 0 ? (
+          users.map((user) => (
+            <div
+              key={user.id}
+              className="flex flex-col bg-gray-800 p-4 rounded-lg shadow-lg text-white cursor-pointer"
+              onClick={() => fetchUserDetails(user.id)}
+            >
+              <div className="flex justify-between items-center">
                 <div className="flex items-center">
                   <UserIcon role={user.role} />
                   <div>
@@ -98,28 +92,35 @@ const AdminUsers = () => {
                       {user.username} <RoleBadge role={user.role} />
                     </h2>
                     <p className="text-sm">
-                      Joined{" "}
-                      {formatDistanceToNow(new Date(user.joinedAt), {
-                        addSuffix: true,
-                      })}
+                      Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
                     </p>
                   </div>
                 </div>
               </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-800">No users found.</p>
-          )}
-        </div>
 
-        <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-t border-slate-100 flex justify-start items-center rounded-md p-2">
-          <button
-            className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation"
-            onClick={() => navigate("/")}
-          >
-            <IoMdArrowRoundBack className="mr-2" /> Back
-          </button>
-        </div>
+              {selectedUser && selectedUser.id === user.id && (
+                <div className="mt-4 p-3 border-t border-gray-700 bg-gray-900 rounded-lg">
+                  <p><strong>Email:</strong> {selectedUser.email}</p>
+                  <p><strong>Display Name:</strong> {selectedUser.displayName}</p>
+                  <p><strong>Auth Type:</strong> {selectedUser.authType}</p>
+                  <p><strong>IP:</strong> {selectedUser.ip || "N/A"}</p>
+                  <p><strong>Device:</strong> {selectedUser.device || "Unknown"}</p>
+                </div>
+              )}
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-800">No users found.</p>
+        )}
+      </div>
+
+      <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-t border-slate-100 flex justify-start items-center rounded-md p-2">
+        <button
+          className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation"
+          onClick={() => setSelectedUser(null)}
+        >
+          <IoMdArrowRoundBack className="mr-2" /> Close Details
+        </button>
       </div>
     </div>
   );
