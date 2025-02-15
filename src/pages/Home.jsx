@@ -74,9 +74,6 @@ const Home = () => {
           <button onClick={() => handleNavigation('/Analytics')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
             <span className="flex items-center">Analytics</span>
           </button>
-          <button onClick={() => handleNavigation('/admin/users')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
-             <span className="flex items-center">Users</span>
-            </button>
           )}
         </div>
       </div>
