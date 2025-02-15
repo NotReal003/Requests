@@ -14,7 +14,8 @@ const AdminUsers = () => {
         const response = await axios.get("https://api.notreal003.xyz/manage/users/all", {
           withCredentials: true,
         });
-        setUsers(response.data);
+        setUsers(response.data ? Object.values(response.data) : []);
+
       } catch (err) {
         if (err.response?.status === 403) {
           setLoading(false);
@@ -34,7 +35,8 @@ const AdminUsers = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
-      {users.map((user) => (
+      {Array.isArray(users) && users.length > 0 ? (
+      users.map((user) => (
         <div key={user._id} className="card bg-base-100 shadow-md p-4 rounded-lg">
           <img
             src={
