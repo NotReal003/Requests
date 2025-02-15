@@ -101,7 +101,7 @@ const AdminUsers = () => {
                 </div>
               </div>
 
-              {selectedUser && selectedUser.id === user.id && (
+              {selectedUser && (
                 <div className="mt-4 p-3 border-t border-gray-700 bg-gray-900 rounded-lg">
                   <p><strong>Email:</strong> {selectedUser.email}</p>
                   <p><strong>Display Name:</strong> {selectedUser.displayName}</p>
