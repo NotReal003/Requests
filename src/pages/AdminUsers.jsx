@@ -58,7 +58,7 @@ const AdminUsers = () => {
   const fetchUserDetails = async (id) => {
     try {
       const response = await axios.get(`${API}/manage/user/${id}`, { withCredentials: true });
-      setSelectedUser(response.data);
+      setSelectedUser(response.data.user);
       toast.success("User details loaded");
     } catch (error) {
       toast.error("Failed to fetch user");
