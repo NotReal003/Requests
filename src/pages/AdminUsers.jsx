@@ -30,7 +30,7 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [adminOnly, SetAdminOnly] = useState(false);
+  const [adminOnly, setAdminOnly] = useState(false);
   const token = localStorage.getItem('jwtToken');
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
@@ -43,7 +43,7 @@ const AdminUsers = () => {
         });
         setUsers(response.data);
       } catch (error) {
-        if (err.response?.status === 403) {
+        if (error.response?.status === 403) {
           setLoading(false); 
           setAdminOnly(true);
         }       
