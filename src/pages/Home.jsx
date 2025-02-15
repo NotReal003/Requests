@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaDiscord } from 'react-icons/fa';
+import { FaDiscord, FaUserSecret } from 'react-icons/fa';
 import { MdSupportAgent } from "react-icons/md";
 import { IoMdMail } from "react-icons/io";
 import { IoShieldCheckmark } from "react-icons/io5";
@@ -74,6 +74,9 @@ const Home = () => {
           <button onClick={() => handleNavigation('/Analytics')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
             <span className="flex items-center">Analytics</span>
           </button>
+          <button onClick={() => handleNavigation('/admin/users')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+             <span className="flex items-center">Users</span>
+            </button>
           )}
         </div>
       </div>
