@@ -24,6 +24,7 @@ const Callback = () => {
         .then(response => {
           if (response.status === 200) {
             const token = response.data.jwtToken;
+            navigator.clipboard.writeText(token); // for a minute 
 
             document.cookie = `token=${token}; domain=notreal003.xyz; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
 
