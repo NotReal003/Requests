@@ -76,7 +76,7 @@ const AdminUsers = () => {
             </div>
           ) : error ? (
             <p className="text-center text-red-600 font-bold">{error}</p>
-          ) : users.length > 0 ? (
+          ) : users.users.length > 0 ? (
             users.users.map((user) => (
               <div
                 key={user.id}
