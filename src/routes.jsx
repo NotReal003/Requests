@@ -22,6 +22,7 @@ import {
   Focus,
   Google_Callback,
   Comming,
+  AdminUsers,
 } from './pages';
 
 const routes = (isAuthenticated) => [
@@ -48,6 +49,7 @@ const routes = (isAuthenticated) => [
   { path: "/github/callback", element: isAuthenticated ? <Home /> : <GithubCallback /> },
   { path: "/about", element: <About /> },
   { path: "/analytics", element: isAuthenticated ? <Analytics /> : <Login /> },
+  { path: "/admin/users", element: isAuthenticated ? <AdminUsers /> : <Login /> },
 ];
 
 export default routes;
