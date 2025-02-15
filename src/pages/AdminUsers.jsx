@@ -1,25 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { FaUserShield, FaUser, FaSpinner } from 'react-icons/fa';
-import { IoMdArrowRoundBack } from 'react-icons/io';
-import { formatDistanceToNow } from 'date-fns';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { FaUserShield, FaUser, FaSpinner } from "react-icons/fa";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { formatDistanceToNow } from "date-fns";
 import AdminOnly from "../components/AdminOnly";
 
 const RoleBadge = ({ role }) => {
   const roleStyles = {
-    admin: 'bg-red-600 text-white',
-    moderator: 'bg-blue-600 text-white',
-    user: 'bg-green-600 text-white',
+    admin: "bg-red-600 text-white",
+    moderator: "bg-blue-600 text-white",
+    user: "bg-green-600 text-white",
   };
 
   return (
-    <span className={`rounded-lg px-2 py-1 text-xs font-bold ${roleStyles[role] || 'bg-gray-600 text-white'}`}>{role.toUpperCase()}</span>
+    <span
+      className={`rounded-lg px-2 py-1 text-xs font-bold ${
+        roleStyles[role] || "bg-gray-600 text-white"
+      }`}
+    >
+      {role.toUpperCase()}
+    </span>
   );
 };
 
 const UserIcon = ({ role }) => {
-  return role === 'admin' ? (
+  return role === "admin" ? (
     <FaUserShield className="text-4xl mr-4" title="Admin" />
   ) : (
     <FaUser className="text-4xl mr-4" title="User" />
@@ -31,9 +37,9 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [adminOnly, setAdminOnly] = useState(false);
-  const token = localStorage.getItem('jwtToken');
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
+  const token = localStorage.getItem("jwtToken");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -42,15 +48,19 @@ const AdminUsers = () => {
           withCredentials: true,
         });
 
-        const userJson = (response.data);
-        setUsers(userJson);
+        // Convert object into an array and assign roles
+        const userList = Object.values(response.data.users).map((user) => ({
+          ...user,
+          role: user.admin ? "admin" : user.staff ? "moderator" : "user",
+        }));
+
+        setUsers(userList);
       } catch (error) {
         if (error.response?.status === 403) {
-          setLoading(false); 
           setAdminOnly(true);
-        }       
+        }
         console.error(error);
-        setError('Failed to fetch users.');
+        setError("Failed to fetch users.");
       } finally {
         setLoading(false);
       }
@@ -58,8 +68,7 @@ const AdminUsers = () => {
     fetchUsers();
   }, [token, API]);
 
-  
- if (adminOnly) return <AdminOnly />;
+  if (adminOnly) return <AdminOnly />;
 
   return (
     <div className="flex flex-col items-center justify-center max-w-md md:max-w-lg mx-auto min-h-screen p-4 shadow-lg">
@@ -76,8 +85,8 @@ const AdminUsers = () => {
             </div>
           ) : error ? (
             <p className="text-center text-red-600 font-bold">{error}</p>
-          ) : users.users.length > 0 ? (
-            users.users.map((user) => (
+          ) : users.length > 0 ? (
+            users.map((user) => (
               <div
                 key={user.id}
                 className="flex justify-between items-center p-4 bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg shadow-lg text-white cursor-pointer"
@@ -85,8 +94,15 @@ const AdminUsers = () => {
                 <div className="flex items-center">
                   <UserIcon role={user.role} />
                   <div>
-                    <h2 className="text-md font-bold">{user.username} <RoleBadge role={user.role} /></h2>
-                    <p className="text-sm">Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}</p>
+                    <h2 className="text-md font-bold">
+                      {user.username} <RoleBadge role={user.role} />
+                    </h2>
+                    <p className="text-sm">
+                      Joined{" "}
+                      {formatDistanceToNow(new Date(user.joinedAt), {
+                        addSuffix: true,
+                      })}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -96,8 +112,11 @@ const AdminUsers = () => {
           )}
         </div>
 
-        <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-1 border-t-slate-100 flex justify-start items-center rounded-md p-2">
-          <button className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation" onClick={() => navigate('/')}> 
+        <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-t border-slate-100 flex justify-start items-center rounded-md p-2">
+          <button
+            className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation"
+            onClick={() => navigate("/")}
+          >
             <IoMdArrowRoundBack className="mr-2" /> Back
           </button>
         </div>
