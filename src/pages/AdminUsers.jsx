@@ -4,6 +4,7 @@ import { FaUserShield, FaUser, FaSpinner } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { formatDistanceToNow } from "date-fns";
 import AdminOnly from "../components/AdminOnly";
+import toast, { Toaster } from 'react-hot-toast';
 
 const RoleBadge = ({ role }) => {
   const roleStyles = {
@@ -56,9 +57,11 @@ const AdminUsers = () => {
 
   const fetchUserDetails = async (id) => {
     try {
-      const response = await axios.get(`${API}/manage/users/${id}`, { withCredentials: true });
+      const response = await axios.get(`${API}/manage/user/${id}`, { withCredentials: true });
       setSelectedUser(response.data); // Store the full user details
+      toast.success('done');
     } catch (error) {
+      toast.error('Failed to fetch user');
       console.error("Failed to fetch user details:", error);
     }
   };
@@ -122,6 +125,7 @@ const AdminUsers = () => {
           <IoMdArrowRoundBack className="mr-2" /> Close Details
         </button>
       </div>
+      <Toaster />
     </div>
   );
 };
