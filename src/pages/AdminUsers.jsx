@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import AdminOnly from '../components/AdminOnly';
+import AdminOnly from "../components/AdminOnly";
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -15,13 +15,12 @@ const AdminUsers = () => {
           withCredentials: true,
         });
         setUsers(response.data ? Object.values(response.data) : []);
-
       } catch (err) {
         if (err.response?.status === 403) {
           setLoading(false);
           setAdminOnly(true);
         }
-        setError(err.response?.data?.message || 'Failed to fetch users.');
+        setError(err.response?.data?.message || "Failed to fetch users.");
       } finally {
         setLoading(false);
       }
@@ -36,23 +35,26 @@ const AdminUsers = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
       {Array.isArray(users) && users.length > 0 ? (
-      users.map((user) => (
-        <div key={user._id} className="card bg-base-100 shadow-md p-4 rounded-lg">
-          <img
-            src={
-              user.authType === "discord"
-                ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatarHash}.png`
-                : user.avatarHash
-            }
-            alt={user.username}
-            className="w-20 h-20 rounded-full mx-auto"
-          />
-          <h2 className="text-xl font-semibold text-center mt-2">{user.displayName || user.username}</h2>
-          <p className="text-center text-gray-500">{user.email}</p>
-          <p className="text-center capitalize text-sm text-gray-400">Auth: {user.authType}</p>
-          <p className="text-center text-xs text-gray-400">Joined: {new Date(user.joinedAt).toLocaleString()}</p>
-        </div>
-      ))}
+        users.map((user) => (
+          <div key={user._id} className="card bg-base-100 shadow-md p-4 rounded-lg">
+            <img
+              src={
+                user.authType === "discord"
+                  ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatarHash}.png`
+                  : user.avatarHash
+              }
+              alt={user.username}
+              className="w-20 h-20 rounded-full mx-auto"
+            />
+            <h2 className="text-xl font-semibold text-center mt-2">{user.displayName || user.username}</h2>
+            <p className="text-center text-gray-500">{user.email}</p>
+            <p className="text-center capitalize text-sm text-gray-400">Auth: {user.authType}</p>
+            <p className="text-center text-xs text-gray-400">Joined: {new Date(user.joinedAt).toLocaleString()}</p>
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-gray-500">No users found.</p>
+      )}
     </div>
   );
 };
