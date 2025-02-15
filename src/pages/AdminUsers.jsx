@@ -42,7 +42,7 @@ const AdminUsers = () => {
           withCredentials: true,
         });
 
-        const userJson = Object.values(response.data);
+        const userJson = (response.data);
         setUsers(userJson);
       } catch (error) {
         if (error.response?.status === 403) {
@@ -77,7 +77,7 @@ const AdminUsers = () => {
           ) : error ? (
             <p className="text-center text-red-600 font-bold">{error}</p>
           ) : users.length > 0 ? (
-            users.map((user) => (
+            users.users.map((user) => (
               <div
                 key={user.id}
                 className="flex justify-between items-center p-4 bg-gradient-to-r from-gray-700 to-gray-800 rounded-lg shadow-lg text-white cursor-pointer"
