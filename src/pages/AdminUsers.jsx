@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaUserShield, FaUser, FaSpinner } from 'react-icons/fa';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { formatDistanceToNow } from 'date-fns';
+import AdminOnly from "../components/AdminOnly";
 
 const RoleBadge = ({ role }) => {
   const roleStyles = {
@@ -29,6 +30,7 @@ const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [adminOnly, SetAdminOnly] = useState(false);
   const token = localStorage.getItem('jwtToken');
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
@@ -36,11 +38,15 @@ const AdminUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${API}/users`, {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await axios.get(`${API}/manage/users/all`, {
+          withCredentials: true,
         });
         setUsers(response.data);
       } catch (error) {
+        if (err.response?.status === 403) {
+          setLoading(false); 
+          setAdminOnly(true);
+        }       
         console.error(error);
         setError('Failed to fetch users.');
       } finally {
@@ -49,6 +55,9 @@ const AdminUsers = () => {
     };
     fetchUsers();
   }, [token, API]);
+
+  
+ if (adminOnly) return <AdminOnly />;
 
   return (
     <div className="flex flex-col items-center justify-center max-w-md md:max-w-lg mx-auto min-h-screen p-4 shadow-lg">
