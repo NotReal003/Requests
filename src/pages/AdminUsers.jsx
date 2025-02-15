@@ -4,7 +4,7 @@ import { FaUserShield, FaUser, FaSpinner } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { formatDistanceToNow } from "date-fns";
 import AdminOnly from "../components/AdminOnly";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 
 const RoleBadge = ({ role }) => {
   const roleStyles = {
@@ -32,7 +32,7 @@ const AdminUsers = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [adminOnly, setAdminOnly] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // Selected user state
+  const [selectedUser, setSelectedUser] = useState(null);
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
@@ -58,10 +58,10 @@ const AdminUsers = () => {
   const fetchUserDetails = async (id) => {
     try {
       const response = await axios.get(`${API}/manage/user/${id}`, { withCredentials: true });
-      setSelectedUser(response.data); // Store the full user details
-      toast.success('done');
+      setSelectedUser(response.data);
+      toast.success("User details loaded");
     } catch (error) {
-      toast.error('Failed to fetch user');
+      toast.error("Failed to fetch user");
       console.error("Failed to fetch user details:", error);
     }
   };
@@ -72,59 +72,58 @@ const AdminUsers = () => {
     <div className="flex flex-col items-center justify-center max-w-md md:max-w-lg mx-auto min-h-screen p-4 shadow-lg">
       <h1 className="text-2xl font-bold mb-4">Users</h1>
 
-      <div className="w-full max-w-3xl space-y-4">
-        {loading ? (
-          <div className="flex items-center justify-center space-x-2">
-            <FaSpinner className="animate-spin inline-block align-middle mr-2" />
-            <p>Loading users...</p>
-          </div>
-        ) : error ? (
-          <p className="text-center text-red-600 font-bold">{error}</p>
-        ) : users.length > 0 ? (
-          users.map((user) => (
-            <div
-              key={user.id}
-              className="flex flex-col bg-gray-800 p-4 rounded-lg shadow-lg text-white cursor-pointer"
-              onClick={() => fetchUserDetails(user.id)}
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
-                  <UserIcon role={user.role} />
-                  <div>
-                    <h2 className="text-md font-bold">
-                      {user.username} <RoleBadge role={user.role} />
-                    </h2>
-                    <p className="text-sm">
-                      Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
-                    </p>
+      {selectedUser ? (
+        <div className="w-full max-w-3xl bg-gray-800 p-4 rounded-lg shadow-lg text-white">
+          <h2 className="text-xl font-bold mb-2">{selectedUser.username}'s Details</h2>
+          <p><strong>Email:</strong> {selectedUser.email}</p>
+          <p><strong>Display Name:</strong> {selectedUser.displayName}</p>
+          <p><strong>Auth Type:</strong> {selectedUser.authType}</p>
+          <p><strong>IP:</strong> {selectedUser.ip || "N/A"}</p>
+          <p><strong>Device:</strong> {selectedUser.device || "Unknown"}</p>
+          <button
+            className="btn mt-4 text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br font-medium rounded-lg no-animation"
+            onClick={() => setSelectedUser(null)}
+          >
+            <IoMdArrowRoundBack className="mr-2" /> Close Details
+          </button>
+        </div>
+      ) : (
+        <div className="w-full max-w-3xl space-y-4">
+          {loading ? (
+            <div className="flex items-center justify-center space-x-2">
+              <FaSpinner className="animate-spin inline-block align-middle mr-2" />
+              <p>Loading users...</p>
+            </div>
+          ) : error ? (
+            <p className="text-center text-red-600 font-bold">{error}</p>
+          ) : users.length > 0 ? (
+            users.map((user) => (
+              <div
+                key={user.id}
+                className="flex flex-col bg-gray-800 p-4 rounded-lg shadow-lg text-white cursor-pointer"
+                onClick={() => fetchUserDetails(user.id)}
+              >
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <UserIcon role={user.role} />
+                    <div>
+                      <h2 className="text-md font-bold">
+                        {user.username} <RoleBadge role={user.role} />
+                      </h2>
+                      <p className="text-sm">
+                        Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-400">No users found.</p>
+          )}
+        </div>
+      )}
 
-              {selectedUser && (
-                <div className="mt-4 p-3 border-t border-gray-700 bg-gray-900 rounded-lg">
-                  <p><strong>Email:</strong> {selectedUser.email}</p>
-                  <p><strong>Display Name:</strong> {selectedUser.displayName}</p>
-                  <p><strong>Auth Type:</strong> {selectedUser.authType}</p>
-                  <p><strong>IP:</strong> {selectedUser.ip || "N/A"}</p>
-                  <p><strong>Device:</strong> {selectedUser.device || "Unknown"}</p>
-                </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-800">No users found.</p>
-        )}
-      </div>
-
-      <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-t border-slate-100 flex justify-start items-center rounded-md p-2">
-        <button
-          className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation"
-          onClick={() => setSelectedUser(null)}
-        >
-          <IoMdArrowRoundBack className="mr-2" /> Close Details
-        </button>
-      </div>
       <Toaster />
     </div>
   );
