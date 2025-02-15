@@ -42,7 +42,7 @@ const AdminUsers = () => {
           withCredentials: true,
         });
 
-        const userJson = Object.values(response.data.users);
+        const userJson = Object.values(response.data);
         setUsers(userJson);
       } catch (error) {
         if (error.response?.status === 403) {
