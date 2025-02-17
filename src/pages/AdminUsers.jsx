@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
 import { FaUserShield, FaUser, FaSpinner, FaUsers } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { formatDistanceToNow } from "date-fns";
 import AdminOnly from "../components/AdminOnly";
 import toast, { Toaster } from "react-hot-toast";
+import { useDebounce } from "use-debounce";
 
 const roleInfo = {
   admin: { className: "bg-red-600 text-white", Icon: FaUserShield, title: "Admin" },
@@ -13,210 +14,247 @@ const roleInfo = {
 };
 
 const RoleBadge = ({ role }) => {
-  const { className } = roleInfo[role] || { className: "bg-gray-600 text-white" };
+  const { className, title } = roleInfo[role] || { className: "bg-gray-600 text-white", title: "User" };
   return (
-    <span className={`rounded-lg px-2 py-1 text-xs font-bold ${className}`}>
+    <span className={`rounded-lg px-2 py-1 text-xs font-bold ${className}`} title={title}>
       {role.toUpperCase()}
     </span>
   );
 };
 
+const UserListItem = ({ user, onClick }) => {
+  const { Icon, title } = roleInfo[user.role] || { Icon: FaUser, title: "User" };
+  
+  return (
+    <li
+      className="p-4 bg-gray-800 rounded-lg shadow hover:bg-gray-700 transition cursor-pointer group"
+      onClick={onClick}
+      role="button"
+      tabIndex="0"
+      onKeyDown={(e) => e.key === 'Enter' && onClick()}
+      aria-label={`View details of ${user.username}`}
+    >
+      <div className="flex items-center">
+        <Icon className="text-4xl mr-4 transition-transform group-hover:scale-110" title={title} />
+        <div>
+          <div className="flex items-center space-x-2">
+            <span className="text-lg font-bold">{user.username}</span>
+            <RoleBadge role={user.role} />
+          </div>
+          <div className="text-sm text-gray-400">
+            Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+};
+
+const Pagination = ({ page, totalPages, setPage }) => (
+  <div className="flex justify-center items-center space-x-4 mt-6">
+    <button
+      disabled={page === 1}
+      onClick={() => setPage(p => p - 1)}
+      className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50 transition-colors hover:bg-gray-600"
+      aria-label="Previous page"
+    >
+      Prev
+    </button>
+    <span aria-live="polite">
+      Page {page} of {totalPages}
+    </span>
+    <button
+      disabled={page === totalPages}
+      onClick={() => setPage(p => p + 1)}
+      className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50 transition-colors hover:bg-gray-600"
+      aria-label="Next page"
+    >
+      Next
+    </button>
+  </div>
+);
+
+const UserModal = ({ user, onClose, loading, error }) => (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div 
+      className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md relative"
+      role="dialog"
+      aria-labelledby="user-details-title"
+    >
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors"
+        aria-label="Close details"
+      >
+        &times;
+      </button>
+      <h2 id="user-details-title" className="text-2xl font-semibold mb-4">
+        {user.username}'s Details
+      </h2>
+      {loading ? (
+        <div className="flex items-center justify-center py-4">
+          <FaSpinner className="animate-spin mr-2" /> Loading details...
+        </div>
+      ) : error ? (
+        <div className="text-red-500 text-center py-4">
+          {error} <button onClick={onClose} className="text-blue-400 hover:text-blue-300 ml-2">Try again</button>
+        </div>
+      ) : (
+        <>
+          <div className="space-y-3">
+            <p><strong>Email:</strong> <span className="text-gray-300">{user.email}</span></p>
+            <p><strong>Display Name:</strong> <span className="text-gray-300">{user.displayName}</span></p>
+            <p><strong>Auth Type:</strong> <span className="text-gray-300">{user.authType}</span></p>
+            <p><strong>IP:</strong> <span className="text-gray-300">{user.ip || "N/A"}</span></p>
+            <p><strong>Device:</strong> <span className="text-gray-300">{user.device || "Unknown"}</span></p>
+          </div>
+          <button
+            onClick={onClose}
+            className="mt-6 w-full flex items-center justify-center px-4 py-2 bg-purple-700 rounded hover:bg-purple-800 transition"
+          >
+            <IoMdArrowRoundBack className="mr-2" /> Close Details
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+);
+
 const AdminUsers = () => {
   const API = process.env.REACT_APP_API;
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [fetchError, setFetchError] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [adminOnly, setAdminOnly] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState(null);
   const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebounce(search, 300);
   const [page, setPage] = useState(1);
   const pageSize = 10;
 
-  // Fetch all users on mount
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(`${API}/manage/users/all`, { withCredentials: true });
-        const mappedUsers = Object.values(response.data.users).map((user) => ({
-          ...user,
-          role: user.admin ? "admin" : user.staff ? "moderator" : "user",
-        }));
-        setUsers(mappedUsers);
-      } catch (error) {
-        if (error.response?.status === 403) {
-          setAdminOnly(true);
-        } else {
-          setFetchError("Failed to fetch users: " + (error.response?.data?.message || error.message));
-          toast.error("Error loading users");
-        }
-      } finally {
-        setLoading(false);
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/manage/users/all`, { withCredentials: true });
+      const mappedUsers = Object.values(response.data.users).map(user => ({
+        ...user,
+        role: user.admin ? "admin" : user.staff ? "moderator" : "user",
+      }));
+      setUsers(mappedUsers);
+    } catch (error) {
+      if (error.response?.status === 403) {
+        setAdminOnly(true);
+      } else {
+        toast.error("Failed to load users: " + (error.response?.data?.message || error.message));
       }
-    };
-
-    fetchUsers();
+    } finally {
+      setLoading(false);
+    }
   }, [API]);
 
-  // Filter users based on search query
-  const filteredUsers = users.filter((user) =>
-    user.username.toLowerCase().includes(search.toLowerCase())
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const filteredUsers = useMemo(() => 
+    users.filter(user =>
+      user.username.toLowerCase().includes(debouncedSearch.toLowerCase())
+    ), 
+    [users, debouncedSearch]
   );
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredUsers.length / pageSize) || 1;
-  const paginatedUsers = filteredUsers.slice((page - 1) * pageSize, page * pageSize);
+  const totalPages = useMemo(() => 
+    Math.ceil(filteredUsers.length / pageSize) || 1,
+    [filteredUsers.length]
+  );
 
-  // Fetch user details when a user is clicked
-  const handleUserClick = async (id) => {
+  const paginatedUsers = useMemo(() =>
+    filteredUsers.slice((page - 1) * pageSize, page * pageSize),
+    [filteredUsers, page]
+  );
+
+  const handleUserClick = useCallback(async id => {
     setDetailLoading(true);
     setDetailError(null);
     try {
       const response = await axios.get(`${API}/manage/user/${id}`, { withCredentials: true });
       setSelectedUser(response.data.user);
-      toast.success("User details loaded");
     } catch (error) {
-      setDetailError("Failed to fetch user details: " + (error.response?.data?.message || error.message));
+      setDetailError("Failed to fetch details: " + (error.response?.data?.message || error.message));
       toast.error("Error loading user details");
     } finally {
       setDetailLoading(false);
     }
-  };
+  }, [API]);
 
-  // Close the details modal
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setSelectedUser(null);
     setDetailError(null);
-  };
+  }, []);
 
   if (adminOnly) return <AdminOnly />;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
-      <Toaster />
+      <Toaster position="bottom-right" />
       <div className="container mx-auto max-w-3xl">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold flex items-center">
-            <FaUsers className="mr-2" /> User Management
+            <FaUsers className="mr-2" aria-hidden="true" /> User Management
           </h1>
         </div>
 
         <input
           type="text"
           placeholder="Search users..."
-          className="w-full p-2 mb-4 rounded-lg border border-gray-700 bg-gray-800 text-white"
+          className="w-full p-3 mb-6 rounded-lg border border-gray-700 bg-gray-800 text-white focus:ring-2 focus:ring-purple-600 focus:outline-none"
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
             setPage(1);
           }}
+          aria-label="Search users"
         />
 
         {loading ? (
-          <div className="flex items-center justify-center">
-            <FaSpinner className="animate-spin mr-2" /> Loading users...
-          </div>
-        ) : fetchError ? (
-          <div className="text-red-500 text-center font-bold">{fetchError}</div>
-        ) : paginatedUsers.length > 0 ? (
-          <ul className="space-y-4">
-            {paginatedUsers.map((user) => {
-              const { Icon } = roleInfo[user.role] || { Icon: FaUser };
-              return (
-                <li
-                  key={user.id}
-                  className="p-4 bg-gray-800 rounded-lg shadow hover:bg-gray-700 transition cursor-pointer"
-                  onClick={() => handleUserClick(user.id)}
-                >
-                  <div className="flex items-center">
-                    <Icon className="text-4xl mr-4" title={roleInfo[user.role]?.title || "User"} />
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold">{user.username}</span>
-                        <RoleBadge role={user.role} />
-                      </div>
-                      <div className="text-sm">
-                        Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
-                      </div>
-                    </div>
+          <div className="space-y-4">
+            {[...Array(pageSize)].map((_, i) => (
+              <div key={i} className="p-4 bg-gray-800 rounded-lg animate-pulse">
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-gray-700 rounded-full mr-4" />
+                  <div className="flex-1">
+                    <div className="h-4 bg-gray-700 rounded w-1/3 mb-2" />
+                    <div className="h-3 bg-gray-700 rounded w-1/4" />
                   </div>
-                </li>
-              );
-            })}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : paginatedUsers.length > 0 ? (
+          <ul className="space-y-4" aria-label="User list">
+            {paginatedUsers.map(user => (
+              <UserListItem
+                key={user.id}
+                user={user}
+                onClick={() => handleUserClick(user.id)}
+              />
+            ))}
           </ul>
         ) : (
-          <p className="text-center text-gray-400">No users found.</p>
+          <p className="text-center text-gray-400 py-6">No users found matching your search.</p>
         )}
 
-        {/* Pagination Controls */}
-        <div className="flex justify-center items-center space-x-4 mt-6">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage(page - 1)}
-            className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50 transition-colors"
-          >
-            Prev
-          </button>
-          <span>
-            Page {page} of {totalPages}
-          </span>
-          <button
-            disabled={page === totalPages}
-            onClick={() => setPage(page + 1)}
-            className="px-4 py-2 bg-gray-700 rounded disabled:opacity-50 transition-colors"
-          >
-            Next
-          </button>
-        </div>
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
 
-      {/* Modal for User Details */}
       {selectedUser && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-2 right-2 text-3xl leading-none text-white hover:text-gray-400"
-              aria-label="Close details"
-            >
-              &times;
-            </button>
-            <h2 className="text-2xl font-semibold mb-4">{selectedUser.username}'s Details</h2>
-            {detailLoading ? (
-              <div className="flex items-center justify-center">
-                <FaSpinner className="animate-spin mr-2" /> Loading details...
-              </div>
-            ) : detailError ? (
-              <div className="text-red-500">{detailError}</div>
-            ) : (
-              <div className="space-y-2">
-                <p>
-                  <strong>Email:</strong> {selectedUser.email}
-                </p>
-                <p>
-                  <strong>Display Name:</strong> {selectedUser.displayName}
-                </p>
-                <p>
-                  <strong>Auth Type:</strong> {selectedUser.authType}
-                </p>
-                <p>
-                  <strong>IP:</strong> {selectedUser.ip || "N/A"}
-                </p>
-                <p>
-                  <strong>Device:</strong> {selectedUser.device || "Unknown"}
-                </p>
-              </div>
-            )}
-            <button
-              onClick={closeModal}
-              className="mt-4 flex items-center px-4 py-2 bg-purple-700 rounded hover:bg-purple-800 transition"
-            >
-              <IoMdArrowRoundBack className="mr-2" /> Close Details
-            </button>
-          </div>
-        </div>
+        <UserModal
+          user={selectedUser}
+          onClose={closeModal}
+          loading={detailLoading}
+          error={detailError}
+        />
       )}
     </div>
   );
