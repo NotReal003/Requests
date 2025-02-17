@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
-import { FaUserShield, FaUser, FaSpinner, FaUsers } from "react-icons/fa";
+import { FaUserShield, FaUser, FaSpinner, FaUsers, FaSave } from "react-icons/fa";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { formatDistanceToNow } from "date-fns";
 import AdminOnly from "../components/AdminOnly";
@@ -74,51 +74,94 @@ const Pagination = ({ page, totalPages, setPage }) => (
   </div>
 );
 
-const UserModal = ({ user, onClose, loading, error }) => (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-    <div 
-      className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md relative"
-      role="dialog"
-      aria-labelledby="user-details-title"
-    >
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors"
-        aria-label="Close details"
+const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
+  const [newRole, setNewRole] = useState(user.role);
+  const [updating, setUpdating] = useState(false);
+  
+  const handleRoleUpdate = async () => {
+    setUpdating(true);
+    try {
+      await onRoleChange(user.id, newRole);
+      toast.success("Role updated successfully!");
+    } catch (e) {
+      toast.error("Failed to update role: " + e.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div 
+        className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md relative"
+        role="dialog"
+        aria-labelledby="user-details-title"
       >
-        &times;
-      </button>
-      <h2 id="user-details-title" className="text-2xl font-semibold mb-4">
-        {user.username}'s Details
-      </h2>
-      {loading ? (
-        <div className="flex items-center justify-center py-4">
-          <FaSpinner className="animate-spin mr-2" /> Loading details...
-        </div>
-      ) : error ? (
-        <div className="text-red-500 text-center py-4">
-          {error} <button onClick={onClose} className="text-blue-400 hover:text-blue-300 ml-2">Try again</button>
-        </div>
-      ) : (
-        <>
-          <div className="space-y-3">
-            <p><strong>Email:</strong> <span className="text-gray-300">{user.email}</span></p>
-            <p><strong>Display Name:</strong> <span className="text-gray-300">{user.displayName}</span></p>
-            <p><strong>Auth Type:</strong> <span className="text-gray-300">{user.authType}</span></p>
-            <p><strong>IP:</strong> <span className="text-gray-300">{user.ip || "N/A"}</span></p>
-            <p><strong>Device:</strong> <span className="text-gray-300">{user.device || "Unknown"}</span></p>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-2xl text-gray-400 hover:text-white transition-colors"
+          aria-label="Close details"
+        >
+          &times;
+        </button>
+        <h2 id="user-details-title" className="text-2xl font-semibold mb-4">
+          {user.username}'s Details
+        </h2>
+        {loading ? (
+          <div className="flex items-center justify-center py-4">
+            <FaSpinner className="animate-spin mr-2" /> Loading details...
           </div>
-          <button
-            onClick={onClose}
-            className="mt-6 w-full flex items-center justify-center px-4 py-2 bg-purple-700 rounded hover:bg-purple-800 transition"
-          >
-            <IoMdArrowRoundBack className="mr-2" /> Close Details
-          </button>
-        </>
-      )}
+        ) : error ? (
+          <div className="text-red-500 text-center py-4">
+            {error} <button onClick={onClose} className="text-blue-400 hover:text-blue-300 ml-2">Try again</button>
+          </div>
+        ) : (
+          <>
+            <div className="space-y-3">
+              <p><strong>Email:</strong> <span className="text-gray-300">{user.email}</span></p>
+              <p><strong>Display Name:</strong> <span className="text-gray-300">{user.displayName}</span></p>
+              <div className="flex items-center space-x-2">
+                <strong>Role:</strong>
+                <select
+                  value={newRole}
+                  onChange={(e) => setNewRole(e.target.value)}
+                  className="bg-gray-800 text-white px-2 py-1 rounded"
+                  disabled={updating}
+                >
+                  {Object.keys(roleInfo).map(role => (
+                    <option key={role} value={role}>{roleInfo[role].title}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleRoleUpdate}
+                  disabled={updating || newRole === user.role}
+                  className="px-2 py-1 bg-purple-700 rounded hover:bg-purple-800 disabled:opacity-50 flex items-center"
+                >
+                  {updating ? (
+                    <FaSpinner className="animate-spin" />
+                  ) : (
+                    <>
+                      <FaSave className="mr-1" /> Update
+                    </>
+                  )}
+                </button>
+              </div>
+              <p><strong>Auth Type:</strong> <span className="text-gray-300">{user.authType}</span></p>
+              <p><strong>IP:</strong> <span className="text-gray-300">{user.ip || "N/A"}</span></p>
+              <p><strong>Device:</strong> <span className="text-gray-300">{user.device || "Unknown"}</span></p>
+            </div>
+            <button
+              onClick={onClose}
+              className="mt-6 w-full flex items-center justify-center px-4 py-2 bg-purple-700 rounded hover:bg-purple-800 transition"
+            >
+              <IoMdArrowRoundBack className="mr-2" /> Close Details
+            </button>
+          </>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const AdminUsers = () => {
   const API = process.env.REACT_APP_API;
@@ -147,6 +190,7 @@ const AdminUsers = () => {
         setAdminOnly(true);
       } else {
         toast.error("Failed to load users: " + (error.response?.data?.message || error.message));
+        throw error;
       }
     } finally {
       setLoading(false);
@@ -154,8 +198,27 @@ const AdminUsers = () => {
   }, [API]);
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers().catch(() => {});
   }, [fetchUsers]);
+
+  const handleRoleChange = useCallback(async (userId, newRole) => {
+    try {
+      await axios.patch(
+        `${API}/manage/user/${userId}/role`,
+        { role: newRole },
+        { withCredentials: true }
+      );
+      
+      setUsers(prevUsers => prevUsers.map(user => 
+        user.id === userId ? { ...user, role: newRole } : user
+      ));
+      
+      setSelectedUser(prev => prev && { ...prev, role: newRole });
+    } catch (error) {
+      toast.error("Role update failed: " + (error.response?.data?.message || error.message));
+      throw error;
+    }
+  }, [API]);
 
   const filteredUsers = useMemo(() => 
     users.filter(user =>
@@ -179,7 +242,10 @@ const AdminUsers = () => {
     setDetailError(null);
     try {
       const response = await axios.get(`${API}/manage/user/${id}`, { withCredentials: true });
-      setSelectedUser(response.data.user);
+      setSelectedUser({
+        ...response.data.user,
+        role: response.data.user.admin ? "admin" : response.data.user.staff ? "moderator" : "user"
+      });
     } catch (error) {
       setDetailError("Failed to fetch details: " + (error.response?.data?.message || error.message));
       toast.error("Error loading user details");
@@ -203,6 +269,13 @@ const AdminUsers = () => {
           <h1 className="text-3xl font-bold flex items-center">
             <FaUsers className="mr-2" aria-hidden="true" /> User Management
           </h1>
+          <button
+            onClick={fetchUsers}
+            className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 flex items-center"
+            disabled={loading}
+          >
+            {loading ? <FaSpinner className="animate-spin mr-2" /> : "Refresh"}
+          </button>
         </div>
 
         <input
@@ -254,6 +327,7 @@ const AdminUsers = () => {
           onClose={closeModal}
           loading={detailLoading}
           error={detailError}
+          onRoleChange={handleRoleChange}
         />
       )}
     </div>
