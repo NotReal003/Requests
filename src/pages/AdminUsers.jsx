@@ -9,7 +9,7 @@ import { useDebounce } from "use-debounce";
 
 const roleInfo = {
   admin: { className: "bg-red-600 text-white", Icon: FaUserShield, title: "Admin" },
-  moderator: { className: "bg-blue-600 text-white", Icon: FaUser, title: "Moderator" },
+  mod: { className: "bg-blue-600 text-white", Icon: FaUser, title: "Mod" },
   user: { className: "bg-green-600 text-white", Icon: FaUser, title: "User" },
 };
 
@@ -185,7 +185,7 @@ const AdminUsers = () => {
       const response = await axios.get(`${API}/manage/users/all`, { withCredentials: true });
       const mappedUsers = Object.values(response.data.users).map(user => ({
         ...user,
-        role: user.admin ? "admin" : user.staff ? "moderator" : "user",
+        role: user.admin ? "admin" : user.staff ? "mod" : "user",
       }));
       setUsers(mappedUsers);
     } catch (error) {
