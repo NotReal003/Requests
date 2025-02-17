@@ -207,7 +207,7 @@ const AdminUsers = () => {
   const handleRoleChange = useCallback(async (userId, newRole) => {
     try {
       await axios.patch(
-        `${API}/manage/user/${userId}/role`,
+        `${API}/staff/manage/${userId}/role`,
         { role: newRole },
         { withCredentials: true }
       );
