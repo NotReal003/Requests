@@ -139,7 +139,7 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
 >
   {updating ? (
     <span className="flex items-center">
-      <FaSpinner className="animate-spin mr-2" /> Updating...
+      <FaSpinner className="animate-spin mr-2" /> Update
     </span>
   ) : (
     <span className="flex items-center">
