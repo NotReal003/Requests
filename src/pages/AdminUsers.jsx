@@ -138,7 +138,7 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
                   className="px-2 py-1 bg-purple-700 rounded hover:bg-purple-800 disabled:opacity-50 flex items-center"
                 >
                   {updating ? (
-                    <FaSpinner className="animate-spin mr-1" /> Update
+                    <span><FaSpinner className="animate-spin mr-1" /> Update</span>
                   ) : (
                     <>
                       <FaSave className="mr-1" /> Update
