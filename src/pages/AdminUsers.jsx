@@ -133,18 +133,21 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
                   ))}
                 </select>
                 <button
-                  onClick={handleRoleUpdate}
-                  disabled={updating || newRole === user.role}
-                  className="px-2 py-1 bg-purple-700 rounded hover:bg-purple-800 disabled:opacity-50 flex items-center"
-                >
-                  {updating ? (
-                    <span><FaSpinner className="animate-spin mr-1" /> Update</span>
-                  ) : (
-                    <>
-                      <FaSave className="mr-1" /> Update
-                    </>
-                  )}
-                </button>
+  onClick={handleRoleUpdate}
+  disabled={updating || newRole === user.role}
+  className="px-3 py-1.5 bg-purple-700 rounded hover:bg-purple-800 disabled:opacity-50 flex items-center justify-center"
+>
+  {updating ? (
+    <span className="flex items-center">
+      <FaSpinner className="animate-spin mr-2" /> Updating...
+    </span>
+  ) : (
+    <span className="flex items-center">
+      <FaSave className="mr-2" /> Update
+    </span>
+  )}
+</button>
+
               </div>
               <p><strong>Auth Type:</strong> <span className="text-gray-300">{user.authType}</span></p>
               <p><strong>IP:</strong> <span className="text-gray-300">{user.ip || "N/A"}</span></p>
