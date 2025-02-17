@@ -138,7 +138,7 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
                   className="px-2 py-1 bg-purple-700 rounded hover:bg-purple-800 disabled:opacity-50 flex items-center"
                 >
                   {updating ? (
-                    <FaSpinner className="animate-spin" />
+                    <FaSpinner className="animate-spin mr-1" /> Update
                   ) : (
                     <>
                       <FaSave className="mr-1" /> Update
@@ -263,7 +263,7 @@ const AdminUsers = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-4">
-      <Toaster position="bottom-right" />
+      <Toaster />
       <div className="container mx-auto max-w-3xl">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold flex items-center">
