@@ -7,20 +7,21 @@ import { MdDelete, MdUpdate } from 'react-icons/md';
 import toast, { Toaster } from 'react-hot-toast';
 import AdminOnly from '../components/AdminOnly';
 
-// Constants
-const STATUS_OPTIONS = [
+// Constants with explicit types
+const STATUS_OPTIONS: readonly string[] = [
   'APPROVED', 'DENIED', 'PENDING',
-  'RESUBMIT_REQUIRED', 'CANCELLED', 'RESOLVED' ];
+  'RESUBMIT_REQUIRED', 'CANCELLED', 'RESOLVED'
+];
 
-const REQUEST_TYPES = {
+const REQUEST_TYPES: { [key: string]: string } = {
   REPORT: 'report',
   SUPPORT: 'support',
   GUILD: 'guild-application'
 };
 
 // Types
-type RequestType = typeof REQUEST_TYPES[keyof typeof REQUEST_TYPES];
-type StatusType = typeof STATUS_OPTIONS[number];
+type RequestType = 'report' | 'support' | 'guild-application';
+type StatusType = 'APPROVED' | 'DENIED' | 'PENDING' | 'RESUBMIT_REQUIRED' | 'CANCELLED' | 'RESOLVED';
 
 interface RequestData {
   id?: string;
@@ -51,11 +52,11 @@ const sanitizeInput = (input: string): string => {
   
   return input
     .replace(/[<>&'"]/g, (char) => ({
-      '<': '&lt;',
-      '>': '&gt;',
-      '&': '&amp;',
-      "'": '&#x27;',
-      '"': '&quot;'
+      '<': '<',
+      '>': '>',
+      '&': '&',
+      "'": ''',
+      '"': '"'
     }[char] || char))
     .replace(/\n{3,}/g, '\n\n')
     .trim();
