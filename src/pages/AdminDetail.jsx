@@ -10,8 +10,7 @@ import AdminOnly from '../components/AdminOnly';
 // Constants
 const STATUS_OPTIONS = [
   'APPROVED', 'DENIED', 'PENDING',
-  'RESUBMIT_REQUIRED', 'CANCELLED', 'RESOLVED'
-] as const;
+  'RESUBMIT_REQUIRED', 'CANCELLED', 'RESOLVED' ];
 
 const REQUEST_TYPES = {
   REPORT: 'report',
