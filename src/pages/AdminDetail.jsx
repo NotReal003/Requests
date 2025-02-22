@@ -16,7 +16,7 @@ const REQUEST_TYPES = {
   REPORT: 'report',
   SUPPORT: 'support',
   GUILD: 'guild-application'
-} as const;
+};
 
 // Types
 type RequestType = typeof REQUEST_TYPES[keyof typeof REQUEST_TYPES];
