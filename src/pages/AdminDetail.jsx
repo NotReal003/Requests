@@ -1,287 +1,357 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import toast, { Toaster } from 'react-hot-toast';
 import { MdDelete, MdUpdate } from 'react-icons/md';
+import toast, { Toaster } from 'react-hot-toast';
 import AdminOnly from '../components/AdminOnly';
 
+const STATUS_OPTIONS = [
+  'APPROVED', 'DENIED', 'PENDING', 
+  'RESUBMIT_REQUIRED', 'CANCELLED', 'RESOLVED'
+];
+
+const REQUEST_TYPES = {
+  REPORT: 'report',
+  SUPPORT: 'support',
+  GUILD: 'guild-application'
+};
+
 function AdminDetail() {
+  const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const requestId = urlParams.get('id');
-  const [request, setRequest] = useState(null);
-  const [alert, setAlert] = useState(null);
-  const [status, setStatus] = useState('');
-  const [reviewMessage, setReviewMessage] = useState('');
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [adminOnly, setAdminOnly] = useState(false);
-  const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
 
-  const sanitizeInput = (input) => {
+  const [state, setState] = useState({
+    request: null,
+    status: '',
+    reviewMessage: '',
+    isLoading: false,
+    error: null,
+    showDeleteModal: false,
+    isAdminOnly: false
+  });
+
+  const sanitizeInput = useCallback((input) => {
+    if (!input) return '';
     const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+    const cleanText = input
+      .replace(/[<>&'"]/g, (char) => ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        "'": '&#x27;',
+        '"': '&quot;'
+      }[char] || char))
+      .replace(/\n{2,}/g, '\n');
+    return urlRegex.test(input) ? input : cleanText;
+  }, []);
 
-    const normalizeNewlines = (text) => text.replace(/\n{2,}/g, '\n');
-
-    const sanitizeHtml = (text) =>
-      text.replace(/[<>&'"]/g, (char) => {
-        switch (char) {
-          case '<': return '&lt;';
-          case '>': return '&gt;';
-          case '&': return '&amp;';
-          case "'": return '&#39;';
-          case '"': return '&quot;';
-          default: return char;
-        }
+  const fetchRequest = useCallback(async () => {
+    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    try {
+      const response = await axios.get(`${API}/admin/requests/${requestId}`, {
+        withCredentials: true,
       });
-
-    const sanitizedInput = urlRegex.test(input) ? sanitizeHtml(input) : sanitizeHtml(input);
-
-    return normalizeNewlines(sanitizedInput);
-  };
+      setState(prev => ({
+        ...prev,
+        request: response.data,
+        status: response.data.status,
+        reviewMessage: response.data.reviewMessage || '',
+        isLoading: false
+      }));
+    } catch (error) {
+      setState(prev => ({
+        ...prev,
+        isLoading: false,
+        isAdminOnly: error.response?.status === 403,
+        error: error.response?.data.message || 'Failed to load request'
+      }));
+      toast.error('Failed to load request details');
+    }
+  }, [requestId, API]);
 
   useEffect(() => {
-    const fetchRequest = async () => {
-      try {
-        const response = await axios.get(`${API}/admin/requests/${requestId}`, {
-          withCredentials: true,
-        });
-
-        // Success case
-        setRequest(response.data);
-        setStatus(response.data.status);
-        setReviewMessage(response.data.reviewMessage || '');
-      } catch (error) {
-        const errorStatus = error.response?.status;
-
-        if (errorStatus === 403) {
-          setAdminOnly(true);
-        } else {
-          toast.warn('Something went wrong, please try again later');
-        }
-      }
-    };
-
     fetchRequest();
-  }, [requestId, API, navigate]);
+  }, [fetchRequest]);
 
-  const handleUpdateAndSendEmail = async () => {
-
-    const sanitizedReviewMessage = sanitizeInput(reviewMessage);
+  const handleUpdateAndSendEmail = useCallback(async () => {
+    setState(prev => ({ ...prev, isLoading: true, error: null }));
+    const sanitizedMessage = sanitizeInput(state.reviewMessage);
+    
     try {
       const token = localStorage.getItem('jwtToken');
-
       const updateResponse = await axios.patch(
         `${API}/admin/${requestId}`,
-        { status, reviewMessage: sanitizedReviewMessage },
+        { status: state.status, reviewMessage: sanitizedMessage },
         { withCredentials: true }
       );
 
-      if (updateResponse.status === 200) {
-        toast.success(updateResponse.data.message || 'Request Updated Successfully.');
-
-        // Send the email
-        const emailResponse = await axios.post(
-          `${API}/admin/send/email`,
-          {
-            requestId,
-            reviewMessage,
-            status,
-            username: request.username,
-          },
-          { headers: { Authorization: `${token}` } }
-        );
-
-        if (emailResponse.status === 200) {
-          toast.success('Updated user on email :)');
-        } else {
-          toast.error('Unable to send email :/');
-        }
-      } else {
-        toast.error(updateResponse.data.message || 'Request was updated but something might have gone wrong.');
-      }
+      toast.success(updateResponse.data.message || 'Request updated successfully');
+      
+      await axios.post(
+        `${API}/admin/send/email`,
+        {
+          requestId,
+          reviewMessage: sanitizedMessage,
+          status: state.status,
+          username: state.request?.username,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      toast.success('Email notification sent');
+      setState(prev => ({ ...prev, isLoading: false }));
     } catch (error) {
-      if (error.response?.status === 403) {
-        setAdminOnly(true);
-        setAlert(null);
-      } else if (error.response) {
-        toast.error(error.response.data.message || 'Error updating the request.');
-        setAlert(error.response.data.message || 'Error updating the request.');
-      } else {
-        toast.error('Something is wrong :/');
-      }
+      setState(prev => ({
+        ...prev,
+        isLoading: false,
+        isAdminOnly: error.response?.status === 403,
+        error: error.response?.data.message || 'Update failed'
+      }));
+      toast.error(error.response?.data.message || 'Failed to process request');
     }
-  };
+  }, [API, requestId, state.status, state.reviewMessage, state.request?.username, sanitizeInput]);
 
-  const handleDelete = async () => {
-    const token = localStorage.getItem('jwtToken');
+  const handleDelete = useCallback(async () => {
+    setState(prev => ({ ...prev, isLoading: true }));
     try {
       await axios.delete(`${API}/admin/${requestId}`, {
         withCredentials: true,
       });
-      toast.success('Request deleted successfully.');
+      toast.success('Request deleted successfully');
       navigate('/admin');
     } catch (error) {
-      toast.error('Error deleting the request.');
+      toast.error('Failed to delete request');
+      setState(prev => ({ ...prev, isLoading: false }));
     }
-    setShowDeleteModal(false);
+  }, [API, requestId, navigate]);
+
+  const renderRequestFields = () => {
+    if (!state.request) return null;
+    
+    const fields = {
+      [REQUEST_TYPES.REPORT]: {
+        label: 'Discord Message Link / Evidence',
+        value: state.request.messageLink
+      },
+      [REQUEST_TYPES.SUPPORT]: {
+        label: 'Support Request',
+        value: state.request.messageLink
+      },
+      [REQUEST_TYPES.GUILD]: [
+        { label: 'In-Game Name', value: state.request.inGameName },
+        { label: 'Reason for Joining', value: state.request.messageLink }
+      ]
+    };
+
+    const typeFields = fields[state.request.type];
+    if (!typeFields) return null;
+
+    return Array.isArray(typeFields) ? typeFields.map(field => (
+      <ReadonlyField key={field.label} {...field} />
+    )) : <ReadonlyField {...typeFields} />;
   };
 
-  if (!request && adminOnly) {
-    return <AdminOnly />;
-  }
-
-  if (!request) {
-    return (
-      <div className="flex w-52 flex-col gap-4 container mx-auto px-4 py-8">
-        <div className="skeleton h-32 w-full"></div>
-        <div className="skeleton h-6 w-30"></div>
-      </div>
-    );
-  }
+  if (state.isAdminOnly) return <AdminOnly />;
+  if (!state.request && state.isLoading) return <LoadingSkeleton />;
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {alert && (
-        <div className={`alert alert-${alert.type} shadow-lg mb-4`}>
-          <div>
-            <span>{alert.message}</span>
-          </div>
+      <Toaster position="top-right" />
+      
+      {state.error && (
+        <div className="alert alert-error shadow-lg mb-4">
+          <span>{state.error}</span>
         </div>
       )}
-      <div className="card p-2 shadow-lg bg-base-100">
+
+      <div className="card shadow-lg bg-base-100">
         <div className="card-body">
-          <h2 className="card-title">Request Details ({request.status})</h2>
-          <div className="form-control">
-            <label className="label">Review Message</label>
-            <textarea
-              value={reviewMessage}
-              onChange={(e) => {
-                setReviewMessage(e.target.value);
-                e.target.style.height = "auto"; // 
-                e.target.style.height = `${e.target.scrollHeight}px`; //
-              }}
-              className="textarea text-white textarea-bordered bg-orange-600 focus:outline-none"
-              placeholder="Enter your review message"
-              style={{ overflow: "hidden", resize: "none" }} //
-            />
+          <h2 className="card-title">
+            Request Details {state.request?.status && `(${state.request.status})`}
+          </h2>
 
-          </div>
-          <div className="form-control">
-            <label className="label">Request Status</label>
-            <select
-              className="select select-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="APPROVED">Approved</option>
-              <option value="DENIED">Denied</option>
-              <option value="PENDING">Pending</option>
-              <option value="RESUBMIT_REQUIRED">Resubmit Required</option>
-              <option value="CANCELLED">Cancelled</option>
-              <option value="RESOLVED">Resolved</option>
-            </select>
-          </div>
-          <div className="form-control">
-            <label className="label">From User</label>
-            <textarea
-              value={`${request.username} / ${request.id}`}
-              readOnly
-              className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+          <TextAreaField
+            label="Review Message"
+            value={state.reviewMessage}
+            onChange={(e) => setState(prev => ({ 
+              ...prev, 
+              reviewMessage: e.target.value 
+            }))}
+            placeholder="Enter your review message"
+            disabled={state.isLoading}
+          />
+
+          <SelectField
+            label="Request Status"
+            value={state.status}
+            onChange={(e) => setState(prev => ({ ...prev, status: e.target.value }))}
+            options={STATUS_OPTIONS}
+            disabled={state.isLoading}
+          />
+
+          <ReadonlyField
+            label="From User"
+            value={`${state.request?.username || ''} / ${state.request?.id || ''}`}
+          />
+
+          {renderRequestFields()}
+
+          <ReadonlyField
+            label="Additional Information"
+            value={state.request?.additionalInfo || 'None provided'}
+          />
+
+          <div className="flex gap-4 mt-6">
+            <ActionButton
+              onClick={handleUpdateAndSendEmail}
+              icon={<MdUpdate />}
+              text="Update & Send Email"
+              color="blue"
+              disabled={state.isLoading}
+              loading={state.isLoading}
             />
-          </div>
-          {request.type === 'report' && (
-            <div className="form-control">
-              <label className="label">Discord Message Link / Evidence (required)</label>
-              <textarea
-                value={request.messageLink}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
-            </div>
-          )}
-          {request.type === 'support' && (
-            <div className="form-control">
-              <label className="label">Your support request (required)</label>
-              <textarea
-                value={request.messageLink}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
-            </div>
-          )}
-          {request.type === 'guild-application' && (
-            <div className="form-control">
-              <label className="label">In-Game Name (required)</label>
-              <textarea
-                value={request.inGameName}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
-            </div>
-          )}
-          {request.type === 'guild-application' && (
-            <div className="form-control">
-              <label className="label">Reason for joining the guild? (required)</label>
-              <textarea
-                value={request.messageLink}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
-            </div>
-          )}
-          <div className="form-control">
-            <label className="label">Anything else you would like to add?</label>
-            <textarea
-              value={request.additionalInfo}
-              readOnly
-              className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+            <ActionButton
+              onClick={() => setState(prev => ({ ...prev, showDeleteModal: true }))}
+              icon={<MdDelete />}
+              text="Delete Request"
+              color="red"
+              variant="outline"
+              disabled={state.isLoading}
             />
-          </div>
-          <div className="form-control mt-4">
-            <button onClick={handleUpdateAndSendEmail} className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all">
-              <MdUpdate /> Update Request & Send Email
-            </button>
-          </div>
-          <div className="form-control mt-4">
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="btn btn-outline hover:btn-error no-animation"
-            >
-              <MdDelete /> Delete Request
-            </button>
           </div>
         </div>
       </div>
-      <div className="mt-4">
-        <button className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all" onClick={() => navigate(-1)}>
-          <IoMdArrowRoundBack /> Back
-        </button>
-      </div>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Confirm Deletion</h3>
-            <p>Are you sure you want to delete this request? This action cannot be undone.</p>
-            <div className="modal-action">
-              <button onClick={handleDelete} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all">
-                Confirm Delete
-              </button>
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      <Toaster />
+      <ActionButton
+        onClick={() => navigate(-1)}
+        icon={<IoMdArrowRoundBack />}
+        text="Back"
+        color="purple"
+        className="mt-4"
+        disabled={state.isLoading}
+      />
+
+      <DeleteModal
+        isOpen={state.showDeleteModal}
+        onConfirm={handleDelete}
+        onCancel={() => setState(prev => ({ ...prev, showDeleteModal: false }))}
+        isLoading={state.isLoading}
+      />
     </div>
   );
 }
+
+// Reusable Components
+const TextAreaField = ({ label, value, onChange, placeholder, disabled }) => (
+  <div className="form-control">
+    <label className="label font-medium">{label}</label>
+    <textarea
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      disabled={disabled}
+      className="textarea textarea-bordered bg-orange-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+      style={{ minHeight: '100px', resize: 'vertical' }}
+    />
+  </div>
+);
+
+const SelectField = ({ label, value, onChange, options, disabled }) => (
+  <div className="form-control">
+    <label className="label font-medium">{label}</label>
+    <select
+      value={value}
+      onChange={onChange}
+      disabled={disabled}
+      className="select select-bordered focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+    >
+      {options.map(option => (
+        <option key={option} value={option}>
+          {option.charAt(0) + option.slice(1).toLowerCase()}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+const ReadonlyField = ({ label, value }) => (
+  <div className="form-control">
+    <label className="label font-medium">{label}</label>
+    <textarea
+      value={value || 'N/A'}
+      readOnly
+      className="textarea textarea-bordered focus:outline-none bg-gray-100"
+      style={{ minHeight: '80px' }}
+    />
+  </div>
+);
+
+const ActionButton = ({ 
+  onClick, 
+  icon, 
+  text, 
+  color, 
+  variant = 'solid', 
+  disabled, 
+  loading, 
+  className 
+}) => (
+  <button
+    onClick={onClick}
+    disabled={disabled || loading}
+    className={`btn ${variant === 'outline' ? 'btn-outline' : ''} 
+      bg-${color}-600 text-white hover:bg-${color}-700 
+      disabled:opacity-50 flex items-center gap-2 ${className}`}
+  >
+    {loading ? (
+      <span className="loading loading-spinner"></span>
+    ) : (
+      <>
+        {icon}
+        {text}
+      </>
+    )}
+  </button>
+);
+
+const DeleteModal = ({ isOpen, onConfirm, onCancel, isLoading }) => (
+  isOpen && (
+    <div className="modal modal-open">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg">Confirm Deletion</h3>
+        <p className="py-4">Are you sure? This action cannot be undone.</p>
+        <div className="modal-action flex gap-4">
+          <ActionButton
+            onClick={onConfirm}
+            text="Delete"
+            color="red"
+            disabled={isLoading}
+            loading={isLoading}
+          />
+          <ActionButton
+            onClick={onCancel}
+            text="Cancel"
+            color="purple"
+            disabled={isLoading}
+          />
+        </div>
+      </div>
+    </div>
+  )
+);
+
+const LoadingSkeleton = () => (
+  <div className="container mx-auto px-4 py-8">
+    <div className="skeleton h-12 w-1/3 mb-6"></div>
+    <div className="space-y-4">
+      <div className="skeleton h-32 w-full"></div>
+      <div className="skeleton h-16 w-2/3"></div>
+      <div className="skeleton h-16 w-1/2"></div>
+    </div>
+  </div>
+);
 
 export default AdminDetail;
