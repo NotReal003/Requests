@@ -222,7 +222,7 @@ const TextAreaField = memo(function({ label, value, onChange, placeholder, disab
         placeholder={placeholder}
         disabled={disabled}
         maxLength={maxLength}
-        className="textarea textarea-bordered bg-white text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-md shadow-sm"
+        className="textarea textarea-bordered text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-base-100 disabled:cursor-not-allowed rounded-md shadow-sm"
         style={{ minHeight: '100px', resize: 'vertical' }}
       />
       {maxLength && (
@@ -242,7 +242,7 @@ const SelectField = memo(function({ label, value, onChange, options, disabled })
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className="select select-bordered bg-white text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-md shadow-sm"
+        className="select select-bordered bg-base-100 text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-md shadow-sm"
       >
         <option value="">Select status</option>
         {options?.map(option => (
@@ -262,7 +262,7 @@ const ReadonlyField = memo(function({ label, value }) {
       <textarea
         value={value || 'N/A'}
         readOnly
-        className="textarea textarea-bordered bg-gray-50 text-gray-600 border-gray-200 rounded-md shadow-sm"
+        className="textarea textarea-bordered text-gray-600 border-gray-200 rounded-md shadow-sm"
         style={{ minHeight: '80px', resize: 'none' }}
       />
     </div>
@@ -278,7 +278,7 @@ const ActionButton = memo(function({ onClick, icon, text, color, variant = 'soli
         disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors rounded-md shadow-sm ${className}`}
     >
       {loading ? (
-        <span className="loading loading-spinner text-white"></span>
+        <span className="loading loading-spinner text-white"> {text}</span>
       ) : (
         <>
           {icon}
@@ -292,7 +292,7 @@ const ActionButton = memo(function({ onClick, icon, text, color, variant = 'soli
 const DeleteModal = memo(function({ isOpen, onConfirm, onCancel, isLoading }) {
   return isOpen ? (
     <div className="modal modal-open fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="modal-box bg-white rounded-xl shadow-xl">
+      <div className="modal-box bg-base-100 rounded-xl shadow-xl">
         <h3 className="font-bold text-lg text-gray-800">Confirm Deletion</h3>
         <p className="py-4 text-gray-600">Are you sure you want to delete this request? This action cannot be undone.</p>
         <div className="modal-action flex gap-4">
@@ -318,11 +318,11 @@ const DeleteModal = memo(function({ isOpen, onConfirm, onCancel, isLoading }) {
 const LoadingSkeleton = memo(function() {
   return (
     <div className="container mx-auto px-4 py-8 animate-pulse">
-      <div className="h-12 w-1/3 bg-gray-200 rounded mb-6"></div>
+      <div className="h-12 w-1/3 rounded mb-6"></div>
       <div className="space-y-4">
-        <div className="h-32 w-full bg-gray-200 rounded"></div>
-        <div className="h-16 w-2/3 bg-gray-200 rounded"></div>
-        <div className="h-16 w-1/2 bg-gray-200 rounded"></div>
+        <div className="h-32 w-full rounded"></div>
+        <div className="h-16 w-2/3 rounded"></div>
+        <div className="h-16 w-1/2 rounded"></div>
       </div>
     </div>
   );
