@@ -1,333 +1,300 @@
-// AdminDetail.jsx
-import React, { useEffect, useState, useCallback, memo } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import { MdDelete, MdUpdate } from 'react-icons/md';
 import toast, { Toaster } from 'react-hot-toast';
+import { MdDelete, MdUpdate } from 'react-icons/md';
 import AdminOnly from '../components/AdminOnly';
 
-// Constants (single-line to avoid parsing issues)
-const STATUS_OPTIONS = ['APPROVED', 'DENIED', 'PENDING', 'RESUBMIT_REQUIRED', 'CANCELLED', 'RESOLVED'];
-const REQUEST_TYPES = { REPORT: 'report', SUPPORT: 'support', GUILD: 'guild-application' };
-
-// Utility Functions
-const sanitizeInput = function(input) {
-  if (!input) return '';
-  const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
-  if (urlRegex.test(input)) return input;
-  return input
-    .replace(/[<>&'"]/g, (char) => ({ '<': '<', '>': '>', '&': '&', "'": '', '"': '"' }[char] || char))
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-};
-
-const AdminDetail = function() {
+function AdminDetail() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
   const requestId = urlParams.get('id');
-  const API = process.env.REACT_APP_API || '';
+  const API = process.env.REACT_APP_API;
 
-  const [state, setState] = useState({
-    request: null,
+  // State management
+  const [request, setRequest] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [adminOnly, setAdminOnly] = useState(false);
+  const [formData, setFormData] = useState({
     status: '',
-    reviewMessage: '',
-    isLoading: false,
-    error: null,
-    showDeleteModal: false,
-    isAdminOnly: false
+    reviewMessage: ''
   });
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const fetchRequest = useCallback(async function() {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
+  // Input sanitization
+  const sanitizeInput = useCallback((input) => {
+    const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+    const normalizeNewlines = (text) => text.replace(/\n{3,}/g, '\n\n');
+    
+    const sanitized = input
+      .replace(/[<>&'"]/g, (char) => ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        "'": '&#x27;',
+        '"': '&quot;'
+      }[char] || char));
+    
+    return normalizeNewlines(urlRegex.test(input) ? input : sanitized);
+  }, []);
+
+  // Fetch request data
+  const fetchRequest = useCallback(async () => {
     try {
-      const response = await axios.get(`${API}/admin/requests/${requestId}`, { withCredentials: true });
-      setState(prev => ({
-        ...prev,
-        request: response.data,
-        status: response.data.status || '',
-        reviewMessage: response.data.reviewMessage || '',
-        isLoading: false
-      }));
+      setIsLoading(true);
+      const response = await axios.get(`${API}/admin/requests/${requestId}`, {
+        withCredentials: true,
+      });
+      
+      setRequest(response.data);
+      setFormData({
+        status: response.data.status,
+        reviewMessage: response.data.reviewMessage || ''
+      });
     } catch (error) {
-      const errorMessage = axios.isAxiosError(error)
-        ? error.response?.data.message || 'Network error occurred'
-        : 'Unexpected error occurred';
-      setState(prev => ({
-        ...prev,
-        isLoading: false,
-        isAdminOnly: axios.isAxiosError(error) && error.response?.status === 403,
-        error: errorMessage
-      }));
-      toast.error(errorMessage);
+      if (error.response?.status === 403) {
+        setAdminOnly(true);
+      } else {
+        toast.error('Failed to load request. Please try again.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   }, [requestId, API]);
 
-  const handleUpdateAndSendEmail = useCallback(async function() {
-    if (!state.status) {
-      toast.error('Please select a status');
-      return;
-    }
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
-    const sanitizedMessage = sanitizeInput(state.reviewMessage);
+  useEffect(() => {
+    fetchRequest();
+  }, [fetchRequest]);
+
+  // Handle form updates
+  const handleUpdateAndSendEmail = async () => {
     try {
+      const sanitizedMessage = sanitizeInput(formData.reviewMessage);
       const token = localStorage.getItem('jwtToken');
+
       const updateResponse = await axios.patch(
         `${API}/admin/${requestId}`,
-        { status: state.status, reviewMessage: sanitizedMessage },
+        { ...formData, reviewMessage: sanitizedMessage },
         { withCredentials: true }
       );
+
+      toast.success(updateResponse.data.message || 'Request updated successfully');
+
+      // Send email
       await axios.post(
         `${API}/admin/send/email`,
         {
           requestId,
           reviewMessage: sanitizedMessage,
-          status: state.status,
-          username: state.request?.username,
+          status: formData.status,
+          username: request.username,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      toast.success('Request updated and email sent successfully');
-      setState(prev => ({ ...prev, isLoading: false }));
-      fetchRequest();
-    } catch (error) {
-      const errorMessage = axios.isAxiosError(error)
-        ? error.response?.data.message || 'Failed to update request'
-        : 'Unexpected error occurred';
-      setState(prev => ({ ...prev, isLoading: false, error: errorMessage }));
-      toast.error(errorMessage);
-    }
-  }, [API, requestId, state.status, state.reviewMessage, state.request?.username, fetchRequest]);
 
-  const handleDelete = useCallback(async function() {
-    setState(prev => ({ ...prev, isLoading: true }));
+      toast.success('Email notification sent');
+      fetchRequest(); // Refresh data
+    } catch (error) {
+      if (error.response?.status === 403) {
+        setAdminOnly(true);
+      } else {
+        toast.error(error.response?.data?.message || 'Failed to update request');
+      }
+    }
+  };
+
+  // Handle deletion
+  const handleDelete = async () => {
     try {
-      await axios.delete(`${API}/admin/${requestId}`, { withCredentials: true });
+      await axios.delete(`${API}/admin/${requestId}`, {
+        withCredentials: true,
+      });
       toast.success('Request deleted successfully');
       navigate('/admin');
     } catch (error) {
       toast.error('Failed to delete request');
-      setState(prev => ({ ...prev, isLoading: false }));
+    } finally {
+      setShowDeleteModal(false);
     }
-  }, [API, requestId, navigate]);
+  };
 
-  useEffect(function() {
-    fetchRequest();
-  }, [fetchRequest]);
+  // Loading and authorization states
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="animate-pulse space-y-4">
+          <div className="h-32 bg-gray-200 rounded"></div>
+          <div className="h-6 bg-gray-200 rounded w-1/4"></div>
+        </div>
+      </div>
+    );
+  }
 
-  const renderRequestFields = useCallback(function() {
-    if (!state.request) return null;
-    const fieldsConfig = {
-      [REQUEST_TYPES.REPORT]: { label: 'Discord Message Link / Evidence', value: state.request.messageLink },
-      [REQUEST_TYPES.SUPPORT]: { label: 'Support Request', value: state.request.messageLink },
-      [REQUEST_TYPES.GUILD]: [
-        { label: 'In-Game Name', value: state.request.inGameName },
-        { label: 'Reason for Joining', value: state.request.messageLink }
-      ]
-    };
-    const fields = fieldsConfig[state.request.type];
-    if (!fields) return null;
-    return Array.isArray(fields)
-      ? fields.map((field, index) => <ReadonlyField key={index} label={field.label} value={field.value} />)
-      : <ReadonlyField label={fields.label} value={fields.value} />;
-  }, [state.request]);
-
-  if (state.isAdminOnly) return <AdminOnly />;
-  if (!state.request && state.isLoading) return <LoadingSkeleton />;
+  if (adminOnly) return <AdminOnly />;
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Toaster position="top-right" />
-      {state.error && (
-        <div className="alert alert-error shadow-lg mb-6 rounded-lg">
-          <span>{state.error}</span>
-        </div>
-      )}
-      <div className="card shadow-lg bg-base-100 rounded-xl">
+    <div className="container mx-auto px-4 py-8 max-w-3xl">
+      <Toaster position="top-center" />
+      
+      <div className="card shadow-lg bg-base-100">
         <div className="card-body">
-          <h2 className="card-title text-2xl mb-4">
-            Request Details {state.request?.status && (
-              <span className="text-sm opacity-75">({state.request.status})</span>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="card-title text-2xl">
+              Request Details 
+              <span className="badge badge-outline ml-2">{formData.status}</span>
+            </h2>
+            <button
+              onClick={() => navigate(-1)}
+              className="btn btn-ghost btn-circle"
+              title="Go Back"
+            >
+              <IoMdArrowRoundBack size={24} />
+            </button>
+          </div>
+
+          {/* Form Fields */}
+          <div className="space-y-6">
+            <div className="form-control">
+              <label className="label font-medium">Review Message</label>
+              <textarea
+                value={formData.reviewMessage}
+                onChange={(e) => {
+                  setFormData({ ...formData, reviewMessage: e.target.value });
+                  e.target.style.height = 'auto';
+                  e.target.style.height = `${e.target.scrollHeight}px`;
+                }}
+                className="textarea textarea-bordered h-24 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your review message"
+                style={{ resize: 'none' }}
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label font-medium">Status</label>
+              <select
+                className="select select-bordered w-full focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              >
+                {['APPROVED', 'DENIED', 'PENDING', 'RESUBMIT_REQUIRED', 'CANCELLED', 'RESOLVED']
+                  .map(status => (
+                    <option key={status} value={status}>
+                      {status.charAt(0) + status.slice(1).toLowerCase().replace('_', ' ')}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            {/* Request Details */}
+            <div className="form-control">
+              <label className="label font-medium">Submitted By</label>
+              <input
+                value={`${request.username} (ID: ${request.id})`}
+                readOnly
+                className="input input-bordered bg-gray-100"
+              />
+            </div>
+
+            {/* Dynamic fields based on request type */}
+            {request.type === 'report' && (
+              <div className="form-control">
+                <label className="label font-medium">Evidence Link</label>
+                <input
+                  value={request.messageLink}
+                  readOnly
+                  className="input input-bordered bg-gray-100"
+                />
+              </div>
             )}
-          </h2>
-          <TextAreaField
-            label="Review Message"
-            className="text-white"
-            value={state.reviewMessage}
-            onChange={(e) => setState(prev => ({ ...prev, reviewMessage: e.target.value }))}
-            placeholder="Enter your review message"
-            disabled={state.isLoading}
-            maxLength={500}
-          />
-          <SelectField
-            label="Request Status"
-            className="text-white font-bold"
-            value={state.status}
-            onChange={(e) => setState(prev => ({ ...prev, status: e.target.value }))}
-            options={STATUS_OPTIONS}
-            disabled={state.isLoading}
-          />
-          <ReadonlyField
-            label="From User"
-            value={`${state.request?.username || 'Unknown'} / ${state.request?.id || 'N/A'}`}
-          />
-          {renderRequestFields()}
-          <ReadonlyField
-            label="Additional Information"
-            value={state.request?.additionalInfo || 'None provided'}
-          />
-          <div className="flex flex-wrap gap-4 mt-6">
-            <ActionButton
+
+            {request.type === 'support' && (
+              <div className="form-control">
+                <label className="label font-medium">Support Request</label>
+                <textarea
+                  value={request.messageLink}
+                  readOnly
+                  className="textarea textarea-bordered bg-gray-100"
+                />
+              </div>
+            )}
+
+            {request.type === 'guild-application' && (
+              <>
+                <div className="form-control">
+                  <label className="label font-medium">In-Game Name</label>
+                  <input
+                    value={request.inGameName}
+                    readOnly
+                    className="input input-bordered bg-gray-100"
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label font-medium">Reason for Joining</label>
+                  <textarea
+                    value={request.messageLink}
+                    readOnly
+                    className="textarea textarea-bordered bg-gray-100"
+                  />
+                </div>
+              </>
+            )}
+
+            {request.additionalInfo && (
+              <div className="form-control">
+                <label className="label font-medium">Additional Information</label>
+                <textarea
+                  value={request.additionalInfo}
+                  readOnly
+                  className="textarea textarea-bordered bg-gray-100"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-4 mt-8">
+            <button
               onClick={handleUpdateAndSendEmail}
-              icon={<MdUpdate />}
-              text="Update & Send Email"
-              color="blue"
-              disabled={state.isLoading}
-              loading={state.isLoading}
-            />
-            <ActionButton
-              onClick={() => setState(prev => ({ ...prev, showDeleteModal: true }))}
-              icon={<MdDelete />}
-              text="Delete Request"
-              color="red"
-              variant="outline"
-              disabled={state.isLoading}
-            />
+              className="btn btn-primary flex-1 flex items-center gap-2"
+            >
+              <MdUpdate size={20} /> Update & Notify
+            </button>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="btn btn-error btn-outline flex-1 flex items-center gap-2"
+            >
+              <MdDelete size={20} /> Delete
+            </button>
           </div>
         </div>
       </div>
-      <ActionButton
-        onClick={() => navigate(-1)}
-        icon={<IoMdArrowRoundBack />}
-        text="Back"
-        color="purple"
-        className="mt-6"
-        disabled={state.isLoading}
-      />
-      <DeleteModal
-        isOpen={state.showDeleteModal}
-        onConfirm={handleDelete}
-        onCancel={() => setState(prev => ({ ...prev, showDeleteModal: false }))}
-        isLoading={state.isLoading}
-      />
-    </div>
-  );
-};
 
-const TextAreaField = memo(function({ label, value, onChange, placeholder, disabled, maxLength }) {
-  return (
-    <div className="form-control mb-4">
-      <label className="label font-medium text-gray-700">{label}</label>
-      <textarea
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        disabled={disabled}
-        maxLength={maxLength}
-        className="textarea textarea-bordered text-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-base-100 disabled:cursor-not-allowed rounded-md shadow-sm"
-        style={{ minHeight: '100px', resize: 'vertical' }}
-      />
-      {maxLength && (
-        <span className="text-sm text-gray-500 mt-1">
-          {value.length}/{maxLength}
-        </span>
-      )}
-    </div>
-  );
-});
-
-const SelectField = memo(function({ label, value, onChange, options, disabled }) {
-  return (
-    <div className="form-control mb-4">
-      <label className="label font-medium text-gray-700">{label}</label>
-      <select
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className="select select-bordered bg-base-100 text-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-md shadow-sm"
-      >
-        <option value="">Select status</option>
-        {options?.map(option => (
-          <option key={option} value={option}>
-            {option.charAt(0) + option.slice(1).toLowerCase()}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-});
-
-const ReadonlyField = memo(function({ label, value }) {
-  return (
-    <div className="form-control mb-4">
-      <label className="label font-medium text-gray-700">{label}</label>
-      <textarea
-        value={value || 'N/A'}
-        readOnly
-        className="textarea textarea-bordered text-white border-gray-200 rounded-md shadow-sm"
-        style={{ minHeight: '80px', resize: 'none' }}
-      />
-    </div>
-  );
-});
-
-const ActionButton = memo(function({ onClick, icon, text, color, variant = 'solid', disabled, loading, className }) {
-  return (
-    <button
-      onClick={onClick}
-      disabled={disabled || loading}
-      className={`btn ${variant === 'outline' ? `btn-outline border-${color}-600 text-${color}-600 hover:bg-${color}-600 hover:text-white` : `bg-${color}-600 text-white hover:bg-${color}-700`} 
-        disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors rounded-md shadow-sm ${className}`}
-    >
-      {loading ? (
-        <span className="loading loading-spinner text-white"> {text}</span>
-      ) : (
-        <>
-          {icon}
-          {text}
-        </>
-      )}
-    </button>
-  );
-});
-
-const DeleteModal = memo(function({ isOpen, onConfirm, onCancel, isLoading }) {
-  return isOpen ? (
-    <div className="modal modal-open fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="modal-box bg-base-100 rounded-xl shadow-xl">
-        <h3 className="font-bold text-lg text-white">Confirm Deletion</h3>
-        <p className="py-4 text-white">Are you sure you want to delete this request? This action cannot be undone.</p>
-        <div className="modal-action flex gap-4">
-          <ActionButton
-            onClick={onConfirm}
-            text="Delete"
-            color="red"
-            disabled={isLoading}
-            loading={isLoading}
-          />
-          <ActionButton
-            onClick={onCancel}
-            text="Cancel"
-            color="purple"
-            disabled={isLoading}
-          />
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg text-error">Confirm Deletion</h3>
+            <p className="py-4">Are you sure you want to delete this request? This action is irreversible.</p>
+            <div className="modal-action flex gap-4">
+              <button
+                onClick={handleDelete}
+                className="btn btn-error flex-1"
+              >
+                Delete
+              </button>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="btn btn-ghost flex-1"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  ) : null;
-});
-
-const LoadingSkeleton = memo(function() {
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="skeleton h-12 w-1/3 rounded mb-6"></div>
-      <div className="space-y-4">
-        <div className="skeleton h-32 w-full rounded"></div>
-        <div className="skeleton h-16 w-2/3 rounded"></div>
-        <div className="skeleton h-16 w-1/2 rounded"></div>
-      </div>
+      )}
     </div>
   );
-});
+}
 
 export default AdminDetail;
