@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import axios from "axios";
-import { FaUserShield, FaUser, FaSpinner, FaUsers, FaSave, FaSearch } from "react-icons/fa";
-import { IoMdArrowRoundBack, IoMdClose } from "react-icons/io";
-import { formatDistanceToNow } from "date-fns";
-import AdminOnly from "../components/AdminOnly";
-import toast, { Toaster } from "react-hot-toast";
-import { useDebounce } from "use-debounce";
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import axios from 'axios';
+import { FaUserShield, FaUser, FaSpinner, FaSave, FaUsers, FaSearch } from 'react-icons/fa';
+import { IoMdArrowRoundBack, IoMdClose } from 'react-icons/io';
+import { formatDistanceToNow } from 'date-fns';
+import toast, { Toaster } from 'react-hot-toast';
+import { useDebounce } from 'use-debounce';
+import AdminOnly from '../components/AdminOnly'; // Assuming this is defined elsewhere
 
+// Role information for different user types
 const roleInfo = {
-  admin: { className: "bg-red-600 text-white", Icon: FaUserShield, title: "Admin" },
-  mod: { className: "bg-blue-600 text-white", Icon: FaUser, title: "Mod" },
-  user: { className: "bg-green-600 text-white", Icon: FaUser, title: "User" },
+  admin: { label: 'Admin', color: 'red', Icon: FaUserShield },
+  mod: { label: 'Mod', color: 'blue', Icon: FaUser },
+  user: { label: 'User', color: 'green', Icon: FaUser },
 };
 
+// UserModal component
 const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
   const [newRole, setNewRole] = useState(user.role);
   const [updating, setUpdating] = useState(false);
@@ -21,7 +23,7 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
     setUpdating(true);
     try {
       await onRoleChange(user.id, newRole);
-      toast.success("Role updated successfully!");
+      toast.success('Role updated successfully!');
     } catch (e) {
       toast.error(`Failed to update role: ${e.message}`);
     } finally {
@@ -70,9 +72,9 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
                   className="bg-[#4B0082] text-white px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#9370DB] focus:outline-none"
                   disabled={updating}
                 >
-                  {Object.keys(roleInfo).map(role => (
+                  {Object.keys(roleInfo).map((role) => (
                     <option key={role} value={role}>
-                      {roleInfo[role].title}
+                      {roleInfo[role].label}
                     </option>
                   ))}
                 </select>
@@ -93,8 +95,8 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
                 </button>
               </div>
               <p><strong>Auth Type:</strong> {user.authType}</p>
-              <p><strong>IP:</strong> {user.ip || "N/A"}</p>
-              <p><strong>Device:</strong> {user.device || "Unknown"}</p>
+              <p><strong>IP:</strong> {user.ip || 'N/A'}</p>
+              <p><strong>Device:</strong> {user.device || 'Unknown'}</p>
             </div>
             <button
               onClick={onClose}
@@ -109,6 +111,48 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
   );
 };
 
+// Pagination component
+const Pagination = ({ page, totalPages, setPage }) => (
+  <div className="flex justify-center items-center space-x-4 mt-8">
+    <button
+      disabled={page === 1}
+      onClick={() => setPage(1)}
+      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
+      aria-label="First page"
+    >
+      First
+    </button>
+    <button
+      disabled={page === 1}
+      onClick={() => setPage((p) => p - 1)}
+      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
+      aria-label="Previous page"
+    >
+      Prev
+    </button>
+    <span className="text-[#FFD700]" aria-live="polite">
+      Page {page} of {totalPages}
+    </span>
+    <button
+      disabled={page === totalPages}
+      onClick={() => setPage((p) => p + 1)}
+      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
+      aria-label="Next page"
+    >
+      Next
+    </button>
+    <button
+      disabled={page === totalPages}
+      onClick={() => setPage(totalPages)}
+      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
+      aria-label="Last page"
+    >
+      Last
+    </button>
+  </div>
+);
+
+// Main AdminUsers component
 const AdminUsers = () => {
   const apiUrl = process.env.REACT_APP_API;
   const [users, setUsers] = useState([]);
@@ -117,7 +161,7 @@ const AdminUsers = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounce(search, 300);
   const [page, setPage] = useState(1);
   const pageSize = 10;
@@ -126,9 +170,9 @@ const AdminUsers = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${apiUrl}/manage/users/all`, { withCredentials: true });
-      const mappedUsers = Object.values(response.data.users).map(user => ({
+      const mappedUsers = Object.values(response.data.users).map((user) => ({
         ...user,
-        role: user.admin ? "admin" : user.staff ? "mod" : "user",
+        role: user.admin ? 'admin' : user.staff ? 'mod' : 'user',
       }));
       setUsers(mappedUsers);
     } catch (error) {
@@ -143,38 +187,44 @@ const AdminUsers = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const handleRoleChange = useCallback(async (userId, newRole) => {
-    try {
-      await axios.patch(`${apiUrl}/admin/staff/manage/${userId}/role`, { role: newRole }, { withCredentials: true });
-      setUsers(prevUsers => prevUsers.map(user => (user.id === userId ? { ...user, role: newRole } : user)));
-      setSelectedUser(prev => prev && { ...prev, role: newRole });
-    } catch (error) {
-      throw new Error(error.response?.data?.message || error.message);
-    }
-  }, [apiUrl]);
+  const handleRoleChange = useCallback(
+    async (userId, newRole) => {
+      try {
+        await axios.patch(`${apiUrl}/admin/staff/manage/${userId}/role`, { role: newRole }, { withCredentials: true });
+        setUsers((prevUsers) => prevUsers.map((user) => (user.id === userId ? { ...user, role: newRole } : user)));
+        setSelectedUser((prev) => prev && { ...prev, role: newRole });
+      } catch (error) {
+        throw new Error(error.response?.data?.message || error.message);
+      }
+    },
+    [apiUrl]
+  );
 
-  const filteredUsers = useMemo(() => 
-    users.filter(user => user.username.toLowerCase().includes(debouncedSearch.toLowerCase())), 
+  const filteredUsers = useMemo(
+    () => users.filter((user) => user.username.toLowerCase().includes(debouncedSearch.toLowerCase())),
     [users, debouncedSearch]
   );
   const totalPages = useMemo(() => Math.ceil(filteredUsers.length / pageSize) || 1, [filteredUsers.length]);
   const paginatedUsers = useMemo(() => filteredUsers.slice((page - 1) * pageSize, page * pageSize), [filteredUsers, page]);
 
-  const handleUserClick = useCallback(async id => {
-    setDetailLoading(true);
-    setDetailError(null);
-    try {
-      const response = await axios.get(`${apiUrl}/manage/user/${id}`, { withCredentials: true });
-      setSelectedUser({
-        ...response.data.user,
-        role: response.data.user.admin ? "admin" : response.data.user.staff ? "mod" : "user",
-      });
-    } catch (error) {
-      setDetailError(`Failed to fetch details: ${error.response?.data?.message || error.message}`);
-    } finally {
-      setDetailLoading(false);
-    }
-  }, [apiUrl]);
+  const handleUserClick = useCallback(
+    async (id) => {
+      setDetailLoading(true);
+      setDetailError(null);
+      try {
+        const response = await axios.get(`${apiUrl}/manage/user/${id}`, { withCredentials: true });
+        setSelectedUser({
+          ...response.data.user,
+          role: response.data.user.admin ? 'admin' : response.data.user.staff ? 'mod' : 'user',
+        });
+      } catch (error) {
+        setDetailError(`Failed to fetch details: ${error.response?.data?.message || error.message}`);
+      } finally {
+        setDetailLoading(false);
+      }
+    },
+    [apiUrl]
+  );
 
   const closeModal = useCallback(() => setSelectedUser(null), []);
 
@@ -194,7 +244,7 @@ const AdminUsers = () => {
             disabled={loading}
             aria-label="Refresh user list"
           >
-            {loading ? <FaSpinner className="animate-spin mr-2" /> : "Refresh"}
+            {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Refresh'}
           </button>
         </div>
 
@@ -213,7 +263,7 @@ const AdminUsers = () => {
           />
           {search && (
             <button
-              onClick={() => setSearch("")}
+              onClick={() => setSearch('')}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
               aria-label="Clear search"
             >
@@ -238,8 +288,33 @@ const AdminUsers = () => {
           </div>
         ) : paginatedUsers.length > 0 ? (
           <ul className="space-y-4" aria-label="User list">
-            {paginatedUsers.map(user => (
-              <UserListItem key={user.id} user={user} onClick={() => handleUserClick(user.id)} />
+            {paginatedUsers.map((user) => (
+              <li
+                key={user.id}
+                className="p-4 bg-[#2E2E2E] rounded-lg shadow hover:bg-[#3E3E3E] transition cursor-pointer group"
+                onClick={() => handleUserClick(user.id)}
+                role="button"
+                tabIndex="0"
+                onKeyDown={(e) => e.key === 'Enter' && handleUserClick(user.id)}
+                aria-label={`View details of ${user.username}`}
+              >
+                <div className="flex items-center">
+                  {roleInfo[user.role].Icon && (
+                    <roleInfo[user.role].Icon className="text-4xl mr-4 transition-transform group-hover:scale-110" />
+                  )}
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg font-bold">{user.username}</span>
+                      <span className={`rounded-lg px-2 py-1 text-xs font-bold bg-${roleInfo[user.role].color}-600 text-white`}>
+                        {roleInfo[user.role].label}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
+                    </div>
+                  </div>
+                </div>
+              </li>
             ))}
           </ul>
         ) : (
@@ -261,46 +336,5 @@ const AdminUsers = () => {
     </div>
   );
 };
-
-// Updated Pagination
-const Pagination = ({ page, totalPages, setPage }) => (
-  <div className="flex justify-center items-center space-x-4 mt-8">
-    <button
-      disabled={page === 1}
-      onClick={() => setPage(1)}
-      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="First page"
-    >
-      First
-    </button>
-    <button
-      disabled={page === 1}
-      onClick={() => setPage(p => p - 1)}
-      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="Previous page"
-    >
-      Prev
-    </button>
-    <span className="text-[#FFD700]" aria-live="polite">
-      Page {page} of {totalPages}
-    </span>
-    <button
-      disabled={page === totalPages}
-      onClick={() => setPage(p => p + 1)}
-      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="Next page"
-    >
-      Next
-    </button>
-    <button
-      disabled={page === totalPages}
-      onClick={() => setPage(totalPages)}
-      className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="Last page"
-    >
-      Last
-    </button>
-  </div>
-);
 
 export default AdminUsers;
