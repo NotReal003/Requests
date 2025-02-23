@@ -152,6 +152,7 @@ const AdminDetail = function() {
           </h2>
           <TextAreaField
             label="Review Message"
+            className="text-white"
             value={state.reviewMessage}
             onChange={(e) => setState(prev => ({ ...prev, reviewMessage: e.target.value }))}
             placeholder="Enter your review message"
@@ -160,6 +161,7 @@ const AdminDetail = function() {
           />
           <SelectField
             label="Request Status"
+            className="text-white font-bold"
             value={state.status}
             onChange={(e) => setState(prev => ({ ...prev, status: e.target.value }))}
             options={STATUS_OPTIONS}
@@ -222,7 +224,7 @@ const TextAreaField = memo(function({ label, value, onChange, placeholder, disab
         placeholder={placeholder}
         disabled={disabled}
         maxLength={maxLength}
-        className="textarea textarea-bordered text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-base-100 disabled:cursor-not-allowed rounded-md shadow-sm"
+        className="textarea textarea-bordered text-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-base-100 disabled:cursor-not-allowed rounded-md shadow-sm"
         style={{ minHeight: '100px', resize: 'vertical' }}
       />
       {maxLength && (
@@ -242,7 +244,7 @@ const SelectField = memo(function({ label, value, onChange, options, disabled })
         value={value}
         onChange={onChange}
         disabled={disabled}
-        className="select select-bordered bg-base-100 text-gray-800 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-md shadow-sm"
+        className="select select-bordered bg-base-100 text-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed rounded-md shadow-sm"
       >
         <option value="">Select status</option>
         {options?.map(option => (
@@ -262,7 +264,7 @@ const ReadonlyField = memo(function({ label, value }) {
       <textarea
         value={value || 'N/A'}
         readOnly
-        className="textarea textarea-bordered text-gray-600 border-gray-200 rounded-md shadow-sm"
+        className="textarea textarea-bordered text-white border-gray-200 rounded-md shadow-sm"
         style={{ minHeight: '80px', resize: 'none' }}
       />
     </div>
@@ -293,8 +295,8 @@ const DeleteModal = memo(function({ isOpen, onConfirm, onCancel, isLoading }) {
   return isOpen ? (
     <div className="modal modal-open fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="modal-box bg-base-100 rounded-xl shadow-xl">
-        <h3 className="font-bold text-lg text-gray-800">Confirm Deletion</h3>
-        <p className="py-4 text-gray-600">Are you sure you want to delete this request? This action cannot be undone.</p>
+        <h3 className="font-bold text-lg text-white">Confirm Deletion</h3>
+        <p className="py-4 text-white">Are you sure you want to delete this request? This action cannot be undone.</p>
         <div className="modal-action flex gap-4">
           <ActionButton
             onClick={onConfirm}
@@ -317,12 +319,12 @@ const DeleteModal = memo(function({ isOpen, onConfirm, onCancel, isLoading }) {
 
 const LoadingSkeleton = memo(function() {
   return (
-    <div className="container mx-auto px-4 py-8 animate-pulse">
-      <div className="h-12 w-1/3 rounded mb-6"></div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="skeleton h-12 w-1/3 rounded mb-6"></div>
       <div className="space-y-4">
-        <div className="h-32 w-full rounded"></div>
-        <div className="h-16 w-2/3 rounded"></div>
-        <div className="h-16 w-1/2 rounded"></div>
+        <div className="skeleton h-32 w-full rounded"></div>
+        <div className="skeleton h-16 w-2/3 rounded"></div>
+        <div className="skeleton h-16 w-1/2 rounded"></div>
       </div>
     </div>
   );
