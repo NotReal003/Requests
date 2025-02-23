@@ -287,36 +287,39 @@ const AdminUsers = () => {
             ))}
           </div>
         ) : paginatedUsers.length > 0 ? (
-          <ul className="space-y-4" aria-label="User list">
-            {paginatedUsers.map((user) => (
-              <li
-                key={user.id}
-                className="p-4 bg-[#2E2E2E] rounded-lg shadow hover:bg-[#3E3E3E] transition cursor-pointer group"
-                onClick={() => handleUserClick(user.id)}
-                role="button"
-                tabIndex="0"
-                onKeyDown={(e) => e.key === 'Enter' && handleUserClick(user.id)}
-                aria-label={`View details of ${user.username}`}
-              >
-                <div className="flex items-center">
-                  {roleInfo[user.role].Icon && (
-                    <roleInfo[user.role].Icon className="text-4xl mr-4 transition-transform group-hover:scale-110" />
-                  )}
-                  <div>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-lg font-bold">{user.username}</span>
-                      <span className={`rounded-lg px-2 py-1 text-xs font-bold bg-${roleInfo[user.role].color}-600 text-white`}>
-                        {roleInfo[user.role].label}
-                      </span>
-                    </div>
-                    <div className="text-sm text-gray-400">
-                      Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
-                    </div>
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
+<ul className="space-y-4" aria-label="User list">
+  {paginatedUsers.map((user) => (
+    <li
+      key={user.id}
+      className="p-4 bg-[#2E2E2E] rounded-lg shadow hover:bg-[#3E3E3E] transition cursor-pointer group"
+      onClick={() => handleUserClick(user.id)}
+      role="button"
+      tabIndex="0"
+      onKeyDown={(e) => e.key === 'Enter' && handleUserClick(user.id)}
+      aria-label={`View details of ${user.username}`}
+    >
+      <div className="flex items-center">
+        {roleInfo[user.role].Icon && (
+          (() => {
+            const Icon = roleInfo[user.role].Icon;
+            return <Icon className="text-4xl mr-4 transition-transform group-hover:scale-110" />;
+          })()
+        )}
+        <div>
+          <div className="flex items-center space-x-2">
+            <span className="text-lg font-bold">{user.username}</span>
+            <span className={`rounded-lg px-2 py-1 text-xs font-bold bg-${roleInfo[user.role].color}-600 text-white`}>
+              {roleInfo[user.role].label}
+            </span>
+          </div>
+          <div className="text-sm text-gray-400">
+            Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
+          </div>
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
         ) : (
           <p className="text-center text-gray-400 py-6">No users found matching your search.</p>
         )}
