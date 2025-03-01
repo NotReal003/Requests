@@ -59,7 +59,7 @@ const Home = () => {
             <span className="flex"><MdSupportAgent className="mr-2" />Support Request</span>
           </button>
 
-          {isStaff || isAdmin && (
+          {(isStaff || isAdmin) && (
             <button onClick={() => handleNavigation('/admin')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
               <span className="flex items-center">Requests Dashboard / Staff Area</span>
             </button>
