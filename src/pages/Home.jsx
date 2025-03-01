@@ -21,8 +21,7 @@ const Home = () => {
       .then(response => {
         if (response.data.staff === true) { //
           setIsStaff(true);
-        }
-        if (response.data.id === ADMINW || response.data.staff === true) {
+        } else if (response.data.admin === true && response.data.staff === true) {
           setIsAdmin(true);
           setIsStaff(true);
         }
@@ -60,7 +59,7 @@ const Home = () => {
             <span className="flex"><MdSupportAgent className="mr-2" />Support Request</span>
           </button>
 
-          {isStaff && (
+          {isStaff || isAdmin && (
             <button onClick={() => handleNavigation('/admin')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
               <span className="flex items-center">Requests Dashboard / Staff Area</span>
             </button>
