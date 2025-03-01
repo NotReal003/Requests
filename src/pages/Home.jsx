@@ -59,7 +59,7 @@ const Home = () => {
           </button>
 
           {loading && (
-         <div>
+         <div className="space-y-6">
           <div className="skeleton h-12 w-full rounded-lg"></div>
           <div className="skeleton h-12 w-full rounded-lg"></div>
           <div className="skeleton h-12 w-full rounded-lg"></div>
