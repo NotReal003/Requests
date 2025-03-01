@@ -60,6 +60,9 @@ const Home = () => {
 
           {loading && (
           <div className="skeleton h-12 w-full rounded-lg"></div>
+          <div className="skeleton h-12 w-full rounded-lg"></div>
+          <div className="skeleton h-12 w-full rounded-lg"></div>
+          <div className="skeleton h-12 w-full rounded-lg"></div>
           )}
 
           {(isStaff || isAdmin) && (
