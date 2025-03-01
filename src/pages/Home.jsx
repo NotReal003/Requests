@@ -59,10 +59,12 @@ const Home = () => {
           </button>
 
           {loading && (
+         <div>
           <div className="skeleton h-12 w-full rounded-lg"></div>
           <div className="skeleton h-12 w-full rounded-lg"></div>
           <div className="skeleton h-12 w-full rounded-lg"></div>
           <div className="skeleton h-12 w-full rounded-lg"></div>
+         </div>
           )}
 
           {(isStaff || isAdmin) && (
