@@ -19,8 +19,8 @@ const Home = () => {
       withCredentials: true,
     })
       .then(response => {
-        if (response.data.staff) setIsStaff(true);
-      if (response.data.admin) setIsAdmin(true);
+        setIsStaff(!!response.data.staff); // Ensure boolean value
+        setIsAdmin(!!response.data.admin);
       })
       .catch(error => {
         console.error('Failed to check admin status:', error);
