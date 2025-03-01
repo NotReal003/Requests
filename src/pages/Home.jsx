@@ -9,6 +9,7 @@ import axios from 'axios';
 const Home = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isStaff, setIsStaff] = useState(false);
+  const [loading, setLoading] = useState(true);
   const API = process.env.REACT_APP_API;
   const ADMINW = process.env.REACT_APP_ADMIN;
   const navigate = useNavigate();
@@ -21,9 +22,11 @@ const Home = () => {
       .then(response => {
         setIsStaff(response.data.staff || false);
         setIsAdmin(response.data.admin || false);
+        setLoading(false);
       })
       .catch(error => {
         console.error('Failed to check admin status:', error);
+        setLoading(false);
       });
   }, [API, ADMINW]);
 
@@ -54,6 +57,10 @@ const Home = () => {
           <button onClick={() => handleNavigation('/support')} className="btn no-animation w-full bg-teal-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-teal-700 transition-all">
             <span className="flex"><MdSupportAgent className="mr-2" />Support Request</span>
           </button>
+
+          {loading && (
+          <div className="skeleton h-12 w-full rounded-lg"></div>
+          )}
 
           {(isStaff || isAdmin) && (
             <button onClick={() => handleNavigation('/admin')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
