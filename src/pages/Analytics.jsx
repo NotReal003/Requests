@@ -73,7 +73,7 @@ const Analytics = () => {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto p-4">
       {error && <div className="text-center mt-4 text-red-500">{error}</div>}
       <h1 className="text-3xl font-bold mb-6 text-center text-primary">Analytics</h1>
       <div className="tabs mb-6 justify-center">
