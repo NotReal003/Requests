@@ -12,6 +12,7 @@ function AdminDetail() {
   const [request, setRequest] = useState(null);
   const [alert, setAlert] = useState(null);
   const [status, setStatus] = useState('');
+  const [userUsername, setUserUsername] = useState('');
   const [reviewMessage, setReviewMessage] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [adminOnly, setAdminOnly] = useState(false);
@@ -51,6 +52,7 @@ function AdminDetail() {
         setRequest(response.data);
         setStatus(response.data.status);
         setReviewMessage(response.data.reviewMessage || '');
+        setUserUsername(request.inGameName);
       } catch (error) {
         const errorStatus = error.response?.status;
 
@@ -111,6 +113,18 @@ function AdminDetail() {
         toast.error('Something is wrong :/');
       }
     }
+  };
+
+  const handleCopy = () => {
+  const textToCopy = `Your Application has been approved and we have invited ${userUsername} to the Netflix Guild :)
+Reviewer,
+NotReal003, Leader
+NETFLIX Guild.`;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => toast.success('Copied'))
+      .catch((err) => toast.error("Failed to copy text: ", err));
   };
 
   const handleDelete = async () => {
@@ -249,6 +263,12 @@ function AdminDetail() {
               className="btn btn-outline hover:btn-error no-animation"
             >
               <MdDelete /> Delete Request
+            </button>
+            <button
+              onClick={handleCopy}
+              className="btn btn-outline hover:btn-success no-animation"
+            >
+              <MdDelete /> Copy Accepted Message
             </button>
           </div>
         </div>
