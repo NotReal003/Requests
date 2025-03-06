@@ -7,7 +7,7 @@ import { MdDelete, MdUpdate } from 'react-icons/md';
 import AdminOnly from '../components/AdminOnly';
 import { FaCopy } from "react-icons/fa6";
 
-function AdminDetail() {
+const AdminDetail = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const requestId = urlParams.get('id');
   const [request, setRequest] = useState(null);
