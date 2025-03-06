@@ -53,7 +53,6 @@ function AdminDetail() {
         setRequest(response.data);
         setStatus(response.data.status);
         setReviewMessage(response.data.reviewMessage || '');
-        setUserUsername(request.inGameName);
       } catch (error) {
         const errorStatus = error.response?.status;
 
@@ -67,6 +66,12 @@ function AdminDetail() {
 
     fetchRequest();
   }, [requestId, API, navigate]);
+
+  useEffect(() => {
+    if (request) {
+      setUserUsername(request.inGameName || 'UnknownUser');
+    }
+  }, [request]);
 
   const handleUpdateAndSendEmail = async () => {
 
