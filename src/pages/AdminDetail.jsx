@@ -5,6 +5,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import toast, { Toaster } from 'react-hot-toast';
 import { MdDelete, MdUpdate } from 'react-icons/md';
 import AdminOnly from '../components/AdminOnly';
+import { FaCopy } from "react-icons/fa6";
 
 function AdminDetail() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -268,7 +269,7 @@ NETFLIX Guild.`;
               onClick={handleCopy}
               className="btn btn-outline hover:btn-success no-animation"
             >
-              <MdDelete /> Copy Accepted Message
+              <FaCopy /> Copy Accepted Message
             </button>
           </div>
         </div>
