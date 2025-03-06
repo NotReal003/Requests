@@ -127,11 +127,11 @@ Reviewer,
 NotReal003, Leader
 NETFLIX Guild.`;
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy)
-      .then(() => toast.success('Copied'))
-      .catch((err) => toast.error("Failed to copy text: ", err));
-  };
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => toast.success('Copied'))
+    .catch((err) => toast.error("Failed to copy text: " + err));
+};
+
 
   const handleDelete = async () => {
     const token = localStorage.getItem('jwtToken');
