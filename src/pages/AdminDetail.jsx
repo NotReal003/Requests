@@ -272,7 +272,7 @@ NETFLIX Guild.`;
             </button>
             <button
               onClick={handleCopy}
-              className="btn btn-outline hover:btn-success no-animation"
+              className="btn btn-outline mt-4 hover:btn-success no-animation"
             >
               <FaCopy /> Copy Accepted Message
             </button>
