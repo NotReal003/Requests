@@ -18,6 +18,14 @@ const App = () => {
     if (ref === "producthunt") {
       axios.get(`${API}/collect/request/producthunt`);
       console.log("ProductHunt referral");
+      const authToken = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('token='))
+        ?.split('=')[1];
+
+      if (authToken) {
+        setIsAuthenticated(true);
+      }
     } else {
       const storedToken = document.cookie
         .split('; ')
