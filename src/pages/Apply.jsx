@@ -113,9 +113,12 @@ const Apply = () => {
             placeholder="Enter your username"
             value={inGameName}
             onChange={(e) => setInGameName(e.target.value)}
-            maxLength={17}
+            maxLength={16}
             required
           />
+          <p className="text-sm text-gray-500 mt-1">
+              {16 - inGameName.length} characters remaining
+            </p>
 
           <label htmlFor="messageLink" className="label">Reason for joining the team? (required)</label>
           <textarea
@@ -126,9 +129,12 @@ const Apply = () => {
             placeholder="Let us know why you want to join"
             value={messageLink}
             onChange={(e) => setMessageLink(e.target.value)}
-            maxLength={2000}
+            maxLength={1750}
             required
           />
+          <p className="text-sm text-gray-500 mt-1">
+              {1750 - messageLink.length} characters remaining
+            </p>
 
           <label htmlFor="additionalInfo" className="label">Anything else? (Optional)</label>
           <textarea
@@ -138,9 +144,12 @@ const Apply = () => {
             rows="2"
             placeholder="Feel free to leave this field blank"
             value={additionalInfo}
-            maxLength={2000}
+            maxLength={1750}
             onChange={(e) => setAdditionalInfo(e.target.value)}
           ></textarea>
+          <p className="text-sm text-gray-500 mt-1">
+              {1750 - additionalInfo.length} characters remaining
+            </p>
           <div className="terms mr-2 mb-2">
             <label className="label cursor-pointer">
               <input
