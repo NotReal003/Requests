@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoSend, IoMdMail } from 'react-icons/io5';
+import { IoSend, IoMdMail } from 'react-icons/io';
 import { ImExit } from 'react-icons/im';
 import { FaSpinner } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
