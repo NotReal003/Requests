@@ -109,7 +109,7 @@ const ReportForm = () => {
             maxLength={1000}
           />
           <p className="text-sm text-gray-500 mt-1">
-              {1750 - messageLink.length} characters remaining
+              {1000 - messageLink.length} characters remaining
             </p>
 
           <label htmlFor="additionalInfo" className="label">Anything else you would like to add?</label>
