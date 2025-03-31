@@ -188,7 +188,7 @@ const Support = () => {
               >
                 {isSubmitting ? (
                   <span>
-                    <FaSpinner className="animate-spin inline-block align-middle mr-2" /> Submitting
+                    <FaSpinner className="animate-spin inline-block align-middle mr-2" /> Submit
                   </span>
                 ) : (
                   <>
