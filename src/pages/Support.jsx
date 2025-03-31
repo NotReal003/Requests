@@ -44,7 +44,7 @@ const Support = () => {
   const sanitizedSupportRequest = sanitizeInput(supportRequest).trim();
   const sanitizedAdditionalInfo = sanitizeInput(additionalInfo).trim();
   const payload = {
-    supportRequest: sanitizedSupportRequest,
+    messageLink: sanitizedSupportRequest,
     additionalInfo: sanitizedAdditionalInfo,
   };
 
