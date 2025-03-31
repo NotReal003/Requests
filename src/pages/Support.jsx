@@ -111,10 +111,10 @@ const Support = () => {
               value={supportRequest}
               onChange={(e) => setSupportRequest(e.target.value)}
               required
-              maxLength={1500}
+              maxLength={1750}
             />
             <p className="text-sm text-gray-500 mt-1">
-              {1500 - supportRequest.length} characters remaining
+              {1750 - supportRequest.length} characters remaining
             </p>
           </div>
           <div>
@@ -129,10 +129,10 @@ const Support = () => {
               placeholder="Optional: Provide any additional information to assist us."
               value={additionalInfo}
               onChange={(e) => setAdditionalInfo(e.target.value)}
-              maxLength={500}
+              maxLength={1750}
             />
             <p className="text-sm text-gray-500 mt-1">
-              {500 - additionalInfo.length} characters remaining
+              {1750 - additionalInfo.length} characters remaining
             </p>
           </div>
           <div className="terms m-1">
