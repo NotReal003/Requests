@@ -1,213 +1,199 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoSend } from 'react-icons/io5';
-import { IoMdMail } from 'react-icons/io';
-import { ImExit } from 'react-icons/im';
-import { FaSpinner } from 'react-icons/fa';
+import { IoSend, IoMdMail, ImExit, FaSpinner } from 'react-icons/all';
 import toast, { Toaster } from 'react-hot-toast';
 import DOMPurify from 'dompurify';
 
 const Support = () => {
-  const [messageLink, setMessageLink] = useState('');
+  const [supportRequest, setSupportRequest] = useState('');
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [agree, setAgree] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const API = process.env.REACT_APP_API;
 
-  // Sanitize input to prevent XSS
-  const sanitizeInput = (input) => {
-    return DOMPurify.sanitize(input, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+  const sanitizeInput = (input) =>
+    DOMPurify.sanitize(input, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+
+  const handleSubmit = useCallback(async (e) => {
+  e.preventDefault();
+  const token = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('token='))
+    ?.split('=')[1];
+
+  if (!token) {
+    toast.error('You must be logged in to submit a support request.');
+    setIsSubmitting(false);
+    return;
+  }
+
+  if (!agree) {
+    toast.error('Please agree to the Terms of Service and Privacy Policy to proceed.');
+    return;
+  }
+
+  if (!supportRequest.trim()) {
+    toast.error('Please provide a description of your support request.');
+    return;
+  }
+
+  const sanitizedSupportRequest = sanitizeInput(supportRequest).trim();
+  const sanitizedAdditionalInfo = sanitizeInput(additionalInfo).trim();
+  const payload = {
+    supportRequest: sanitizedSupportRequest,
+    additionalInfo: sanitizedAdditionalInfo,
   };
 
-  // Enhanced form validation
-  const validateForm = () => {
-    if (!messageLink.trim()) {
-      toast.error('Support request is required.');
-      return false;
+  try {
+    setIsSubmitting(true);
+    const response = await fetch(`${API}/requests/support`, {
+      method: 'POST',
+      credentials: 'include', // Fixed typo from 'credetials'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (response.status === 403) {
+      toast.error('Your session has expired or you lack permission. Please log in again.');
+      return;
     }
-    if (messageLink.length > 1000 || additionalInfo.length > 500) {
-      toast.error('Input exceeds maximum length.');
-      return false;
+
+    const data = await response.json();
+    if (response.ok) {
+      toast.success('Your support request has been submitted successfully.');
+      setSupportRequest('');
+      setAdditionalInfo('');
+      setAgree(false);
+      navigate(`/success?request=${data.requestId}`);
+    } else {
+      toast.error(data.message || 'There was an issue submitting your request. Please try again later.');
     }
-    if (!agree) {
-      toast.error('You must agree to the Terms of Service and Privacy Policy.');
-      return false;
-    }
-    return true;
-  };
-
-  const handleSubmit = useCallback(
-    async (e) => {
-      e.preventDefault();
-
-      const token = document.cookie
-        .split('; ')
-        .find((row) => row.startsWith('token='))
-        ?.split('=')[1];
-
-      if (!token) {
-        toast.error('Please log in to submit a support request.');
-        setIsSubmitting(false);
-        return;
-      }
-
-      if (!validateForm()) return;
-
-      const sanitizedMessageLink = sanitizeInput(messageLink);
-      const sanitizedAdditionalInfo = sanitizeInput(additionalInfo);
-      const payload = {
-        messageLink: sanitizedMessageLink,
-        additionalInfo: sanitizedAdditionalInfo,
-      };
-
-      try {
-        setIsSubmitting(true);
-        const response = await fetch(`${API}/requests/support`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        if (response.status === 403) {
-          toast.error('Access denied. Please log in again.');
-          return;
-        }
-
-        const data = await response.json();
-        if (response.ok) {
-          toast.success('Your support request has been submitted successfully.');
-          setMessageLink('');
-          setAdditionalInfo('');
-          setAgree(false);
-          navigate(`/success?request=${data.requestId}`);
-        } else {
-          toast.error(data.message || 'Failed to submit your request.');
-        }
-      } catch (error) {
-        console.error('Submission Error:', error);
-        toast.error('An unexpected error occurred. Please try again later.');
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [messageLink, additionalInfo, agree, navigate, API]
-  );
+  } catch (error) {
+    console.error('Error:', error);
+    toast.error('An error occurred while submitting your request. Please try again later.');
+  } finally {
+    setIsSubmitting(false);
+  }
+}, [supportRequest, additionalInfo, agree, navigate, API]);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <Toaster position="top-center" reverseOrder={false} />
-      <div className="bg-white w-full max-w-2xl rounded-lg shadow-xl p-8">
-        {/* Header */}
-        <div className="flex items-center justify-center mb-6">
-          <IoMdMail className="text-blue-600 text-3xl mr-2" />
-          <h1 className="text-3xl font-semibold text-gray-800">Support Request</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      <Toaster />
+      <div className="form-container w-full max-w-md md:max-w-lg mx-auto shadow-lg rounded-lg p-4 bg-base-100">
+        <h1 className="text-3xl font-bold mb-4 flex items-center justify-center">
+          <IoMdMail aria-hidden="true" className="size-6 mr-2" /> Support
+        </h1>
+        <p className="mb-4 text-center text-gray-700">
+          Please fill out the form below to submit a support request. Our team will review your request and respond as soon as possible.
+        </p>
+        <div role="alert" className="alert alert-info mb-4">
+          <span>
+            Feel free to ask anything! If submitting a guild application, please indicate it’s a Guild application and include your In-Game Name.
+          </span>
         </div>
-
-        {/* Info Banner */}
-        <div className="bg-blue-50 border-l-4 border-blue-500 text-blue-700 p-4 mb-6 rounded-r">
-          <p>
-            We’re here to assist you. For guild applications, please specify “Guild Application” and include your in-game name.
-          </p>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form id="reportForm" onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="messageLink" className="block text-sm font-medium text-gray-700 mb-1">
-              Your Request <span className="text-red-500">*</span>
+            <label htmlFor="supportRequest" className="label text-lg">
+              Your support request (required)
             </label>
             <textarea
-              id="messageLink"
-              name="messageLink"
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-              rows="4"
-              placeholder="Please describe your issue or request"
-              value={messageLink}
-              onChange={(e) => setMessageLink(e.target.value)}
-              maxLength={1000}
+              id="supportRequest"
+              name="supportRequest"
+              className="textarea textarea-bordered w-full"
+              rows="3"
+              placeholder="Please describe your issue or question in detail."
+              value={supportRequest}
+              onChange={(e) => setSupportRequest(e.target.value)}
               required
+              maxLength={1000}
             />
-            <p className="text-xs text-gray-500 mt-1">{messageLink.length}/1000 characters</p>
+            <p className="text-sm text-gray-500 mt-1">
+              {1000 - supportRequest.length} characters remaining
+            </p>
           </div>
-
           <div>
-            <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-700 mb-1">
-              Additional Information (Optional)
+            <label htmlFor="additionalInfo" className="label text-lg">
+              Anything else?
             </label>
             <textarea
               id="additionalInfo"
               name="additionalInfo"
-              className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y"
-              rows="3"
-              placeholder="Provide any additional details (optional)"
+              className="textarea textarea-bordered w-full"
+              rows="2"
+              placeholder="Optional: Provide any additional information to assist us."
               value={additionalInfo}
               onChange={(e) => setAdditionalInfo(e.target.value)}
               maxLength={500}
             />
-            <p className="text-xs text-gray-500 mt-1">{additionalInfo.length}/500 characters</p>
+            <p className="text-sm text-gray-500 mt-1">
+              {500 - additionalInfo.length} characters remaining
+            </p>
           </div>
-
-          {/* Terms Checkbox */}
-          <div className="flex items-start">
-            <input
-              type="checkbox"
-              id="agree"
-              name="agree"
-              className="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              checked={agree}
-              onChange={(e) => setAgree(e.target.checked)}
-              required
-            />
-            <label htmlFor="agree" className="ml-2 text-sm text-gray-700">
-              I agree to NotReal003’s{' '}
-              <a
-                href="https://support.notreal003.xyz/terms"
-                className="text-blue-600 hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a
-                href="https://support.notreal003.xyz/privacy"
-                className="text-blue-600 hover:underline"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Privacy Policy
-              </a>.
+          <div className="terms m-1">
+            <label className="label cursor-pointer">
+              <input
+                type="checkbox"
+                id="agree"
+                name="agree"
+                className="checkbox"
+                checked={agree}
+                onChange={(e) => setAgree(e.target.checked)}
+                required
+              />
+              <span className="label-text ml-2">
+                By clicking here you agree with NotReal003's{' '}
+                <a
+                  href="https://support.notreal003.xyz/terms"
+                  className="link link-primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terms of Service
+                </a>{' '}
+                and{' '}
+                <a
+                  href="https://support.notreal003.xyz/privacy"
+                  className="link link-primary"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Privacy Policy
+                </a>.
+              </span>
             </label>
           </div>
-
-          {/* Buttons */}
-          <div className="flex justify-between pt-4 border-t border-gray-200">
+          <div className="sticky bottom-0 left-0 right-0 w-full bg-base-100 border-t border-gray-200 flex justify-between items-center rounded-b-lg p-4 shadow-sm">
             <button
-              type="button"
               onClick={() => navigate(-1)}
-              className="inline-flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+              className="btn text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg no-animation"
+              aria-label="Go back to previous page"
             >
-              <ImExit className="mr-2" /> Back
+              <ImExit /> Back
             </button>
-            <button
-              type="submit"
-              disabled={isSubmitting || !agree}
-              className={`inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
-                isSubmitting || !agree ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+            <div
+              className="tooltip tooltip-top overflow-x-auto"
+              data-tip={!agree ? 'You must agree to the Terms of Service and Privacy Policy.' : ''}
             >
-              {isSubmitting ? (
-                <>
-                  <FaSpinner className="animate-spin mr-2" /> Submitting...
-                </>
-              ) : (
-                <>
-                  <IoSend className="mr-2" /> Submit Request
-                </>
-              )}
-            </button>
+              <button
+                type="submit"
+                className="btn btn-primary no-animation"
+                disabled={isSubmitting || !agree}
+                aria-label="Submit support request"
+              >
+                {isSubmitting ? (
+                  <span>
+                    <FaSpinner className="animate-spin inline-block align-middle mr-2" /> Submitting
+                  </span>
+                ) : (
+                  <>
+                    <IoSend className="inline-block align-middle mr-2" /> Submit
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>
