@@ -108,6 +108,9 @@ const ReportForm = () => {
             required
             maxLength={1000}
           />
+          <p className="text-sm text-gray-500 mt-1">
+              {1750 - messageLink.length} characters remaining
+            </p>
 
           <label htmlFor="additionalInfo" className="label">Anything else you would like to add?</label>
           <textarea
@@ -119,6 +122,9 @@ const ReportForm = () => {
             onChange={(e) => setAdditionalInfo(e.target.value)}
             maxLength={2000}
           />
+          <p className="text-sm text-gray-500 mt-1">
+              {1750 - additionalInfo.length} characters remaining
+            </p>
 
           <div className="terms m-1">
             <label className="label cursor-pointer">
