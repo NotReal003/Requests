@@ -111,10 +111,10 @@ const Support = () => {
               value={supportRequest}
               onChange={(e) => setSupportRequest(e.target.value)}
               required
-              maxLength={1000}
+              maxLength={1500}
             />
             <p className="text-sm text-gray-500 mt-1">
-              {1000 - supportRequest.length} characters remaining
+              {1500 - supportRequest.length} characters remaining
             </p>
           </div>
           <div>
