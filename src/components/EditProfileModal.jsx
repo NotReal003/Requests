@@ -52,8 +52,9 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
           value={newDisplayName}
           onChange={(e) => setNewDisplayName(e.target.value)}
           className="input input-bordered w-full mb-4"
+          maxLength={16}
         />
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-500 mb-2">
               {16 - newDisplayName.length} characters remaining
             </p>
         {error && <p className="text-red-500 mb-4">{error}</p>}
