@@ -53,6 +53,9 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
           onChange={(e) => setNewDisplayName(e.target.value)}
           className="input input-bordered w-full mb-4"
         />
+        <p className="text-sm text-gray-500 mt-1">
+              {16 - newDisplayName.length} characters remaining
+            </p>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="flex justify-end space-x-2 gap-x-2">
           <button onClick={onClose} className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all">Cancel</button>
