@@ -55,7 +55,7 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
           maxLength={16}
         />
         <p className="text-sm text-gray-500 mb-2">
-              {16 - newDisplayName.length} characters remaining
+              {16 - newDisplayName.length} remaining
             </p>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <div className="flex justify-end space-x-2 gap-x-2">
