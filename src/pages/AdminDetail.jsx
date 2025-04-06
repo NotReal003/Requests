@@ -197,7 +197,7 @@ NETFLIX Guild.`;
               <option value="APPROVED">Approved</option>
               <option value="DENIED">Denied</option>
               <option value="PENDING">Pending</option>
-              <option value="RESUBMIT_REQUIRED">Resubmit Required</option>
+              <option value="ESCALATED">Escalated</option>
               <option value="CANCELLED">Cancelled</option>
               <option value="RESOLVED">Resolved</option>
             </select>
