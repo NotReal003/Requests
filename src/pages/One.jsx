@@ -11,7 +11,7 @@ const RequestStatus = ({ status }) => {
   const statusStyles = {
     DENIED: 'bg-white text-red-600',
     APPROVED: 'bg-white text-green-600',
-    RESUBMIT_REQUIRED: 'bg-orange-600 text-white',
+    ESCALATED: 'bg-orange-600 text-white',
     PENDING: 'bg-white text-yellow-600',
     CANCELLED: 'bg-white text-orange-600',
     RESOLVED: 'bg-white text-green-600',
@@ -20,7 +20,7 @@ const RequestStatus = ({ status }) => {
   const statusTooltips = {
     DENIED: 'Your request was denied.',
     APPROVED: 'Your request was approved.',
-    RESUBMIT_REQUIRED: 'Please resubmit your request with necessary changes.',
+    ESCALATED: 'Request is escalated',
     PENDING: 'Your request is pending review.',
     CANCELLED: 'Your request was cancelled.',
     RESOLVED: 'Your request was resolved.',
