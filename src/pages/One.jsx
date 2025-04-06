@@ -11,7 +11,7 @@ const RequestStatus = ({ status }) => {
   const statusStyles = {
     DENIED: 'bg-white text-red-600',
     APPROVED: 'bg-white text-green-600',
-    ESCALATED: 'bg-orange-600 text-white',
+    ESCALATED: 'bg-yellow-600 text-white',
     PENDING: 'bg-white text-yellow-600',
     CANCELLED: 'bg-white text-orange-600',
     RESOLVED: 'bg-white text-green-600',
