@@ -9,13 +9,15 @@ import { FaPeopleGroup } from "react-icons/fa6";
 
 const RequestStatus = ({ status }) => {
   const statusStyles = {
-    DENIED: 'bg-white text-red-600',
-    APPROVED: 'bg-white text-green-600',
-//    ESCALATED: 'bg-yellow-600 text-white',
-    ESCALATED: 'bg-white text-yellow-600',
-    PENDING: 'bg-white text-yellow-600',
-    CANCELLED: 'bg-white text-orange-600',
-    RESOLVED: 'bg-white text-green-600',
+    //DENIED: 'bg-white text-red-600',
+    DENIED: 'bg-red-600 text-white',
+    APPROVED: 'bg-green-600 text-white',
+    ESCALATED: 'bg-yellow-600 text-white',
+    //    PENDING: 'bg-white text-yellow-600',
+    PENDING: 'bg-yellow-600 text-white',
+    CANCELLED: 'bg-orange-600 text-white',
+    RESOLVED: 'bg-green-600 text-white',
+    //RESOLVED: 'bg-white text-green-600',
   };
 
   const statusTooltips = {
