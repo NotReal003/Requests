@@ -18,12 +18,13 @@ const RequestStatus = ({ status }) => {
     PENDING: 'bg-yellow-600 text-white',
     CANCELLED: 'bg-red-600 text-white',
     RESOLVED: 'bg-green-600 text-white',
+    ESCALATED: 'bg-yellow-600 text-white',
   };
 
   const statusTooltips = {
     DENIED: 'Request was denied.',
     APPROVED: 'Request was approved.',
-    RESUBMIT_REQUIRED: 'Please resubmit with changes.',
+    ESCALATED: 'Request is escalated',
     PENDING: 'Request is pending.',
     CANCELLED: 'Request was cancelled.',
     RESOLVED: 'Request was resolved.',
@@ -85,7 +86,7 @@ const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserId
         <option value="PENDING">Pending</option>
         <option value="APPROVED">Approved</option>
         <option value="DENIED">Denied</option>
-        <option value="RESUBMIT_REQUIRED">Resubmit Required (Comming Soon)</option>
+        <option value="ESCALATED">ESCALATED</option>
         <option value="CANCELLED">Cancelled</option>
         <option value="RESOLVED">Resolved</option>
       </select>
