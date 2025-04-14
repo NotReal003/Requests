@@ -118,7 +118,7 @@ const One = () => {
         <div className="space-y-4">
           {loading ? (
   <div className="space-y-4">
-    {[...Array(3)].map((_, idx) => (
+    {[...Array(1000)].map((_, idx) => (
       <div
         key={idx}
         className="animate-pulse flex justify-between items-center p-4 bg-base-300 rounded-lg shadow-lg max-w-md md:max-w-lg mx-auto"
