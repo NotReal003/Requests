@@ -117,13 +117,26 @@ const One = () => {
       <div className="w-full max-w-3xl">
         <div className="space-y-4">
           {loading ? (
-            <div className="flex items-center justify-center space-x-2">
-              <FaSpinner className="animate-spin inline-block align-middle mr-2"/>
-              <p>Please hold on while we are finding your requests...</p>
-            </div>
-          ) : error ? (
-            <p className="text-center text-red-600 font-bold">{error}</p>
-          ) : requests.length > 0 ? (
+  <div className="space-y-4">
+    {[...Array(3)].map((_, idx) => (
+      <div
+        key={idx}
+        className="animate-pulse flex justify-between items-center p-4 bg-base-300 rounded-lg shadow-lg max-w-md md:max-w-lg mx-auto"
+      >
+        <div className="flex items-center space-x-4">
+          <div className="w-10 h-10 bg-gray-400 rounded-full"></div>
+          <div>
+            <div className="h-4 bg-gray-400 rounded w-40 mb-2"></div>
+            <div className="h-3 bg-gray-400 rounded w-24"></div>
+          </div>
+        </div>
+        <div className="w-4 h-4 bg-gray-400 rounded"></div>
+      </div>
+    ))}
+  </div>
+) : error ? (
+  <p className="text-center text-red-600 font-bold">{error}</p>
+) : requests.length > 0 ? (
             requests.map((request) => (
               <div
                 key={request._id}
