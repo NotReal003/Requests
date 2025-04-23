@@ -117,7 +117,7 @@ const Support = () => {
 
         <div role="alert" className="alert alert-info mb-6 transition-opacity duration-300">
           <span>
-            For guild applications, please specify "Guild Application" in your request and include your In-Game Name. For other inquiries, provide as much detail as possible to help us assist you efficiently.
+            For Applications, please specify "Application" in your request and include your In-Game Name. For other inquiries, provide as much detail as possible to help us assist you efficiently.
           </span>
         </div>
 
@@ -208,7 +208,7 @@ const Support = () => {
               <ImExit /> Back
             </button>
             <div
-              className="tooltip tooltip-top"
+              className="tooltip tooltip-top overflow-x-auto"
               data-tip={!agree ? 'Please agree to the Terms of Service and Privacy Policy.' : ''}
             >
               <button
@@ -219,11 +219,11 @@ const Support = () => {
               >
                 {isSubmitting ? (
                   <>
-                    <FaSpinner className="animate-spin size-5" /> Submitting...
+                    <FaSpinner className="animate-spin size-5" /> Submit
                   </>
                 ) : (
                   <>
-                    <IoSend className="size-5" /> Submit Request
+                    <IoSend className="size-5" /> Submit
                   </>
                 )}
               </button>
@@ -234,8 +234,8 @@ const Support = () => {
         <footer className="mt-8 text-center text-gray-400 text-sm">
           <p>
             Need further assistance? Contact us at{' '}
-            <a href="mailto:[email protected]" className="link link-primary">
-              [email protected]
+            <a href="mailto:support@notreal003.xyz" className="link link-primary">
+              support@notreal003.xyz
             </a>.
           </p>
           <p>
