@@ -1,93 +1,87 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Navbar, Footer, OfflineWarning } from './components';
-import NoAPI from './components/NoAPI';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Navbar, Footer } from './components';
+import MaintenanceMode from './components/NoAPI';
 import routeConfig from './routes';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [apiUnavailable, setApiUnavailable] = useState(false);
-  const [isOnline, setIsOnline] = useState(navigator.onLine); // status
   const API = process.env.REACT_APP_API;
 
-useEffect(() => {
-  // API health check (non-blocking)
-  axios.get('https://api.notreal003.xyz/health')
-    .then(res => {
-      if (res.data?.message === "Application not found") {
-        setApiUnavailable(true);
-      }
-    })
-    .catch(() => {
-      setApiUnavailable(true);
-    });
+  useEffect(() => {
+    // Run API health check silently in background
+    axios.get('https://api.notreal003.xyz/health')
+      .then(res => {
+        if (res.data?.message === 'Application not found') {
+          setApiUnavailable(true);
+        }
+      })
+      .catch(() => {
+        setApiUnavailable(true); // Consider API unavailable on any failure
+      });
 
-  // Authentication check
-  const urlParams = new URLSearchParams(window.location.search);
-  const ref = urlParams.get('ref');
+    // Auth token check
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
 
-  if (ref === "producthunt") {
-    axios.get(`${API}/collect/request/producthunt`);
-    console.log("ProductHunt referral");
-    const authToken = document.cookie
+    if (ref === "producthunt") {
+      axios.get(`${API}/collect/request/producthunt`);
+      console.log("ProductHunt referral");
+    }
+
+    const token = document.cookie
       .split('; ')
       .find(row => row.startsWith('token='))
       ?.split('=')[1];
-    if (authToken) setIsAuthenticated(true);
-  } else {
-    const storedToken = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('token='))
-      ?.split('=')[1];
-    if (storedToken) setIsAuthenticated(true);
-  }
 
-  const handleOnline = () => setIsOnline(true);
-  const handleOffline = () => setIsOnline(false);
-  window.addEventListener("online", handleOnline);
-  window.addEventListener("offline", handleOffline);
+    if (token) {
+      setIsAuthenticated(true);
+    }
 
-  return () => {
-    window.removeEventListener("online", handleOnline);
-    window.removeEventListener("offline", handleOffline);
-  };
-}, []);
+    // Online/offline detection
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
-  if (loading) {
-    return <div className="loading loading-spinner text-info"></div>;
-  }
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
 
-  if (!isOnline) {
-    toast.error('No Internet connection');
-  }
-
-//  if (isOnline) {
-//    toast.success('Connected with the server');
-//  }
+  // Show toast but never block UI
+  useEffect(() => {
+    if (!isOnline) {
+      toast.error('No Internet connection');
+    }
+  }, [isOnline]);
 
   return (
     <Router>
-     <div className="App">
-       <Navbar isAuthenticated={isAuthenticated} />
-          <div className="container mx-auto">
-           <Routes>
-           {routeConfig(isAuthenticated).map((route, index) => (
-             <Route key={index} path={route.path} element={route.element} />
-           ))}
-        </Routes>
-       </div>
-       <Footer />
-       <Toaster />
-       {apiUnavailable && (
-        <div className="absolute inset-0 z-50">
-          <NoAPI />
+      <div className="App relative">
+        <Navbar isAuthenticated={isAuthenticated} />
+        <div className="container mx-auto">
+          <Routes>
+            {routeConfig(isAuthenticated).map((route, index) => (
+              <Route key={index} path={route.path} element={route.element} />
+            ))}
+          </Routes>
         </div>
-      )}
-     </div>
-   </Router>
+        <Footer />
+        <Toaster />
+        
+        {apiUnavailable && (
+          <div className="absolute inset-0 z-50">
+            <MaintenanceMode />
+          </div>
+        )}
+      </div>
+    </Router>
   );
 };
 
