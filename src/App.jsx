@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Navbar, Footer, OfflineWarning } from './components';
-import { NoAPI } from './components/NoAPI';
+import NoAPI from './components/NoAPI';
 import routeConfig from './routes';
 import axios from 'axios';
 import toast, { Toaster } from 'react-hot-toast';
