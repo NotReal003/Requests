@@ -22,7 +22,7 @@ const NoAPI = () => {
           >
             Join our Discord for updates
           </a>
-          <div>
+          <div className="mt-4 mb-4 flex items-center justify-center gap-2">
           <FaChartBar className="text-indigo-400 w-5 h-5" />
           <a
             href="https://check.notreal003.xyz"
