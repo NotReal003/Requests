@@ -22,6 +22,7 @@ const NoAPI = () => {
           >
             Join our Discord for updates
           </a>
+          <div>
           <FaChartBar className="text-indigo-400 w-5 h-5" />
           <a
             href="https://check.notreal003.xyz"
@@ -31,6 +32,7 @@ const NoAPI = () => {
           >
             Check current issues status
           </a>
+          </div>
         </div>
       </div>
     </div>
