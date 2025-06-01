@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTools, FaDiscord } from "react-icons/fa";
+import { FaChartBar, FaTools, FaDiscord } from "react-icons/fa";
 
 const NoAPI = () => {
   return (
@@ -21,6 +21,15 @@ const NoAPI = () => {
             className="text-indigo-400 hover:underline"
           >
             Join our Discord for updates
+          </a>
+          <FaChartBar className="text-indigo-400 w-5 h-5" />
+          <a
+            href="https://check.notreal003.xyz"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-indigo-400 hover:underline"
+          >
+            Check current issues status
           </a>
         </div>
       </div>
