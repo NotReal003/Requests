@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaTools, FaDiscord } from "react-icons/fa";
 
-const MaintenanceMode = () => {
+const NoAPI = () => {
   return (
     <div className="flex flex-col items-center justify-center p-4 h-screen bg-base-100 text-white">
       <div className="text-center">
@@ -28,4 +28,4 @@ const MaintenanceMode = () => {
   );
 };
 
-export default MaintenanceMode;
+export default NoAPI;
