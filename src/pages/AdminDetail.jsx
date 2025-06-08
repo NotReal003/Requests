@@ -122,9 +122,8 @@ const AdminDetail = () => {
   };
 
   const handleCopy = () => {
-  const userDisname = user.displayName 
-    || user.username 
-    || localStorage.getItem('userDisname') 
+  const userDisname = localStorage.getItem('user.DisplayName') 
+    || localStorage.getItem('user.username') 
     || 'NotReal003';
   const textToCopy = `Your Application has been approved and we have invited ${userUsername} to the Netflix Guild :)
 Reviewer,
