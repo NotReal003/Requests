@@ -122,17 +122,18 @@ const AdminDetail = () => {
   };
 
   const handleCopy = () => {
-  const userDisname = localStorage.getItem('user.DisplayName') 
-    || localStorage.getItem('user.username') 
-    || 'NotReal003';
+  const user = JSON.parse(localStorage.getItem('user')) || {};
+  const userDisname = user.displayName || user.username || 'NotReal003';
+  const userUsername = user.username || 'unknown_user';
+
   const textToCopy = `Your Application has been approved and we have invited ${userUsername} to the Netflix Guild :)
 Reviewer,
 ${userDisname}, Request Manager,
 NETFLIX Guild.`;
 
   navigator.clipboard.writeText(textToCopy)
-    .then(() => toast.success('Copied'))
-    .catch((err) => toast.error("Failed to copy text: " + err));
+    .then(() => toast.success('Copied to clipboard!'))
+    .catch(err => toast.error('Failed to copy:', err));
 };
 
 
