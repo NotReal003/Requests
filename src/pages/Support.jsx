@@ -47,88 +47,64 @@ const Support = ({ setCurrentPage }) => {
   const API_BASE_URL = "https://api.notreal003.xyz"; 
 
   const handleSubmit = useCallback(async (e) => {
-      e.preventDefault();
-      setIsSubmitting(true);
-      
-      // We will simulate getting a token for demonstration.
-      // In a real app, this would be handled by your auth context/system.
-      const token = 'fake-auth-token'; 
-      // const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+  e.preventDefault();
+  setIsSubmitting(true);
 
-      if (!token) {
-        toast.error('You must be logged in to submit a support request.');
-        setIsSubmitting(false);
-        return;
-      }
+  const token = 'fake-auth-token';
 
-      if (!agree) {
-        toast.error('You must agree to the Terms of Service and Privacy Policy.');
-        setIsSubmitting(false);
-        return;
-      }
+  if (!token) {
+    toast.error('You must be logged in to submit a support request.');
+    setIsSubmitting(false);
+    return;
+  }
 
-      if (!supportRequest.trim()) {
-        toast.error('Please provide a detailed description of your support request.');
-        setIsSubmitting(false);
-        return;
-      }
+  if (!agree) {
+    toast.error('You must agree to the Terms of Service and Privacy Policy.');
+    setIsSubmitting(false);
+    return;
+  }
 
-      // Sanitization should ideally happen on the server, but client-side is a good first step.
-      const payload = {
-        messageLink: supportRequest.trim(),
-        additionalInfo: additionalInfo.trim(),
-      };
+  if (!supportRequest.trim()) {
+    toast.error('Please provide a detailed description of your support request.');
+    setIsSubmitting(false);
+    return;
+  }
 
-      try {
-        // This is where your actual API call would go.
-        // For demonstration, we'll keep the mock fetch.
-        console.log("Submitting to:", `${API_BASE_URL}/requests/support`);
-        console.log("Payload:", payload);
+  const payload = {
+    messageLink: supportRequest.trim(),
+    additionalInfo: additionalInfo.trim(),
+  };
 
-        // Replace the mock Promise with your actual fetch call
-         const Getresponse = await fetch(`${API_BASE_URL}/requests/support`, {
-           method: 'POST',
-           credentials: 'include',
-           headers: {
-             'Content-Type': 'application/json',
-             // 'Authorization': `Bearer ${token}` // If you use bearer tokens
-           },
-           body: JSON.stringify(payload),
-         });
-        
-        // Mocking the response for demonstration
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        const response = Getresponse.json;
+  try {
+    const response = await fetch(`${API_BASE_URL}/requests/support`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
+    const data = await response.json();
 
-        if (response.status === 403) {
-          toast.error('Your session has expired or you lack permission. Please log in again.');
-          setIsSubmitting(false);
-          return;
-        }
-
-        const data = await response.json();
-
-        if (response.ok) {
-          toast.success('Your support request has been submitted successfully!');
-          setSupportRequest('');
-          setAdditionalInfo('');
-          setAgree(false);
-          // Use setCurrentPage instead of navigate for component-based routing
-          navigate(`success?request=${data.requestId}`);
-          //setCurrentPage({ page: 'success', requestId: data.requestId }); 
-        } else {
-          toast.error(data.message || 'An issue occurred while submitting your request.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        toast.error('A network error occurred. Please check your connection and try again.');
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [supportRequest, additionalInfo, agree, setCurrentPage, API_BASE_URL]
-  );
+    if (response.status === 403) {
+      toast.error('Your session has expired or you lack permission. Please log in again.');
+    } else if (response.ok) {
+      toast.success('Your support request has been submitted successfully!');
+      setSupportRequest('');
+      setAdditionalInfo('');
+      setAgree(false);
+      setCurrentPage({ page: 'success', requestId: data.requestId }); // ✅ use manual routing
+    } else {
+      toast.error(data.message || 'An issue occurred while submitting your request.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    toast.error('A network error occurred. Please check your connection and try again.');
+  } finally {
+    setIsSubmitting(false);
+  }
+}, [supportRequest, additionalInfo, agree, setCurrentPage, API_BASE_URL]);
 
   const supportRequestRemaining = 1750 - supportRequest.length;
   const additionalInfoRemaining = 1750 - additionalInfo.length;
