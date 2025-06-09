@@ -213,6 +213,7 @@ const Support = ({ setCurrentPage }) => {
             </button>
         </footer>
       </form>
+        <Toaster />
     </main>
   );
 };
