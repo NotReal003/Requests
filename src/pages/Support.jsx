@@ -41,7 +41,7 @@ const Support = ({ setCurrentPage }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // In a real app, this would come from an environment variable
-  const API_BASE_URL = "https://api.notreal003.xyz"; 
+  const API_BASE_URL = "https://api.example.com"; 
 
   // Using useCallback to memoize the function, preventing re-creation on every render
   const handleSubmit = useCallback(async (e) => {
@@ -68,11 +68,11 @@ const Support = ({ setCurrentPage }) => {
     try {
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
       
-       const response = await fetch(`${API_BASE_URL}/requests/support`, { ... });
-       const data = await response.json();
+      // const response = await fetch(`${API_BASE_URL}/requests/support`, { ... });
+      // const data = await response.json();
       
       // Mock success response
-      //const mockResponse = { ok: true, data: { requestId: 'SR12345' } };
+      const mockResponse = { ok: true, data: { requestId: 'SR12345' } };
 
       if (mockResponse.ok) {
         toast.success('Support request submitted successfully!');
