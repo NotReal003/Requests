@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- SVG Icons ---
 // Using inline SVGs for a self-contained component.
@@ -40,6 +41,7 @@ const Support = ({ setCurrentPage }) => {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [agree, setAgree] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
   
   // In a real app, this would come from process.env
   const API_BASE_URL = "https://api.notreal003.xyz"; 
@@ -113,7 +115,8 @@ const Support = ({ setCurrentPage }) => {
           setAdditionalInfo('');
           setAgree(false);
           // Use setCurrentPage instead of navigate for component-based routing
-          setCurrentPage({ page: 'success', requestId: data.requestId }); 
+          navigate(`success?request=${data.requestId}`);
+          //setCurrentPage({ page: 'success', requestId: data.requestId }); 
         } else {
           toast.error(data.message || 'An issue occurred while submitting your request.');
         }
