@@ -26,7 +26,8 @@ const SpinnerIcon = ({ className = 'h-5 w-5' }) => (
     </svg>
 );
 
-// A mock toast object for demonstration purposes
+// A mock toast object for demonstration purposes. 
+// In a real app, you would import a library like 'react-hot-toast'.
 const toast = {
   success: (message) => console.log(`SUCCESS: ${message}`),
   error: (message) => console.error(`ERROR: ${message}`),
@@ -40,53 +41,96 @@ const Support = ({ setCurrentPage }) => {
   const [agree, setAgree] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
-  // In a real app, this would come from an environment variable
-  const API_BASE_URL = "https://api.example.com"; 
+  // In a real app, this would come from process.env
+  const API_BASE_URL = "https://api.notreal003.xyz"; 
 
-  // Using useCallback to memoize the function, preventing re-creation on every render
   const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    if (!agree) {
-      toast.error('You must agree to the Terms and Privacy Policy.');
-      return;
-    }
-    if (!supportRequest.trim()) {
-        toast.error('Please describe your support request.');
+      e.preventDefault();
+      setIsSubmitting(true);
+      
+      // We will simulate getting a token for demonstration.
+      // In a real app, this would be handled by your auth context/system.
+      const token = 'fake-auth-token'; 
+      // const token = document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1];
+
+      if (!token) {
+        toast.error('You must be logged in to submit a support request.');
+        setIsSubmitting(false);
         return;
-    }
-
-    setIsSubmitting(true);
-    
-    const payload = {
-      message: supportRequest.trim(), // Sanitization should happen server-side
-      additionalInfo: additionalInfo.trim(),
-    };
-
-    console.log("Submitting payload:", payload);
-
-    // Mock API call
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
-      
-      // const response = await fetch(`${API_BASE_URL}/requests/support`, { ... });
-      // const data = await response.json();
-      
-      // Mock success response
-      const mockResponse = { ok: true, data: { requestId: 'SR12345' } };
-
-      if (mockResponse.ok) {
-        toast.success('Support request submitted successfully!');
-        setCurrentPage({ page: 'success', requestId: mockResponse.data.requestId });
-      } else {
-        toast.error('An error occurred. Please try again.');
       }
-    } catch (error) {
-      console.error('Submission Error:', error);
-      toast.error('A network error occurred. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [supportRequest, additionalInfo, agree, setCurrentPage]);
+
+      if (!agree) {
+        toast.error('You must agree to the Terms of Service and Privacy Policy.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (!supportRequest.trim()) {
+        toast.error('Please provide a detailed description of your support request.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Sanitization should ideally happen on the server, but client-side is a good first step.
+      const payload = {
+        messageLink: supportRequest.trim(),
+        additionalInfo: additionalInfo.trim(),
+      };
+
+      try {
+        // This is where your actual API call would go.
+        // For demonstration, we'll keep the mock fetch.
+        console.log("Submitting to:", `${API_BASE_URL}/requests/support`);
+        console.log("Payload:", payload);
+
+        // Replace the mock Promise with your actual fetch call
+        // const response = await fetch(`${API_BASE_URL}/requests/support`, {
+        //   method: 'POST',
+        //   credentials: 'include',
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     // 'Authorization': `Bearer ${token}` // If you use bearer tokens
+        //   },
+        //   body: JSON.stringify(payload),
+        // });
+        
+        // Mocking the response for demonstration
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        const mockResponse = {
+            ok: true,
+            status: 200,
+            json: async () => ({ requestId: 'SR' + Math.floor(Math.random() * 90000) + 10000 })
+        };
+        const response = mockResponse;
+
+
+        if (response.status === 403) {
+          toast.error('Your session has expired or you lack permission. Please log in again.');
+          setIsSubmitting(false);
+          return;
+        }
+
+        const data = await response.json();
+
+        if (response.ok) {
+          toast.success('Your support request has been submitted successfully!');
+          setSupportRequest('');
+          setAdditionalInfo('');
+          setAgree(false);
+          // Use setCurrentPage instead of navigate for component-based routing
+          setCurrentPage({ page: 'success', requestId: data.requestId }); 
+        } else {
+          toast.error(data.message || 'An issue occurred while submitting your request.');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        toast.error('A network error occurred. Please check your connection and try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [supportRequest, additionalInfo, agree, setCurrentPage, API_BASE_URL]
+  );
 
   const supportRequestRemaining = 1750 - supportRequest.length;
   const additionalInfoRemaining = 1750 - additionalInfo.length;
@@ -115,14 +159,11 @@ const Support = ({ setCurrentPage }) => {
           </p>
         </header>
 
-        {/* Info Alert Box */}
         <div role="alert" className="rounded-lg border border-sky-500/30 bg-sky-500/10 p-4 text-sm text-sky-200">
           For applications, please specify "Application" in your request. For all other inquiries, provide as much detail as possible to help us resolve your issue quickly.
         </div>
 
-        {/* Form Fields */}
         <div className="space-y-6">
-          {/* Support Request Field */}
           <div className="form-control">
             <label htmlFor="supportRequest" className="block text-sm font-medium text-gray-200 mb-2">
               Your Support Request <span className="text-red-400">*</span>
@@ -143,7 +184,6 @@ const Support = ({ setCurrentPage }) => {
             </p>
           </div>
 
-          {/* Additional Information Field */}
           <div className="form-control">
             <label htmlFor="additionalInfo" className="block text-sm font-medium text-gray-200 mb-2">
               Additional Information (Optional)
@@ -164,7 +204,6 @@ const Support = ({ setCurrentPage }) => {
           </div>
         </div>
 
-        {/* Agreement Checkbox */}
         <div className="form-control">
             <label className="flex items-start sm:items-center gap-3 cursor-pointer">
               <input
@@ -184,7 +223,6 @@ const Support = ({ setCurrentPage }) => {
             </label>
         </div>
 
-        {/* Action Buttons */}
         <footer className="mt-4 flex flex-col-reverse sm:flex-row sm:justify-between items-center gap-4 border-t border-gray-700/50 pt-6">
            <button
               type="button"
