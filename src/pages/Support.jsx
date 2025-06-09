@@ -88,23 +88,19 @@ const Support = ({ setCurrentPage }) => {
     const data = await response.json();
 
     if (response.status === 403) {
-      toast.error('Your session has expired or you lack permission. Please log in again.');
+      toast.error(data.message || 'Your session has expired or you lack permission. Please log in again.');
     } else if (response.ok) {
       toast.success('Your support request has been submitted successfully!');
-      setSupportRequest('');
-      setAdditionalInfo('');
-      setAgree(false);
-      setCurrentPage({ page: 'success', requestId: data.requestId }); // ✅ use manual routing
+      navigate(`/success?request=${data.requestId}`); // ✅ Navigate to success page
     } else {
       toast.error(data.message || 'An issue occurred while submitting your request.');
     }
   } catch (error) {
-    console.error('Error:', error);
-    toast.error('A network error occurred. Please check your connection and try again.');
+    toast.error(error?.message || 'A network error occurred. Please try again.');
   } finally {
     setIsSubmitting(false);
   }
-}, [supportRequest, additionalInfo, agree, setCurrentPage, API_BASE_URL]);
+}, [supportRequest, additionalInfo, agree, navigate, API_BASE_URL]);
 
   const supportRequestRemaining = 1750 - supportRequest.length;
   const additionalInfoRemaining = 1750 - additionalInfo.length;
