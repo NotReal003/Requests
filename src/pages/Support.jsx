@@ -84,24 +84,19 @@ const Support = ({ setCurrentPage }) => {
         console.log("Payload:", payload);
 
         // Replace the mock Promise with your actual fetch call
-        // const response = await fetch(`${API_BASE_URL}/requests/support`, {
-        //   method: 'POST',
-        //   credentials: 'include',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     // 'Authorization': `Bearer ${token}` // If you use bearer tokens
-        //   },
-        //   body: JSON.stringify(payload),
-        // });
+         const Getresponse = await fetch(`${API_BASE_URL}/requests/support`, {
+           method: 'POST',
+           credentials: 'include',
+           headers: {
+             'Content-Type': 'application/json',
+             // 'Authorization': `Bearer ${token}` // If you use bearer tokens
+           },
+           body: JSON.stringify(payload),
+         });
         
         // Mocking the response for demonstration
         await new Promise(resolve => setTimeout(resolve, 1500));
-        const mockResponse = {
-            ok: true,
-            status: 200,
-            json: async () => ({ requestId: 'SR' + Math.floor(Math.random() * 90000) + 10000 })
-        };
-        const response = mockResponse;
+        const response = Getresponse.json;
 
 
         if (response.status === 403) {
