@@ -30,8 +30,8 @@ const SpinnerIcon = ({ className = 'h-5 w-5' }) => (
 // A mock toast object for demonstration purposes. 
 // In a real app, you would import a library like 'react-hot-toast'.
 const toast = {
-  success: (message) => console.log(`SUCCESS: ${message}`),
-  error: (message) => console.error(`ERROR: ${message}`),
+  success: (message) => toast.success(`${message}`),
+  error: (message) => toast.error(`${message}`),
 };
 
 
@@ -208,7 +208,7 @@ const Support = ({ setCurrentPage }) => {
                 disabled={isSubmitting || !agree}
             >
                 {isSubmitting ? <SpinnerIcon /> : <SendIcon />}
-                <span>{isSubmitting ? 'Submitting...' : 'Submit Request'}</span>
+                <span>{isSubmitting ? 'Submit Request' : 'Submit Request'}</span>
             </button>
         </footer>
       </form>
