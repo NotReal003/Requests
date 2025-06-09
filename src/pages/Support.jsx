@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 // --- SVG Icons ---
 // Using inline SVGs for a self-contained component.
@@ -29,10 +30,10 @@ const SpinnerIcon = ({ className = 'h-5 w-5' }) => (
 
 // A mock toast object for demonstration purposes. 
 // In a real app, you would import a library like 'react-hot-toast'.
-const toast = {
-  success: (message) => toast.success(`${message}`),
-  error: (message) => toast.error(`${message}`),
-};
+//const toast = {
+//  success: (message) => toast.success(`${message}`),
+//  error: (message) => toast.error(`${message}`),
+//};
 
 
 // --- Support Component ---
