@@ -51,15 +51,14 @@ const GithubIcon = () => (
 // --- Main Login Component ---
 const Login = ({ setCurrentPage }) => {
   // In a real app, this would come from an environment variable
-  const API_BASE_URL = "https://api.example.com"; 
+  const API_BASE_URL = "https://api.notreal003.xyz"; 
 
   const handleDiscordLogin = () => {
-    // window.location.href = `${API_BASE_URL}/auth/signin`;
-    console.log("Redirecting to Discord OAuth...");
+     window.location.href = `${API_BASE_URL}/auth/signin`;
   };
 
   const handleGoogleLogin = () => {
-    // window.location.href = `${API_BASE_URL}/auth/google`;
+    window.location.href = `${API_BASE_URL}/auth/google`;
     console.log("Redirecting to Google OAuth...");
   };
 
