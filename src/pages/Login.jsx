@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // --- SVG Icons ---
 // Using inline SVGs for brand icons makes the component self-contained
@@ -132,7 +133,7 @@ const Login = ({ setCurrentPage }) => {
         <p className="text-center text-sm text-gray-400">
           Don’t have an account?{' '}
           <button
-            onClick={() => setCurrentPage('signup')}
+            onClick={() => useNavigate('/email-signin')}
             className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
           >
             Sign up
