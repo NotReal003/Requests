@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 // --- SVG Icons ---
 // Using inline SVGs for brand icons makes the component self-contained
@@ -106,6 +107,7 @@ const Login = ({ setCurrentPage }) => {
             disabled
             className="group flex h-12 cursor-not-allowed items-center justify-center gap-3 rounded-lg border border-gray-700 bg-gray-800/60 px-4 text-base font-semibold text-gray-500"
             aria-label="Email login (currently disabled)"
+            onClick={() => toast.error('Email SignIn is not accepted...')}
           >
             <MailIcon />
             <span>Login with Email</span>
@@ -115,6 +117,7 @@ const Login = ({ setCurrentPage }) => {
             disabled
             className="group flex h-12 cursor-not-allowed items-center justify-center gap-3 rounded-lg border border-gray-700 bg-gray-800/60 px-4 text-base font-semibold text-gray-500"
             aria-label="GitHub login (currently disabled)"
+            onClick={() => toast.error('Github SignIn is not accepted...')}
           >
             <GithubIcon />
             <span>Login with GitHub</span>
@@ -134,13 +137,14 @@ const Login = ({ setCurrentPage }) => {
         <p className="text-center text-sm text-gray-400">
           Don’t have an account?{' '}
           <button
-            onClick={() => navigate('/email-signin')
+            onClick={() => navigate('/email-signin')}
             className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
           >
             Sign up
           </button>
         </p>
       </section>
+      <Toaster />
     </main>
   );
 };
