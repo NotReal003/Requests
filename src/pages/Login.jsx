@@ -52,6 +52,7 @@ const GithubIcon = () => (
 // --- Main Login Component ---
 const Login = ({ setCurrentPage }) => {
   // In a real app, this would come from an environment variable
+  const navigate = useNavigate();
   const API_BASE_URL = "https://api.notreal003.xyz"; 
 
   const handleDiscordLogin = () => {
@@ -133,7 +134,7 @@ const Login = ({ setCurrentPage }) => {
         <p className="text-center text-sm text-gray-400">
           Don’t have an account?{' '}
           <button
-            onClick={() => useNavigate('/email-signin')}
+            onClick={() => navigate('/email-signin')
             className="font-medium text-indigo-400 hover:text-indigo-300 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded"
           >
             Sign up
