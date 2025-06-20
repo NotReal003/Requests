@@ -272,7 +272,7 @@ const Admin = () => {
         <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center">Admin Dashboard - Manage Requests </h1>
         <div className="mb-6 text-center">
           <h2 className="text-xl font-semibold text-gray-300">
-            Received <span className="text-[#FFD700]">{paginatedRequests.length}</span> requests.
+            Received <span className="text-[#FFD700]">{requests.length}</span> requests.
           </h2>
         </div>
         <FilterControls
