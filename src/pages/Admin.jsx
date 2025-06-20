@@ -287,6 +287,11 @@ const Admin = () => {
           ) : error ? (
             <ErrorAlert message={error} />
           ) : paginatedRequests.length > 0 ? (
+            <div className="mb-6 text-center">
+          <h2 className="text-xl font-semibold text-gray-300">
+            Received <span className="text-[#FFD700]">{paginatedRequests.length}</span> requests.
+          </h2>
+        </div>
             paginatedRequests.map((request) => (
               <RequestItem
                 key={request._id}
