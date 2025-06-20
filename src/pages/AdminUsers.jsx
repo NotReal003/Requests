@@ -6,18 +6,10 @@ import { IoMdArrowRoundBack, IoMdClose } from 'react-icons/io';
 import { formatDistanceToNow } from 'date-fns';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDebounce } from 'use-debounce';
+import AdminOnly from '../components/AdminOnly';
 
 // --- Helper Component: AdminOnly Placeholder ---
 // This component is shown when a non-admin user tries to access the page.
-const AdminOnly = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6 text-center">
-    <div className="bg-gradient-to-br from-[#1E1E1E] to-[#111] p-10 rounded-2xl shadow-2xl border border-red-500/30">
-        <FaUserShield className="text-7xl text-red-500 mx-auto mb-6" />
-        <h1 className="text-4xl font-bold mb-3">Access Denied</h1>
-        <p className="text-gray-400 max-w-sm">You do not have the necessary permissions to view this page. Please contact an administrator if you believe this is an error.</p>
-    </div>
-  </div>
-);
 
 
 // --- Role Information & Styling ---
@@ -418,9 +410,6 @@ const AdminUsers = () => {
                                 </span>
                             </div>
                         </li>
-                      <button className="px-4 py-2 bg-gray-800/50 rounded-lg hover:bg-gray-700/80 transition-colors flex items-center self-start sm:self-center border border-gray-700/50" onClick={() => navigate('/')}>
-                        <IoMdArrowRoundBack className="mr-2" /> Back to Home
-                    </button>
                     )
                 })}
                 </ul>
@@ -431,6 +420,10 @@ const AdminUsers = () => {
                 </div>
             )}
         </div>
+
+        <button className="px-4 py-2 bg-gray-800/50 rounded-lg hover:bg-gray-700/80 transition-colors flex items-center self-start sm:self-center border border-gray-700/50" onClick={() => navigate('/')}>
+                        <IoMdArrowRoundBack className="mr-2" /> Back to Home
+                    </button>
 
         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
       </div>
