@@ -1,337 +1,293 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { FaDiscord, FaArrowRight } from 'react-icons/fa';
+import { FaDiscord, FaArrowRight, FaSyncAlt, FaExclamationTriangle, FaCheckCircle, FaTimesCircle, FaHourglassHalf, FaRedo, FaBan, FaShieldAlt } from 'react-icons/fa';
 import { MdSupportAgent } from 'react-icons/md';
-import { IoMdArrowRoundBack } from 'react-icons/io';
+import { IoMdArrowRoundBack, IoMdClose } from 'react-icons/io';
 import { formatDistanceToNow } from 'date-fns';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import toast, { Toaster } from 'react-hot-toast';
 import AdminOnly from '../components/AdminOnly';
 
-// Request Status Component
+// --- Helper Component: AdminOnly Placeholder ---
+
+
+// --- Status & Type Configurations ---
+const statusInfo = {
+    PENDING:   { label: 'Pending',   Icon: FaHourglassHalf,    className: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
+    APPROVED:  { label: 'Approved',  Icon: FaCheckCircle,      className: 'bg-green-500/10 text-green-400 border-green-500/20' },
+    RESOLVED:  { label: 'Resolved',  Icon: FaCheckCircle,      className: 'bg-green-500/10 text-green-400 border-green-500/20' },
+    DENIED:    { label: 'Denied',    Icon: FaTimesCircle,      className: 'bg-red-500/10 text-red-400 border-red-500/20' },
+    CANCELLED: { label: 'Cancelled', Icon: FaBan,              className: 'bg-red-500/10 text-red-400 border-red-500/20' },
+    ESCALATED: { label: 'Escalated', Icon: FaExclamationTriangle, className: 'bg-orange-500/10 text-orange-400 border-orange-500/20' },
+    RESUBMIT_REQUIRED: { label: 'Resubmit', Icon: FaRedo, className: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+};
+
+const typeInfo = {
+    'report': { label: 'Discord Report', Icon: FaDiscord, color: 'text-indigo-400' },
+    'guild-application': { label: 'Application', Icon: FaPeopleGroup, color: 'text-teal-400' },
+    'support': { label: 'Support Request', Icon: MdSupportAgent, color: 'text-sky-400' },
+};
+
+// --- Component: RequestStatus ---
 const RequestStatus = ({ status }) => {
-  const statusStyles = {
-    DENIED: 'bg-red-600 text-white',
-    APPROVED: 'bg-green-600 text-white',
-    RESUBMIT_REQUIRED: 'bg-orange-600 text-white',
-    PENDING: 'bg-yellow-600 text-white',
-    CANCELLED: 'bg-red-600 text-white',
-    RESOLVED: 'bg-green-600 text-white',
-    ESCALATED: 'bg-yellow-600 text-white',
-  };
-
-  const statusTooltips = {
-    DENIED: 'Request was denied.',
-    APPROVED: 'Request was approved.',
-    ESCALATED: 'Request is escalated',
-    PENDING: 'Request is pending.',
-    CANCELLED: 'Request was cancelled.',
-    RESOLVED: 'Request was resolved.',
-  };
-
-  return (
-    <span
-      className={`rounded-full px-2 py-1 text-xs font-bold ${statusStyles[status]}`}
-      title={statusTooltips[status]}
-    >
-      {status}
-    </span>
-  );
+    const info = statusInfo[status] || {};
+    return (
+        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${info.className}`}>
+            <info.Icon className="mr-1.5" />
+            {info.label}
+        </span>
+    );
 };
 
-const RequestIcon = ({ type }) => {
-  const iconClass = 'text-2xl sm:text-3xl md:text-4xl mr-2 sm:mr-3 md:mr-4';
-  if (type === 'report') {
-    return <FaDiscord className={iconClass} title="Discord Report" />;
-  } else if (type === 'guild-application') {
-    return <FaPeopleGroup className={iconClass} title="Guild Application" />;
-  } else if (type === 'support') {
-    return <MdSupportAgent className={iconClass} title="Support Request" />;
-  }
-  return null;
-};
-
-const LoadingSkeleton = () => (
-
-  <div className="space-y-4">
-    {[...Array(6)].map((_, idx) => (
-      <div
-        key={idx}
-        className="animate-pulse flex justify-between items-center p-4 bg-base-300 rounded-lg shadow-lg max-w-md md:max-w-lg mx-auto"
-      >
-        <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 bg-gray-400 rounded-full"></div>
-          <div>
-            <div className="h-4 bg-gray-400 rounded w-40 mb-2"></div>
-            <div className="h-3 bg-gray-400 rounded w-24"></div>
-          </div>
-        </div>
-        <div className="w-4 h-4 bg-gray-400 rounded"></div>
-      </div>
-    ))}
-  </div>
-  );
-
-const ErrorAlert = ({ message }) => (
-  <div className="alert alert-error shadow-lg">
-    <div>
-      <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636l-6.364 6.364m0 0L5.636 18.364m6.364-6.364l6.364 6.364M6.636 5.636L18.364 17.364" />
-      </svg>
-      <span>{message}</span>
-    </div>
-  </div>
-);
-
-const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserIdFilter, handleToggleApiStatus, apiClosed }) => (
-  <div className="mb-4 flex flex-col sm:flex-row justify-between">
-    <div>
-      <select
-        className="select select-bordered select-md w-full mb-2"
-        value={statusFilter}
-        onChange={(e) => setStatusFilter(e.target.value)}
-      >
-        <option value="">All Statuses</option>
-        <option value="PENDING">Pending</option>
-        <option value="APPROVED">Approved</option>
-        <option value="DENIED">Denied</option>
-        <option value="ESCALATED">ESCALATED</option>
-        <option value="CANCELLED">Cancelled</option>
-        <option value="RESOLVED">Resolved</option>
-      </select>
-      <input
-        type="text"
-        placeholder="Search a User"
-        value={userIdFilter}
-        className="input input-bordered w-full"
-        onChange={(e) => setUserIdFilter(e.target.value)}
-      />
-      <div className="mb-2 mt-2">
-        <label className="label cursor-pointer">
-          <span className="label-text text-md">API Status:</span>
-          <input
-            type="checkbox"
-            className="toggle toggle-info"
-            checked={!apiClosed}
-            onChange={handleToggleApiStatus}
-          />
-        </label>
-      </div>
-    </div>
-  </div>
-);
-
-// Request Item Component
-const RequestItem = ({ request, handleRequestClick, getGradientClass }) => (
-  <div
-    key={request._id}
-    className={`flex justify-between items-center p-2 sm:p-3 md:p-4 rounded-lg shadow-lg text-white ${getGradientClass(
-      request.status
-    )} cursor-pointer`}
-    onClick={() => handleRequestClick(request._id)}
-  >
-    <div className="flex items-center">
-      <RequestIcon type={request.type} />
-      <div>
-        <h1 className="text-md sm:text-base md:text-xs font-bold">{request.username}</h1>
-        <h2 className="text-sm sm:text-base md:text-lg font-bold">
-          {request.type === 'report' ? `Discord Report` : request.type === 'guild-application' ? 'Application' : 'Support Request'}{' '}
-          <RequestStatus status={request.status} />
-        </h2>
-        <p className="text-xs sm:text-sm">
-          {formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}
-        </p>
-      </div>
-    </div>
-    <div className="flex items-center">
-      <FaArrowRight className="ml-2 sm:ml-4 text-lg sm:text-xl" title="View details" />
-    </div>
-  </div>
-);
-
-// Main Admin Component
-const Admin = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [userIdFilter, setUserIdFilter] = useState('');
-  const [apiClosed, setApiClosed] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [adminOnly, setAdminOnly] = useState(false);
-  const requestsPerPage = 10;
-  const token = localStorage.getItem('jwtToken');
-  const navigate = useNavigate();
-  const API = process.env.REACT_APP_API;
-
-  const handleToggleApiStatus = async () => {
-    const confirmMessage = apiClosed ? 'open the API' : 'close the API';
-    if (window.confirm(`Are you sure you want to ${confirmMessage}?`)) {
-      try {
-        const response = await axios.patch(
-          `${API}/server/manage-api`,
-          { closeType: apiClosed ? 'noopened' : 'yesclosed' },
-          { withCredentials: true }
-        );
-        
-        if (response.status === 200) {
-          toast.success(`API has been ${apiClosed ? 'opened' : 'closed'} successfully.`);
-          setApiClosed(!apiClosed);
-        } else {
-          toast.error('Failed to change API status.');
-        }
-      } catch (error) {
-        console.error('Error changing API status:', error);
-        toast.error('An error occurred while changing API status.');
-      }
-    }
-  };
-  useEffect(() => {
-    const fetchRequests = async () => {
-      try {
-        const response = await axios.get(`${API}/admin/requests`, {
-          withCredentials: true,
-        });
-
-        if (response.status === 403) {
-          setAdminOnly(true);
-        }
-
-        // Success case
-        let filteredRequests = response.data;
-
-        if (statusFilter) {
-          filteredRequests = filteredRequests.filter((request) => request.status === statusFilter);
-        }
-
-        // Filter requests by user ID
-        if (userIdFilter) {
-          filteredRequests = filteredRequests.filter((request) => request.id.includes(userIdFilter));
-        }
-
-        // Sort requests by creation date
-        const sortedRequests = filteredRequests.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setRequests(sortedRequests);
-      } catch (error) {
-        const errorStatus = error.response?.status;
-
-        // Handle 403 forbidden
-        if (errorStatus === 403) {
-          setAdminOnly(true);
-        } else {
-          const errorMessage = error.response?.data?.message || 'Failed to load requests. Please try again later.';
-          setError(errorMessage);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRequests();
-  }, [token, statusFilter, userIdFilter, API, navigate]);
-
-
-  const handleRequestClick = (id) => {
-    navigate(`/admindetail?id=${id}`);
-  };
-
-  const getGradientClass = (status) => {
-    switch (status) {
-      case 'DENIED':
-        return 'bg-gradient-to-r from-red-600 to-red-700';
-      case 'CANCELLED':
-        return 'bg-gradient-to-r from-orange-600 to-orange-700';
-      case 'APPROVED':
-        return 'bg-gradient-to-r from-green-600 to-green-700';
-      case 'RESUBMIT_REQUIRED':
-        return 'bg-gradient-to-r from-orange-600 to-orange-700';
-      case 'RESOLVED':
-        return 'bg-gradient-to-r from-green-600 to-green-700';
-      default:
-        return 'bg-gradient-to-r from-yellow-500 to-yellow-600';
-    }
-  };
-
-  const paginatedRequests = requests.slice(
-    (currentPage - 1) * requestsPerPage,
-    currentPage * requestsPerPage
-  );
-
-  const handleNextPage = () => setCurrentPage((prev) => prev + 1);
-  const handlePrevPage = () => setCurrentPage((prev) => prev - 1);
-
-  if (adminOnly) {
-    return <AdminOnly />;
-  }
-
-  return (
-    <div className="flex flex-col items-center justify-center p-2 sm:p-4 md:p-6">
-      <Toaster />
-      <div className="rounded-lg p-2 shadow-sm w-full max-w-3xl">
-        <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center">Admin Dashboard - Manage Requests </h1>
-        <div className="mb-6 text-center">
-          <h2 className="text-xl font-semibold text-gray-300">
-            Received <span className="text-[#FFD700]">{requests.length}</span> requests.
-          </h2>
-        </div>
-        <FilterControls
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          userIdFilter={userIdFilter}
-          setUserIdFilter={setUserIdFilter}
-          handleToggleApiStatus={handleToggleApiStatus}
-          apiClosed={apiClosed}
-        />
-      </div>
-
-      <div className="w-full max-w-3xl">
-        <div className="space-y-2 sm:space-y-4">
-          {loading ? (
-            <LoadingSkeleton />
-          ) : error ? (
-            <ErrorAlert message={error} />
-          ) : paginatedRequests.length > 0 ? (
-            paginatedRequests.map((request) => (
-              <RequestItem
-                key={request._id}
-                request={request}
-                handleRequestClick={handleRequestClick}
-                getGradientClass={getGradientClass}
-              />
-            ))
-          ) : (
-            <div className="alert shadow-lg">
-              <div>
-                <span>No requests found.</span>
-              </div>
+// --- Component: ConfirmationModal ---
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, children }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-70 z-50 backdrop-blur-sm animate-fade-in">
+            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] p-8 rounded-2xl shadow-2xl w-full max-w-md relative border border-gray-700/50">
+                <h2 className="text-2xl font-bold mb-4 text-white">{title}</h2>
+                <div className="text-gray-400 mb-6">{children}</div>
+                <div className="flex justify-end space-x-4">
+                    <button onClick={onClose} className="px-4 py-2 bg-gray-700/50 rounded-lg hover:bg-gray-600/70 transition-colors">Cancel</button>
+                    <button onClick={onConfirm} className="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors">Confirm</button>
+                </div>
             </div>
-          )}
         </div>
-        <div className="flex justify-between mt-4">
-          <button
-            className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all"
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <button
-            className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all"
-            onClick={handleNextPage}
-            disabled={paginatedRequests.length < requestsPerPage}
-          >
-            Next
-          </button>
-        </div>
-        <div className="mt-4">
-          <button className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all" onClick={() => navigate('/')}>
-            <IoMdArrowRoundBack className="mr-2" title="Go back to home page" /> Go Back
-          </button>
-        </div>
-      </div>
+    );
+};
+
+// --- Component: LoadingSkeleton ---
+const LoadingSkeleton = ({ count = 5 }) => (
+    <div className="space-y-3">
+        {[...Array(count)].map((_, i) => (
+            <div key={i} className="p-4 bg-[#1a1a1a]/50 rounded-xl border border-gray-800/50 animate-pulse">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                        <div className="w-12 h-12 bg-gray-700 rounded-lg mr-4" />
+                        <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-700 rounded w-48" />
+                            <div className="h-3 bg-gray-700 rounded w-32" />
+                        </div>
+                    </div>
+                    <div className="h-6 w-24 bg-gray-700 rounded-full" />
+                </div>
+            </div>
+        ))}
     </div>
-  );
+);
+
+// --- Component: FilterControls ---
+const FilterControls = ({ statusFilter, setStatusFilter, userIdFilter, setUserIdFilter, onToggleApi, apiClosed }) => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-[#1a1a1a]/50 rounded-xl border border-gray-800/50">
+        <select
+            className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-700/50 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+        >
+            <option value="">All Statuses</option>
+            {Object.keys(statusInfo).map(key => <option key={key} value={key}>{statusInfo[key].label}</option>)}
+        </select>
+        <input
+            type="text"
+            placeholder="Search by User ID..."
+            value={userIdFilter}
+            className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-700/50 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none"
+            onChange={(e) => setUserIdFilter(e.target.value)}
+        />
+        <div className="flex items-center justify-between bg-[#2a2a2a] p-3 rounded-lg border border-gray-700/50">
+            <span className="label-text text-md text-white">API Status: <span className={apiClosed ? 'text-red-400' : 'text-green-400'}>{apiClosed ? 'Closed' : 'Open'}</span></span>
+            <input
+                type="checkbox"
+                className="toggle toggle-secondary"
+                checked={!apiClosed}
+                onChange={onToggleApi}
+            />
+        </div>
+    </div>
+);
+
+// --- Main Admin Component ---
+const Admin = () => {
+    const [requests, setRequests] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [statusFilter, setStatusFilter] = useState('');
+    const [userIdFilter, setUserIdFilter] = useState('');
+    const [apiClosed, setApiClosed] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [adminOnly, setAdminOnly] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
+    const requestsPerPage = 10;
+    const navigate = useNavigate();
+    const API = process.env.REACT_APP_API || 'https://api.notreal003.xyz';
+
+    // Fetch API status on initial load
+    useEffect(() => {
+        const fetchApiStatus = async () => {
+             try {
+                 // Assuming an endpoint exists to get the current API status
+                 const response = await axios.get(`${API}/server/api-status`, { withCredentials: true });
+                 setApiClosed(response.data.isClosed);
+             } catch (err) {
+                 console.error("Could not fetch API status", err);
+                 // Assume open if status check fails
+                 setApiClosed(false);
+             }
+        };
+        fetchApiStatus();
+    }, [API]);
+    
+    // Fetch requests when filters change
+    useEffect(() => {
+        const fetchRequests = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(`${API}/admin/requests`, { withCredentials: true });
+                // No need to filter here, we will use useMemo for client-side filtering
+                const sortedRequests = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                setRequests(sortedRequests);
+                setError(null);
+            } catch (err) {
+                if (err.response?.status === 403) {
+                    setAdminOnly(true);
+                } else {
+                    setError(err.response?.data?.message || 'Failed to load requests.');
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRequests();
+    }, [API]);
+
+    const handleToggleApiStatus = async () => {
+        try {
+            await axios.patch(`${API}/server/manage-api`, 
+                { closeType: apiClosed ? 'noopened' : 'yesclosed' }, 
+                { withCredentials: true }
+            );
+            toast.success(`API has been ${apiClosed ? 'opened' : 'closed'} successfully.`);
+            setApiClosed(!apiClosed);
+        } catch (error) {
+            toast.error('Failed to change API status.');
+        } finally {
+            setModalOpen(false);
+        }
+    };
+    
+    const filteredRequests = useMemo(() => {
+        return requests
+            .filter(req => statusFilter ? req.status === statusFilter : true)
+            .filter(req => userIdFilter ? req.id.toLowerCase().includes(userIdFilter.toLowerCase()) : true);
+    }, [requests, statusFilter, userIdFilter]);
+    
+    const totalPages = Math.ceil(filteredRequests.length / requestsPerPage);
+    const paginatedRequests = filteredRequests.slice((currentPage - 1) * requestsPerPage, currentPage * requestsPerPage);
+
+    useEffect(() => {
+        if(currentPage > totalPages && totalPages > 0) {
+            setCurrentPage(totalPages);
+        } else if (currentPage === 0 && totalPages > 0) {
+            setCurrentPage(1);
+        }
+    }, [currentPage, totalPages])
+
+
+    if (adminOnly) {
+        return <AdminOnly />;
+    }
+
+    return (
+        <div className="min-h-screen bg-black text-gray-200 p-4 sm:p-6 lg:p-8 font-sans">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-black via-black to-[#1a0c2e] opacity-50 z-0"></div>
+            <Toaster position="top-center" toastOptions={{ className: 'bg-gray-800 text-white border border-gray-700' }} />
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                onClose={() => setModalOpen(false)}
+                onConfirm={handleToggleApiStatus}
+                title="Confirm Action"
+            >
+                Are you sure you want to {apiClosed ? 'open' : 'close'} the API for submissions?
+            </ConfirmationModal>
+
+            <div className="container mx-auto max-w-7xl relative z-10">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                    <div>
+                        <h1 className="text-4xl font-bold text-white">Manage Requests</h1>
+                        <p className="text-gray-400 mt-1">
+                            {loading ? 'Loading requests...' : `Showing ${filteredRequests.length} of ${requests.length} total requests.`}
+                        </p>
+                    </div>
+                     <button className="px-4 py-2 bg-gray-800/50 rounded-lg hover:bg-gray-700/80 transition-colors flex items-center self-start sm:self-center border border-gray-700/50" onClick={() => navigate('/')}>
+                        <IoMdArrowRoundBack className="mr-2" /> Back to Home
+                    </button>
+                </div>
+
+                <FilterControls 
+                    statusFilter={statusFilter} setStatusFilter={setStatusFilter}
+                    userIdFilter={userIdFilter} setUserIdFilter={setUserIdFilter}
+                    apiClosed={apiClosed} onToggleApi={() => setModalOpen(true)}
+                />
+
+                <div className="bg-[#1a1a1a]/30 rounded-xl border border-gray-800/50 p-2 min-h-[400px]">
+                    {loading ? (
+                        <LoadingSkeleton />
+                    ) : error ? (
+                        <div className="text-center text-red-400 py-16 bg-red-500/10 rounded-lg">
+                            <FaExclamationTriangle className="text-5xl mx-auto mb-4"/>
+                            <p className="text-xl font-bold">An Error Occurred</p>
+                            <p>{error}</p>
+                        </div>
+                    ) : paginatedRequests.length > 0 ? (
+                        <div className="space-y-3">
+                            {paginatedRequests.map((request) => {
+                                const TypeIcon = typeInfo[request.type]?.Icon || FaExclamationTriangle;
+                                return (
+                                    <div
+                                        key={request._id}
+                                        className="p-4 bg-[#1c1c1c]/50 rounded-lg shadow-md hover:bg-[#2a2a2a] transition-all duration-300 cursor-pointer group border border-transparent hover:border-purple-500/30"
+                                        onClick={() => navigate(`/admindetail?id=${request._id}`)}
+                                        role="button"
+                                    >
+                                        <div className="flex items-center justify-between gap-4">
+                                            <div className="flex items-center gap-4">
+                                                <TypeIcon className={`text-4xl flex-shrink-0 ${typeInfo[request.type]?.color || 'text-gray-500'}`} />
+                                                <div>
+                                                    <p className="font-bold text-lg text-white">{typeInfo[request.type]?.label || 'Unknown Request'}</p>
+                                                    <p className="text-sm text-gray-400">
+                                                        From <span className="font-semibold text-gray-300">{request.username}</span> • {formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <RequestStatus status={request.status} />
+                                                <FaArrowRight className="text-gray-600 group-hover:text-white transition-colors text-xl"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                         <div className="text-center text-gray-500 py-16">
+                            <p className="text-xl">No Requests Found</p>
+                            <p>There are no requests matching your current filters.</p>
+                        </div>
+                    )}
+                </div>
+
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center space-x-2 mt-8">
+                        <button disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)} className="px-4 py-2 bg-gray-800/50 rounded-lg disabled:opacity-50 hover:bg-gray-700 transition-colors">‹ Prev</button>
+                        <span className="text-gray-400">Page {currentPage} of {totalPages}</span>
+                        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)} className="px-4 py-2 bg-gray-800/50 rounded-lg disabled:opacity-50 hover:bg-gray-700 transition-colors">Next ›</button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 };
 
 export default Admin;
