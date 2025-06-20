@@ -270,6 +270,11 @@ const Admin = () => {
       <Toaster />
       <div className="rounded-lg p-2 shadow-sm w-full max-w-3xl">
         <h1 className="text-xl sm:text-2xl font-bold mb-4 text-center">Admin Dashboard - Manage Requests </h1>
+        <div className="mb-6 text-center">
+          <h2 className="text-xl font-semibold text-gray-300">
+            Received <span className="text-[#FFD700]">{paginatedRequests.length}</span> requests.
+          </h2>
+        </div>
         <FilterControls
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
@@ -287,11 +292,6 @@ const Admin = () => {
           ) : error ? (
             <ErrorAlert message={error} />
           ) : paginatedRequests.length > 0 ? (
-            <div className="mb-6 text-center">
-          <h2 className="text-xl font-semibold text-gray-300">
-            Received <span className="text-[#FFD700]">{paginatedRequests.length}</span> requests.
-          </h2>
-        </div>
             paginatedRequests.map((request) => (
               <RequestItem
                 key={request._id}
