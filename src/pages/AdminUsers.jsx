@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaUserShield, FaUser, FaSpinner, FaSave, FaUsers, FaSearch, FaSyncAlt } from 'react-icons/fa';
 import { IoMdArrowRoundBack, IoMdClose } from 'react-icons/io';
@@ -217,6 +218,7 @@ const AdminUsers = () => {
   const [debouncedSearch] = useDebounce(search, 300);
   const [page, setPage] = useState(1);
   const pageSize = 10;
+  const navigate = useNavigate();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -416,6 +418,9 @@ const AdminUsers = () => {
                                 </span>
                             </div>
                         </li>
+                      <button className="px-4 py-2 bg-gray-800/50 rounded-lg hover:bg-gray-700/80 transition-colors flex items-center self-start sm:self-center border border-gray-700/50" onClick={() => navigate('/')}>
+                        <IoMdArrowRoundBack className="mr-2" /> Back to Home
+                    </button>
                     )
                 })}
                 </ul>
