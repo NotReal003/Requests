@@ -9,7 +9,7 @@ import AdminOnly from '../components/AdminOnly';
 
 const roleInfo = {
   admin: { label: 'Admin', color: 'red', Icon: FaUserShield },
-  mod: { label: 'Mod', color: 'blue', Icon: FaUser },
+  mod: { label: 'Mod', color: 'blue', Icon: FaUserShield },
   user: { label: 'User', color: 'green', Icon: FaUser },
 };
 
@@ -233,7 +233,7 @@ const AdminUsers = () => {
 
         <div className="mb-6 text-center">
           <h2 className="text-xl font-semibold text-gray-300">
-            Total Users: <span className="text-[#FFD700]">{users.length}</span>
+            Trusted by <span className="text-[#FFD700]">{users.length}</span> users.
           </h2>
         </div>
 
