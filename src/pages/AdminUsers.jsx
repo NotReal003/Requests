@@ -5,16 +5,14 @@ import { IoMdArrowRoundBack, IoMdClose } from 'react-icons/io';
 import { formatDistanceToNow } from 'date-fns';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDebounce } from 'use-debounce';
-import AdminOnly from '../components/AdminOnly'; // Assuming this is defined elsewhere
+import AdminOnly from '../components/AdminOnly';
 
-// Role information for different user types
 const roleInfo = {
   admin: { label: 'Admin', color: 'red', Icon: FaUserShield },
   mod: { label: 'Mod', color: 'blue', Icon: FaUser },
   user: { label: 'User', color: 'green', Icon: FaUser },
 };
 
-// UserModal component
 const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
   const [newRole, setNewRole] = useState(user.role);
   const [updating, setUpdating] = useState(false);
@@ -32,12 +30,8 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-6 bg-black bg-opacity-60 z-50 animate-fade-in">
-      <div
-        className="bg-[#2E2E2E] p-8 rounded-xl shadow-2xl w-full max-w-lg relative"
-        role="dialog"
-        aria-labelledby="user-details-title"
-      >
+    <div className="fixed inset-0 flex items-center justify-center p-6 bg-gradient-to-br from-black via-[#1a1a1a] to-[#121212] bg-opacity-90 z-50 animate-fade-in">
+      <div className="bg-[#2E2E2E] p-8 rounded-xl shadow-2xl w-full max-w-lg relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-3xl text-[#FFD700] hover:text-white transition-all"
@@ -45,9 +39,7 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
         >
           <IoMdClose />
         </button>
-        <h2 id="user-details-title" className="text-2xl font-semibold mb-6 text-[#FFD700]">
-          {user.username}'s Details
-        </h2>
+        <h2 className="text-2xl font-semibold mb-6 text-[#FFD700]">{user.username}'s Details</h2>
         {loading ? (
           <div className="flex items-center justify-center py-6 text-gray-400">
             <FaSpinner className="animate-spin mr-3" /> Loading details...
@@ -111,14 +103,12 @@ const UserModal = ({ user, onClose, loading, error, onRoleChange }) => {
   );
 };
 
-// Pagination component
 const Pagination = ({ page, totalPages, setPage }) => (
   <div className="flex justify-center items-center space-x-4 mt-8">
     <button
       disabled={page === 1}
       onClick={() => setPage(1)}
       className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="First page"
     >
       First
     </button>
@@ -126,18 +116,14 @@ const Pagination = ({ page, totalPages, setPage }) => (
       disabled={page === 1}
       onClick={() => setPage((p) => p - 1)}
       className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="Previous page"
     >
       Prev
     </button>
-    <span className="text-[#FFD700]" aria-live="polite">
-      Page {page} of {totalPages}
-    </span>
+    <span className="text-[#FFD700] font-medium">Page {page} of {totalPages}</span>
     <button
       disabled={page === totalPages}
       onClick={() => setPage((p) => p + 1)}
       className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="Next page"
     >
       Next
     </button>
@@ -145,14 +131,12 @@ const Pagination = ({ page, totalPages, setPage }) => (
       disabled={page === totalPages}
       onClick={() => setPage(totalPages)}
       className="px-4 py-2 bg-[#9370DB] rounded-lg disabled:opacity-50 hover:bg-[#4B0082] transition-all"
-      aria-label="Last page"
     >
       Last
     </button>
   </div>
 );
 
-// Main AdminUsers component
 const AdminUsers = () => {
   const apiUrl = process.env.REACT_APP_API;
   const [users, setUsers] = useState([]);
@@ -231,21 +215,26 @@ const AdminUsers = () => {
   if (adminOnly) return <AdminOnly />;
 
   return (
-    <div className="min-h-screen bg-[#1E1E1E] text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-black via-[#1a1a1a] to-[#121212] text-white p-6">
       <Toaster />
       <div className="container mx-auto max-w-4xl">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold flex items-center">
+          <h1 className="text-3xl font-bold flex items-center animate-fade-in">
             <FaUsers className="mr-3 text-[#FFD700]" /> User Management
           </h1>
           <button
             onClick={fetchUsers}
             className="px-4 py-2 bg-[#9370DB] rounded-lg hover:bg-[#4B0082] transition-all flex items-center disabled:opacity-50"
             disabled={loading}
-            aria-label="Refresh user list"
           >
             {loading ? <FaSpinner className="animate-spin mr-2" /> : 'Refresh'}
           </button>
+        </div>
+
+        <div className="mb-6 text-center">
+          <h2 className="text-xl font-semibold text-gray-300">
+            Total Users: <span className="text-[#FFD700]">{users.length}</span>
+          </h2>
         </div>
 
         <div className="relative mb-8">
@@ -259,13 +248,11 @@ const AdminUsers = () => {
               setSearch(e.target.value);
               setPage(1);
             }}
-            aria-label="Search users"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-              aria-label="Clear search"
             >
               <IoMdClose />
             </button>
@@ -287,39 +274,39 @@ const AdminUsers = () => {
             ))}
           </div>
         ) : paginatedUsers.length > 0 ? (
-<ul className="space-y-4" aria-label="User list">
-  {paginatedUsers.map((user) => (
-    <li
-      key={user.id}
-      className="p-4 bg-[#2E2E2E] rounded-lg shadow hover:bg-[#3E3E3E] transition cursor-pointer group"
-      onClick={() => handleUserClick(user.id)}
-      role="button"
-      tabIndex="0"
-      onKeyDown={(e) => e.key === 'Enter' && handleUserClick(user.id)}
-      aria-label={`View details of ${user.username}`}
-    >
-      <div className="flex items-center">
-        {roleInfo[user.role].Icon && (
-          (() => {
-            const Icon = roleInfo[user.role].Icon;
-            return <Icon className="text-4xl mr-4 transition-transform group-hover:scale-110" />;
-          })()
-        )}
-        <div>
-          <div className="flex items-center space-x-2">
-            <span className="text-lg font-bold">{user.username}</span>
-            <span className={`rounded-lg px-2 py-1 text-xs font-bold bg-${roleInfo[user.role].color}-600 text-white`}>
-              {roleInfo[user.role].label}
-            </span>
-          </div>
-          <div className="text-sm text-gray-400">
-            Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
-          </div>
-        </div>
-      </div>
-    </li>
-  ))}
-</ul>
+          <ul className="space-y-4">
+            {paginatedUsers.map((user) => (
+              <li
+                key={user.id}
+                className="p-4 bg-gradient-to-r from-[#2E2E2E] via-[#262626] to-[#1E1E1E] rounded-lg shadow-lg hover:scale-[1.015] hover:shadow-xl transition-all cursor-pointer group"
+                onClick={() => handleUserClick(user.id)}
+                role="button"
+                tabIndex="0"
+                onKeyDown={(e) => e.key === 'Enter' && handleUserClick(user.id)}
+              >
+                <div className="flex items-center">
+                  {(() => {
+                    const Icon = roleInfo[user.role].Icon;
+                    return <Icon className="text-4xl mr-4 transition-transform group-hover:scale-110" />;
+                  })()}
+                  <div>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-lg font-bold">{user.username}</span>
+                      <span
+                        className="rounded-lg px-2 py-1 text-xs font-bold text-white"
+                        style={{ backgroundColor: roleInfo[user.role].color }}
+                      >
+                        {roleInfo[user.role].label}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      Joined {formatDistanceToNow(new Date(user.joinedAt), { addSuffix: true })}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p className="text-center text-gray-400 py-6">No users found matching your search.</p>
         )}
