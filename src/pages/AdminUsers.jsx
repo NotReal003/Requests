@@ -227,7 +227,6 @@ const AdminUsers = () => {
          ...user,
          role: user.admin ? 'admin' : user.staff ? 'mod' : 'user',
        }));
-      ];
       setUsers(mappedUsers);
       // End of mock data
     } catch (error) {
