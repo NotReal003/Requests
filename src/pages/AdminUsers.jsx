@@ -199,7 +199,7 @@ const UserListSkeleton = ({ count = 5 }) => (
 // --- Main Component: AdminUsers ---
 const AdminUsers = () => {
   // Use a placeholder API URL if environment variable is not set.
-  const apiUrl = process.env.REACT_APP_API || 'https://api.notreal003.xyz'; 
+  const apiUrl = process.env.REACT_APP_API || 'https://api.notreal003.org'; 
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [adminOnly, setAdminOnly] = useState(false);

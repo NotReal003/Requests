@@ -54,7 +54,7 @@ const GithubIcon = () => (
 const Login = ({ setCurrentPage }) => {
   // In a real app, this would come from an environment variable
   const navigate = useNavigate();
-  const API_BASE_URL = "https://api.notreal003.xyz"; 
+  const API_BASE_URL = "https://api.notreal003.org"; 
 
   const handleDiscordLogin = () => {
      window.location.href = `${API_BASE_URL}/auth/signin`;

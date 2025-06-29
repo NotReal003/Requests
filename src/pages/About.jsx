@@ -108,7 +108,7 @@ const About = () => {
           </li>
           <li>
             <a
-              href="https://support.notreal003.xyz/terms"
+              href="https://support.notreal003.org/terms"
               className="hover:text-blue-400 underline"
             >
               Terms and Conditions

@@ -45,7 +45,7 @@ const Support = ({ setCurrentPage }) => {
   const navigate = useNavigate();
   
   // In a real app, this would come from process.env
-  const API_BASE_URL = "https://api.notreal003.xyz"; 
+  const API_BASE_URL = "https://api.notreal003.org"; 
 
   const handleSubmit = useCallback(async (e) => {
   e.preventDefault();

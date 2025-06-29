@@ -120,7 +120,7 @@ const Admin = () => {
     const [isModalOpen, setModalOpen] = useState(false);
     const requestsPerPage = 10;
     const navigate = useNavigate();
-    const API = process.env.REACT_APP_API || 'https://api.notreal003.xyz';
+    const API = process.env.REACT_APP_API || 'https://api.notreal003.org';
 
     // Fetch API status on initial load
     useEffect(() => {

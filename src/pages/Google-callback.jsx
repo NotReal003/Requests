@@ -18,7 +18,7 @@ const Callback = () => {
     if (code) {
       setLoading(true);
       // Discord Auth
-      axios.get(`https://api.notreal003.xyz/auth/google/callback?code=${code}`, {
+      axios.get(`https://api.notreal003.org/auth/google/callback?code=${code}`, {
         withCredentials: true,
       })
         .then(response => {
@@ -29,12 +29,12 @@ const Callback = () => {
 
             toast('Verification In Process...');
             // user auth
-            axios.get(`https://api.notreal003.xyz/auth/user?callback=${token}`, {
+            axios.get(`https://api.notreal003.org/auth/user?callback=${token}`, {
               withCredentials: true,
             })
               .then(userResponse => {
                 if (userResponse.status === 200) {
-                  window.location.href = 'https://request.notreal003.xyz/profile';
+                  window.location.href = 'https://request.notreal003.org/profile';
                 }
               })
               .catch(userError => {
