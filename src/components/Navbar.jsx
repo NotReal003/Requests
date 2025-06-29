@@ -89,7 +89,7 @@ export default function Navbar({ isAuthenticated }) {
 //       throw new Error('Failed to logout');
 //     }
 
-       document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.xyz; secure';
+       document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.org; secure';
       window.location.href = '/';
     } catch (error) {
       setShowAlert(true);
@@ -162,7 +162,7 @@ export default function Navbar({ isAuthenticated }) {
               <div className="dropdown dropdown-bottom dropdown-end">
                 <div tabIndex={0} role="button" className="btn m-1 btn-sm flex items-center justify-center"><MdNavigateNext />Requests</div>
                 <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-                  <li><Link to="https://notreal003.xyz">Home <LiaExternalLinkAltSolid /></Link></li>
+                  <li><Link to="https://notreal003.org">Home <LiaExternalLinkAltSolid /></Link></li>
                   <li><Link to="/support">Support</Link></li>
                   <li><Link to="/Report">Discord Report</Link></li>
                   <li><Link to="/apply">Guild Application</Link></li>
@@ -204,12 +204,12 @@ export default function Navbar({ isAuthenticated }) {
                     ) : (
                       <>
                         <li>
-                          <Link to="https://api.notreal003.xyz/auth/signin" className="flex items-center gap-x-2 hover:text-blue-500">
+                          <Link to="https://api.notreal003.org/auth/signin" className="flex items-center gap-x-2 hover:text-blue-500">
                             <IoLogIn className="size-4" /> <span>Sign in with Discord</span>
                           </Link>
                         </li>
                         <li>
-                          <Link to="https://api.notreal003.xyz/auth/google" className="flex items-center gap-x-2 hover:text-blue-500">
+                          <Link to="https://api.notreal003.org/auth/google" className="flex items-center gap-x-2 hover:text-blue-500">
                             <IoLogIn className="size-4" /> <span>Sign in with Google</span>
                           </Link>
                         </li>
