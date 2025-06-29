@@ -270,7 +270,7 @@ const ManageIpsPanel = ({ api, onAction, adminOnly, setAdminOnly }) => {
 const AdminManagePage = () => {
   const [tab, setTab] = useState('users');
   const [adminOnly, setAdminOnly] = useState(false);
-  const API = process.env.REACT_APP_API || 'https://api.notreal003.xyz';
+  const API = process.env.REACT_APP_API || 'https://api.notreal003.org';
 
   const handleAction = async (action, messages) => {
     try {

@@ -30,8 +30,8 @@ export default function Navbar({ isAuthenticated }) {
         });
 
         if (res.status === 403) {
-          document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.xyz; secure';
-          document.cookie = 'token=; Max-Age=0; path=/; domain=request.notreal003.xyz; secure';
+          document.cookie = 'token=; Max-Age=0; path=/; domain=notreal003.org; secure';
+          document.cookie = 'token=; Max-Age=0; path=/; domain=request.notreal003.org; secure';
           console.log('Cookie cleared');
           setLoading(false);
           setShowAlert(true);

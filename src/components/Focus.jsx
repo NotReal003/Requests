@@ -18,7 +18,7 @@ const LogoutModal = ({ isOpen, onConfirm, onCancel, setShowAlert, setErrorIssue 
       }
 
       // Clear authentication cookie
-      document.cookie = "token=; Max-Age=0; path=/; domain=notreal003.xyz; secure";
+      document.cookie = "token=; Max-Age=0; path=/; domain=notreal003.org; secure";
 
       // Redirect to homepage
       window.location.href = "/";

@@ -16,14 +16,14 @@ const Callback = () => {
     if (code) {
       setLoading(true);
       // Send a GET request to your API with the Discord code
-      axios.get(`https://api.notreal003.xyz/auth/github/callback?code=${code}`, {
+      axios.get(`https://api.notreal003.org/auth/github/callback?code=${code}`, {
         withCredentials: false,
       })
         .then(response => {
           if (response.status === 200) {
             const token = response.data.jwtToken;
             localStorage.setItem('jwtToken', token);
-            window.location.href = `https://api.notreal003.xyz/auth/user?callback=${token}`;
+            window.location.href = `https://api.notreal003.org/auth/user?callback=${token}`;
           }
         })
         .catch(error => {

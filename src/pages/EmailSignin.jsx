@@ -47,7 +47,7 @@ const EmailSignin = () => {
       );
 
       const jwtToken = response.data.jwtToken;
-      document.cookie = `token=${jwtToken}; domain=notreal003.xyz; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
+      document.cookie = `token=${jwtToken}; domain=notreal003.org; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
       toast('Sign-in in process...');
       axios.get(`${API}/auth/user?callback=${jwtToken}`, {
         headers: {
@@ -56,7 +56,7 @@ const EmailSignin = () => {
       })
         .then(userResponse => {
           if (userResponse.status === 200) {
-            window.location.href = 'https://request.notreal003.xyz/profile';
+            window.location.href = 'https://request.notreal003.org/profile';
           }
         });
     } catch (error) {
