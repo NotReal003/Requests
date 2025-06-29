@@ -26,7 +26,7 @@ const Callback = () => {
             const token = response.data.jwtToken;
       //      navigator.clipboard.writeText(token); // for a minute 
 
-            document.cookie = `token=${token}; domain=notreal003.xyz; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
+            document.cookie = `token=${token}; domain=notreal003.org; path=/; max-age=${6.048e8 / 1000}; httpOnly: true;`;
 
             toast('Verification In Process...');
             // user auth
