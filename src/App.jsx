@@ -14,7 +14,7 @@ const App = () => {
 
   useEffect(() => {
     // Run API health check silently in background
-    axios.get('https://api.notreal003.xyz/health')
+    axios.get('https://api.notreal003.org/health')
       .then(res => {
         if (res.data?.message === 'Application not found') {
           setApiUnavailable(true);
