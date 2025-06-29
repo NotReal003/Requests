@@ -7,7 +7,7 @@ const LogoutModal = ({ isOpen, onConfirm, onCancel, setShowAlert, setErrorIssue 
 
   const handleLogout = async () => {
     try {
-      const res = await axios.get(`https://api.notreal003.xyz/auth/signout`, {
+      const res = await axios.get(`https://api.notreal003.org/auth/signout`, {
         withCredentials: true,
       });
 

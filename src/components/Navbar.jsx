@@ -74,7 +74,7 @@ export default function Navbar({ isAuthenticated }) {
   const handleLogout = async () => {
     try {
       setLogout(true);
-      const res = await axios.get(`https://api.notreal003.xyz/auth/signout`, {
+      const res = await axios.get(`https://api.notreal003.org/auth/signout`, {
         withCredentials: true,
       });
       if (res.status !== 200) {

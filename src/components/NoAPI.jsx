@@ -38,7 +38,7 @@ const NoAPI = () => {
           <div className="flex items-center justify-center gap-2">
             <FaChartBar className="text-cyan-500 w-5 h-5" />
             <a
-              href="https://check.notreal003.xyz"
+              href="https://check.notreal003.org"
               target="_blank"
               rel="noopener noreferrer"
               className="text-cyan-400 hover:underline"
