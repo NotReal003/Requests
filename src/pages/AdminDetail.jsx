@@ -122,9 +122,16 @@ const AdminDetail = () => {
   }
 
   const handleCopy = () => {
-    const textToCopy = `Your Application has been approved and we have invited ${request?.inGameName || request?.username} to the Netflix Guild :)\n\nReviewer,\nRequest Manager,\nNETFLIX Guild.`;
+    const textToCopy = `Your Application has been approved and we have invited ${request?.inGameName || request?.username} to the NETFLIX Guild :)\n\nReviewer,\nNotReal003, Leader\nNETFLIX Guild.`;
     navigator.clipboard.writeText(textToCopy)
       .then(() => toast.success('Accepted message copied!'))
+      .catch(err => toast.error('Failed to copy message.'));
+  };
+
+  const handleBlockCopy = () => {
+    const textToCopy = `We strongly advise against submitting fraudulent applications, as doing so may result in the suspension of your account from our services due to misuse of our request system.\n\nReviewer,\nNotReal003, Leader\nNETFLIX Guild.`;
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => toast.success('Warning message copied!'))
       .catch(err => toast.error('Failed to copy message.'));
   };
 
@@ -229,6 +236,9 @@ const AdminDetail = () => {
                         </button>
                         <button onClick={handleCopy} className="w-full p-3 bg-gray-700/50 rounded-lg hover:bg-gray-600/70 transition-colors font-bold flex items-center justify-center">
                             <MdContentCopy className="mr-2" /> Copy Accepted Msg
+                        </button>
+                        <button onClick={handleBlockCopy} className="w-full p-3 bg-gray-700/50 rounded-lg hover:bg-gray-600/70 transition-colors font-bold flex items-center justify-center">
+                            <MdContentCopy className="mr-2" /> Copy Warning Msg
                         </button>
                     </div>
 
