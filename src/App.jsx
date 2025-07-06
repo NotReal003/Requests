@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Navbar, Footer, PostAPI } from './components';
+import { Navbar, Footer } from './components';
 import MaintenanceMode from './components/NoAPI';
 import routeConfig from './routes';
 import axios from 'axios';
@@ -63,7 +63,6 @@ const App = () => {
 
   return (
     <Router>
-      <PostAPI />
       <div className="App relative">
         <Navbar isAuthenticated={isAuthenticated} />
         <div className="container mx-auto">
