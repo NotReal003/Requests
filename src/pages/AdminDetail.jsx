@@ -1,315 +1,245 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { IoMdArrowRoundBack } from 'react-icons/io';
 import toast, { Toaster } from 'react-hot-toast';
-import { MdDelete, MdUpdate } from 'react-icons/md';
+import { MdDelete, MdUpdate, MdContentCopy, MdArrowBack, MdInfoOutline, MdQuestionAnswer, MdPerson, MdLink } from 'react-icons/md';
+import { FaShieldAlt, FaExclamationTriangle } from 'react-icons/fa';
+import { ImSpinner6 } from 'react-icons/im';
 import AdminOnly from '../components/AdminOnly';
-import { FaCopy } from "react-icons/fa6";
+// --- Component: ConfirmationModal ---
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, children }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-70 z-50 backdrop-blur-sm animate-fade-in">
+            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] p-8 rounded-2xl shadow-2xl w-full max-w-md relative border border-gray-700/50">
+                <h2 className="text-2xl font-bold mb-4 text-white">{title}</h2>
+                <div className="text-gray-400 mb-6">{children}</div>
+                <div className="flex justify-end space-x-4">
+                    <button onClick={onClose} className="px-4 py-2 bg-gray-700/50 rounded-lg hover:bg-gray-600/70 transition-colors">Cancel</button>
+                    <button onClick={onConfirm} className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-700 transition-colors">Confirm</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// --- Component: RequestInfoField ---
+const RequestInfoField = ({ icon, label, value }) => (
+    <div>
+        <label className="flex items-center text-sm font-semibold text-gray-400 mb-1">
+            {icon} {label}
+        </label>
+        <div className="p-3 bg-[#2a2a2a]/50 rounded-lg border border-gray-700/50 text-gray-300 whitespace-pre-wrap break-words">
+            {value || <span className="text-gray-500">Not provided</span>}
+        </div>
+    </div>
+);
+
+// --- Component: LoadingSpinner ---
+const LoadingSpinner = () => (
+    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] text-gray-400">
+        <ImSpinner6 className="animate-spin text-5xl mb-4" />
+        <p>Loading Request Details...</p>
+    </div>
+);
 
 const AdminDetail = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const requestId = urlParams.get('id');
+  const location = useLocation();
+  const requestId = new URLSearchParams(location.search).get('id');
   const [request, setRequest] = useState(null);
-  const [alert, setAlert] = useState(null);
   const [status, setStatus] = useState('');
-  const [userUsername, setUserUsername] = useState('');
   const [reviewMessage, setReviewMessage] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [adminOnly, setAdminOnly] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const API = process.env.REACT_APP_API;
+  const API = process.env.REACT_APP_API || 'https://api.notreal003.org';
 
   const sanitizeInput = (input) => {
-    const urlRegex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
-
-    const normalizeNewlines = (text) => text.replace(/\n{2,}/g, '\n');
-
-    const sanitizeHtml = (text) =>
-      text.replace(/[<>&'"]/g, (char) => {
-        switch (char) {
-          case '<': return '&lt;';
-          case '>': return '&gt;';
-          case '&': return '&amp;';
-          case "'": return '&#39;';
-          case '"': return '&quot;';
-          default: return char;
-        }
-      });
-
-    const sanitizedInput = urlRegex.test(input) ? sanitizeHtml(input) : sanitizeHtml(input);
-
-    return normalizeNewlines(sanitizedInput);
+    return input.replace(/[<>&'"]/g, (char) => ({
+        '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&#39;', '"': '&quot;'
+    }[char] || char));
   };
-
-  useEffect(() => {
-    const fetchRequest = async () => {
-      try {
-        const response = await axios.get(`${API}/admin/requests/${requestId}`, {
-          withCredentials: true,
-        });
-
-        // Success case
-        setRequest(response.data);
-        setStatus(response.data.status);
-        setReviewMessage(response.data.reviewMessage || '');
-      } catch (error) {
-        const errorStatus = error.response?.status;
-
-        if (errorStatus === 403) {
-          setAdminOnly(true);
-        } else {
-          toast.warn('Something went wrong, please try again later');
-        }
+  
+  const fetchRequest = useCallback(async () => {
+    if (!requestId) {
+        toast.error("No request ID provided.");
+        navigate(-1);
+        return;
+    }
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/admin/requests/${requestId}`, { withCredentials: true });
+      setRequest(response.data);
+      setStatus(response.data.status);
+      setReviewMessage(response.data.reviewMessage || '');
+    } catch (error) {
+      if (error.response?.status === 403) setAdminOnly(true);
+      else {
+        toast.error('Failed to load request details.');
+        navigate(-1);
       }
-    };
-
-    fetchRequest();
+    } finally {
+      setLoading(false);
+    }
   }, [requestId, API, navigate]);
 
   useEffect(() => {
-    if (request) {
-      setUserUsername(request.inGameName || 'UnknownUser');
-    }
-  }, [request]);
+    fetchRequest();
+  }, [fetchRequest]);
 
   const handleUpdateAndSendEmail = async () => {
-
     const sanitizedReviewMessage = sanitizeInput(reviewMessage);
-    try {
-      const token = localStorage.getItem('jwtToken');
-
-      const updateResponse = await axios.patch(
-        `${API}/admin/${requestId}`,
-        { status, reviewMessage: sanitizedReviewMessage },
+    const updatePromise = axios.patch(`${API}/admin/${requestId}`, 
+        { status, reviewMessage: sanitizedReviewMessage }, 
         { withCredentials: true }
-      );
+    );
 
-      if (updateResponse.status === 200) {
-        toast.success(updateResponse.data.message || 'Request Updated Successfully.');
-
-        // Send the email
-        const emailResponse = await axios.post(
-          `${API}/admin/send/email`,
-          {
-            requestId,
-            reviewMessage,
-            status,
-            username: request.username,
-          },
-          { headers: { Authorization: `${token}` } }
-        );
-
-        if (emailResponse.status === 200) {
-          toast.success('Updated user on email :)');
-        } else {
-          toast.error('Unable to send email :/');
-        }
-      } else {
-        toast.error(updateResponse.data.message || 'Request was updated but something might have gone wrong.');
-      }
-    } catch (error) {
-      if (error.response?.status === 403) {
-        setAdminOnly(true);
-        setAlert(null);
-      } else if (error.response) {
-        toast.error(error.response.data.message || 'Error updating the request.');
-        setAlert(error.response.data.message || 'Error updating the request.');
-      } else {
-        toast.error('Something is wrong :/');
-      }
-    }
+    toast.promise(updatePromise, {
+        loading: 'Updating request...',
+        success: (res) => {
+            // Trigger email sending after successful update
+            sendEmail(res.data.username);
+            return res.data.message || 'Request updated successfully!';
+        },
+        error: (err) => err.response?.data?.message || 'Error updating request.',
+    });
   };
 
-  const handleCopy = () => {
-  const user = JSON.parse(localStorage.getItem('user')) || {};
-  const userDisname = user.displayName || user.username || 'NotReal003';
-  const userUsername = user.username || 'unknown_user';
+  const sendEmail = async (username) => {
+      const emailPromise = axios.post(`${API}/admin/send/email`, {
+          requestId,
+          reviewMessage,
+          status,
+          username: username || request.username,
+      }, { withCredentials: true });
 
-  const textToCopy = `Your Application has been approved and we have invited ${userUsername} to the Netflix Guild :)
-Reviewer,
-${userDisname}, Request Manager,
-NETFLIX Guild.`;
-
-  navigator.clipboard.writeText(textToCopy)
-    .then(() => toast.success('Copied to clipboard!'))
-    .catch(err => toast.error('Failed to copy:', err));
-};
-
-
-  const handleDelete = async () => {
-    const token = localStorage.getItem('jwtToken');
-    try {
-      await axios.delete(`${API}/admin/${requestId}`, {
-        withCredentials: true,
+      toast.promise(emailPromise, {
+          loading: 'Sending notification email...',
+          success: 'Email notification sent!',
+          error: 'Failed to send email.',
       });
-      toast.success('Request deleted successfully.');
-      navigate('/admin');
-    } catch (error) {
-      toast.error('Error deleting the request.');
-    }
-    setShowDeleteModal(false);
-  };
-
-  if (!request && adminOnly) {
-    return <AdminOnly />;
   }
 
+  const handleCopy = () => {
+    const textToCopy = `Your Application has been approved and we have invited ${request?.inGameName || request?.username} to the Netflix Guild :)\n\nReviewer,\nRequest Manager,\nNETFLIX Guild.`;
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => toast.success('Accepted message copied!'))
+      .catch(err => toast.error('Failed to copy message.'));
+  };
+
+  const handleDelete = async () => {
+    setShowDeleteModal(false);
+    const deletePromise = axios.delete(`${API}/admin/${requestId}`, { withCredentials: true });
+    
+    toast.promise(deletePromise, {
+        loading: 'Deleting request...',
+        success: () => {
+            navigate('/admin');
+            return 'Request deleted successfully.';
+        },
+        error: 'Error deleting request.',
+    });
+  };
+
+  if (loading) return <LoadingSpinner />;
+  if (adminOnly) return <AdminOnly />;
   if (!request) {
     return (
-      <div className="flex w-52 flex-col gap-4 container mx-auto px-4 py-8">
-        <div className="skeleton h-32 w-full"></div>
-        <div className="skeleton h-6 w-30"></div>
-      </div>
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-10rem)] text-red-400">
+            <FaExclamationTriangle className="text-5xl mb-4"/>
+            <p>Could not load request details.</p>
+        </div>
     );
   }
 
+  const getRequestFields = () => {
+      switch(request.type) {
+          case 'report':
+              return <RequestInfoField icon={<MdLink className="mr-2"/>} label="Evidence/Message Link" value={request.messageLink} />;
+          case 'support':
+              return <RequestInfoField icon={<MdQuestionAnswer className="mr-2"/>} label="Support Query" value={request.messageLink} />;
+          case 'guild-application':
+              return <>
+                  <RequestInfoField icon={<MdPerson className="mr-2"/>} label="In-Game Name" value={request.inGameName} />
+                  <RequestInfoField icon={<MdQuestionAnswer className="mr-2"/>} label="Reason for Joining" value={request.messageLink} />
+              </>;
+          default:
+              return null;
+      }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      {alert && (
-        <div className={`alert alert-${alert.type} shadow-lg mb-4`}>
-          <div>
-            <span>{alert.message}</span>
-          </div>
-        </div>
-      )}
-      <div className="card p-2 shadow-lg bg-base-100">
-        <div className="card-body">
-          <h2 className="card-title">Request Details ({request.status})</h2>
-          <div className="form-control">
-            <label className="label">Review Message</label>
-            <textarea
-              value={reviewMessage}
-              onChange={(e) => {
-                setReviewMessage(e.target.value);
-                e.target.style.height = "auto"; // 
-                e.target.style.height = `${e.target.scrollHeight}px`; //
-              }}
-              className="textarea text-white textarea-bordered bg-orange-600 focus:outline-none"
-              placeholder="Enter your review message"
-              style={{ overflow: "hidden", resize: "none" }} //
-            />
+    <div className="min-h-screen bg-black text-gray-200 p-4 sm:p-6 lg:p-8 font-sans">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-black via-black to-[#1a0c2e] opacity-50 z-0"></div>
+        <Toaster position="top-center" toastOptions={{ className: 'bg-gray-800 text-white border border-gray-700' }} />
+        <ConfirmationModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} onConfirm={handleDelete} title="Confirm Deletion">
+            Are you sure you want to delete this request? This action cannot be undone.
+        </ConfirmationModal>
 
-          </div>
-          <div className="form-control">
-            <label className="label">Request Status</label>
-            <select
-              className="select select-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              <option value="APPROVED">Approved</option>
-              <option value="DENIED">Denied</option>
-              <option value="PENDING">Pending</option>
-              <option value="ESCALATED">Escalated</option>
-              <option value="CANCELLED">Cancelled</option>
-              <option value="RESOLVED">Resolved</option>
-            </select>
-          </div>
-          <div className="form-control">
-            <label className="label">From User</label>
-            <textarea
-              value={`${request.username} / ${request.id}`}
-              readOnly
-              className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-            />
-          </div>
-          {request.type === 'report' && (
-            <div className="form-control">
-              <label className="label">Discord Message Link / Evidence (required)</label>
-              <textarea
-                value={request.messageLink}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
+        <div className="container mx-auto max-w-7xl relative z-10">
+            <div className="flex items-center justify-between mb-8">
+                <div>
+                    <h1 className="text-4xl font-bold text-white">Request Details</h1>
+                    <p className="text-gray-400 mt-1">Reviewing request ID: <span className="font-mono text-purple-400">{request._id}</span></p>
+                </div>
+                <button onClick={() => navigate(-1)} className="px-4 py-2 bg-gray-800/50 rounded-lg hover:bg-gray-700/80 transition-colors flex items-center border border-gray-700/50">
+                    <MdArrowBack className="mr-2" /> Back to List
+                </button>
             </div>
-          )}
-          {request.type === 'support' && (
-            <div className="form-control">
-              <label className="label">Your support request (required)</label>
-              <textarea
-                value={request.messageLink}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
-            </div>
-          )}
-          {request.type === 'guild-application' && (
-            <div className="form-control">
-              <label className="label">In-Game Name (required)</label>
-              <textarea
-                value={request.inGameName}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
-            </div>
-          )}
-          {request.type === 'guild-application' && (
-            <div className="form-control">
-              <label className="label">Reason for joining the guild? (required)</label>
-              <textarea
-                value={request.messageLink}
-                readOnly
-                className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-              />
-            </div>
-          )}
-          <div className="form-control">
-            <label className="label">Anything else you would like to add?</label>
-            <textarea
-              value={request.additionalInfo}
-              readOnly
-              className="textarea textarea-bordered focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-            />
-          </div>
-          <div className="form-control mt-4">
-            <button onClick={handleUpdateAndSendEmail} className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all">
-              <MdUpdate /> Update Request & Send Email
-            </button>
-          </div>
-          <div className="form-control mt-4">
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="btn btn-outline hover:btn-error no-animation"
-            >
-              <MdDelete /> Delete Request
-            </button>
-            <button
-              onClick={handleCopy}
-              className="btn btn-outline mt-4 hover:btn-success no-animation"
-            >
-              <FaCopy /> Copy Accepted Message
-            </button>
-          </div>
-        </div>
-      </div>
-      <div className="mt-4">
-        <button className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all" onClick={() => navigate(-1)}>
-          <IoMdArrowRoundBack /> Back
-        </button>
-      </div>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">Confirm Deletion</h3>
-            <p>Are you sure you want to delete this request? This action cannot be undone.</p>
-            <div className="modal-action">
-              <button onClick={handleDelete} className="btn no-animation bg-red-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-red-700 transition-all">
-                Confirm Delete
-              </button>
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all"
-              >
-                Cancel
-              </button>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                {/* Left Column: Request Info */}
+                <div className="lg:col-span-2 bg-[#1a1a1a]/30 p-6 rounded-xl border border-gray-800/50 space-y-4">
+                    <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3 mb-4">Submitted Information</h3>
+                    <RequestInfoField icon={<MdPerson className="mr-2"/>} label="Submitted By" value={`${request.username} (${request.id})`} />
+                    {getRequestFields()}
+                    <RequestInfoField icon={<MdInfoOutline className="mr-2"/>} label="Additional Info" value={request.additionalInfo} />
+                </div>
+
+                {/* Right Column: Admin Actions */}
+                <div className="lg:col-span-3 bg-[#1a1a1a]/50 p-6 rounded-xl border border-gray-800/50 space-y-6">
+                    <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3 mb-4">Admin Review</h3>
+                    
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-400 mb-2">Request Status</label>
+                        <select value={status} onChange={(e) => setStatus(e.target.value)} className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+                            <option value="PENDING">Pending</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="DENIED">Denied</option>
+                            <option value="ESCALATED">Escalated</option>
+                            <option value="RESOLVED">Resolved</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-400 mb-2">Review Message (sent to user)</label>
+                        <textarea
+                            value={reviewMessage}
+                            onChange={(e) => setReviewMessage(e.target.value)}
+                            className="w-full p-3 rounded-lg bg-[#2a2a2a] border border-gray-700 text-white focus:ring-2 focus:ring-purple-500 focus:outline-none min-h-[120px] resize-y"
+                            placeholder="Enter your review message..."
+                        />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-gray-800">
+                        <button onClick={handleUpdateAndSendEmail} className="w-full p-3 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors font-bold flex items-center justify-center">
+                            <MdUpdate className="mr-2" /> Update & Send Email
+                        </button>
+                        <button onClick={handleCopy} className="w-full p-3 bg-gray-700/50 rounded-lg hover:bg-gray-600/70 transition-colors font-bold flex items-center justify-center">
+                            <MdContentCopy className="mr-2" /> Copy Accepted Msg
+                        </button>
+                    </div>
+
+                     <div className="text-center">
+                        <button onClick={() => setShowDeleteModal(true)} className="text-red-500/70 hover:text-red-500 hover:underline transition-colors text-sm font-semibold flex items-center justify-center mx-auto">
+                            <MdDelete className="mr-1.5" /> Delete This Request
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      )}
-      <Toaster />
     </div>
   );
 }
