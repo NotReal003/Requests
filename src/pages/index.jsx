@@ -21,3 +21,4 @@ export { default as About } from './About';
 export { default as Analytics } from './Analytics';
 export { default as Comming } from './Comming';
 export { default as AdminUsers } from './AdminUsers';
+export { default as Performance } from './Perf';
