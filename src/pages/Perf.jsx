@@ -4,7 +4,7 @@ import usePerformanceMetrics from './components/usePerformanceMetrics'; // Custo
 import PerformanceChart from './components/PerformanceChart';
 import MetricsControl from './components/MetricsControl';
 
-// Define a professional color palette mapped to each metric
+// Define a professional color palette mapped t each metric
 const METRIC_CONFIG = {
   LCP: { color: '#4ade80' }, // green-400
   FID: { color: '#f87171' }, // red-400
