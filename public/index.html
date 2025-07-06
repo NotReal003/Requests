@@ -38,13 +38,17 @@
     </script>
     <!-- Add this in your <head> or before </body> -->
 <script src="https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
   function sendToServer(metric) {
-    fetch("https://api.notreal003.org/performance", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(metric),
-    }).catch(err => console.warn("Metric send failed:", err));
+    axios.post('https://api.notreal003.org/aperformance', metric, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      withCredentials: true
+    }).catch(err => {
+      console.warn("Metric send failed:", err);
+    });
   }
 
   webVitals.getCLS(sendToServer);
@@ -52,7 +56,7 @@
   webVitals.getLCP(sendToServer);
   webVitals.getFCP(sendToServer);
   webVitals.getTTFB(sendToServer);
-  webVitals.getINP?.(sendToServer); // Optional if supported
+  webVitals.getINP?.(sendToServer);
 </script>
 
   </body>
