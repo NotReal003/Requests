@@ -195,17 +195,7 @@ const AdminDetail = () => {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-                {/* Left Column: Request Info */}
-                <div className="lg:col-span-2 bg-[#1a1a1a]/30 p-6 rounded-xl border border-gray-800/50 space-y-4">
-                    <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3 mb-4">Submitted Information</h3>
-                    <RequestInfoField icon={<MdPerson className="mr-2"/>} label="Submitted By" value={`${request.username} (${request.id})`} />
-                    {getRequestFields()}
-                    <RequestInfoField icon={<MdInfoOutline className="mr-2"/>} label="Additional Info" value={request.additionalInfo} />
-                </div>
-
-                {/* Right Column: Admin Actions */}
-                <div className="lg:col-span-3 bg-[#1a1a1a]/50 p-6 rounded-xl border border-gray-800/50 space-y-6">
+            <div className="lg:col-span-3 bg-[#1a1a1a]/50 p-6 rounded-xl border border-gray-800/50 space-y-6">
                     <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3 mb-4">Admin Review</h3>
                     
                     <div>
@@ -248,6 +238,18 @@ const AdminDetail = () => {
                         </button>
                     </div>
                 </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                {/* Left Column: Request Info */}
+                <div className="lg:col-span-2 bg-[#1a1a1a]/30 p-6 rounded-xl border border-gray-800/50 space-y-4">
+                    <h3 className="text-2xl font-bold text-white border-b border-gray-700 pb-3 mb-4">Submitted Information</h3>
+                    <RequestInfoField icon={<MdPerson className="mr-2"/>} label="Submitted By" value={`${request.username} (${request.id})`} />
+                    {getRequestFields()}
+                    <RequestInfoField icon={<MdInfoOutline className="mr-2"/>} label="Additional Info" value={request.additionalInfo} />
+                </div>
+
+                {/* Right Column: Admin Actions */}
+                
             </div>
         </div>
     </div>
