@@ -87,6 +87,11 @@ const Home = () => {
             <span className="flex items-center">Admin | Users</span>
           </button>
           )}
+          {isAdmin && (
+          <button onClick={() => handleNavigation('/performance')} className="btn no-animation w-full bg-red-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-red-600 transition-all">
+            <span className="flex items-center">Performance</span>
+          </button>
+          )}
         </div>
       </div>
     </div>
