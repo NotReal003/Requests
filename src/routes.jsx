@@ -23,6 +23,7 @@ import {
   Google_Callback,
   Comming,
   AdminUsers,
+  Performance,
 } from './pages';
 
 const routes = (isAuthenticated) => [
@@ -50,6 +51,7 @@ const routes = (isAuthenticated) => [
   { path: "/about", element: <About /> },
   { path: "/analytics", element: isAuthenticated ? <Analytics /> : <Login /> },
   { path: "/admin/users", element: isAuthenticated ? <AdminUsers /> : <Login /> },
+  { path: "/performance", element: isAuthenticated ? <Performance /> : <Login /> },
 ];
 
 export default routes;
