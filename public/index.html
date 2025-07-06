@@ -40,7 +40,7 @@
 <script src="https://unpkg.com/web-vitals@3/dist/web-vitals.iife.js"></script>
 <script>
   function sendToServer(metric) {
-    fetch("https:/api.notreal003.org/performance", {
+    fetch("https://api.notreal003.org/performance", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(metric),
