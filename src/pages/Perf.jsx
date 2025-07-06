@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { FaChartLine, FaClock } from 'react-icons/fa';
-import usePerformanceMetrics from './components/usePerformanceMetrics'; // Custom hook for fetching
-import PerformanceChart from './components/PerformanceChart';
-import MetricsControl from './components/MetricsControl';
+import usePerformanceMetrics from '../components/usePerformanceMetrics'; // Custom hook for fetching
+import PerformanceChart from '../components/PerformanceChart';
+import MetricsControl from '../components/MetricsControl';
 
 // Define a professional color palette mapped t each metric
 const METRIC_CONFIG = {
