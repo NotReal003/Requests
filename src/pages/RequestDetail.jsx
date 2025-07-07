@@ -87,7 +87,7 @@ function RequestDetail() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [permissionError, setPermissionError] = useState(null);
   const navigate = useNavigate();
-  const API = process.env.REACT_APP_API || 'https://api.notreal003.org;
+  const API = process.env.REACT_APP_API || 'https://api.notreal003.org';
 
   useEffect(() => {
     const fetchRequest = async () => {
