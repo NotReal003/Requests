@@ -1,40 +1,41 @@
-name: Update DaisyUI
+name: Auto-Update DaisyUI
 
 on:
   schedule:
-    - cron: '0 6 * * 1'  # Every Monday at 6 AM UTC
-  workflow_dispatch:     # Allow manual trigger from GitHub UI
+    - cron: '0 6 * * 1'   # Every Monday at 6 AM UTC
+  workflow_dispatch:      # Allow manual run from GitHub UI
 
 jobs:
-  update-daisyui:
+  update:
     runs-on: ubuntu-latest
 
     steps:
-      - name: ⬇️ Checkout repo
+      - name: ⬇️ Checkout code
         uses: actions/checkout@v3
 
       - name: 🟢 Setup Node
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+          cache: 'npm'
 
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🔄 Upgrade DaisyUI to latest
+      - name: ⬆️ Update DaisyUI to latest version
         run: npm install daisyui@latest
 
-      - name: 📦 Reinstall lockfile
+      - name: 🧹 Reinstall lockfile
         run: npm install --package-lock-only
 
-      - name: 📤 Commit and push if updated
+      - name: 🚀 Commit and push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
+          
           git add package.json package-lock.json
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "✅ DaisyUI is already up-to-date."
           else
             git commit -m "⬆️ chore: update daisyui to latest version"
             git push
