@@ -3,9 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 /* Language: kdkskskdjs */
-@plugin "daisyui" {
-   themes: light --default, dark --prefersdark;
- }
 
 .custom-tooltip[data-tip]::after {
   max-width: 200px; /* Set a max width for the tooltip */
