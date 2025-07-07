@@ -18,15 +18,15 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm run dev
+        run: npm install
 
- #     - name: Commit package-lock.json
- #       env:
- #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
- #       run: |
- #         git config --global user.name 'github-actions'
- #         git config --global user.email 'github-actions@github.com'
- #         git add package.json package-lock.json
- #         git commit -m "Installed dependencies via GitHub Actions" || echo "No changes to commit"
- #         git push origin main
- #
+      - name: Commit package-lock.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add package.json package-lock.json
+          git commit -m "Installed dependencies via GitHub Actions" || echo "No changes to commit"
+          git push origin main
+ 
