@@ -153,7 +153,6 @@ function RequestDetail() {
     <div className="min-h-screen w-full bg-black text-gray-200 font-sans">
         {/* Animated Gradient Background */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-            <div className="absolute bottom-0 left-[-20%] right-[-20%] top-[-20%] bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]"></div>
             <div className="absolute left-0 top-0 h-1/2 w-1/2 rounded-full bg-gradient-to-tr from-purple-900 to-transparent opacity-20 animate-spin-slow"></div>
             <div className="absolute right-0 bottom-0 h-1/2 w-1/2 rounded-full bg-gradient-to-bl from-indigo-900 to-transparent opacity-20 animate-spin-slow-reverse"></div>
         </div>
