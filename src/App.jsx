@@ -13,7 +13,7 @@ const App = () => {
   const API = process.env.REACT_APP_API;
 
   useEffect(() => {
-    // Run API health check silently in background
+    // Run API health check silently in background.
     axios.get('https://api.notreal003.org/health')
       .then(res => {
         if (res.data?.message === 'Application not found') {
