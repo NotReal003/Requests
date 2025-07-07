@@ -18,7 +18,7 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: npm install
+        run: npm install daisyui@latest
 
       - name: Commit package-lock.json
         env:
