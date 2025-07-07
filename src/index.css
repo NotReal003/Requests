@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, cupcake;
+  themes: light --default, night --prefersdark, night;
 }
 /* Language: kdkskskdjs */
 
