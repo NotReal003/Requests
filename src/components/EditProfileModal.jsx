@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { FaSave } from 'react-icons/fa';
+import { FaSave, FaSpinner } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
-import { FaSpinner } from "react-icons/fa";
 
 const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => {
   const [newDisplayName, setNewDisplayName] = useState(currentDisplayName);
@@ -11,13 +10,12 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
   const API = process.env.REACT_APP_API;
 
   const handleSave = async () => {
-    try {
+    if (newDisplayName.length < 3 || newDisplayName.length > 16) {
+      setError('Display name must be between 3 and 16 characters.');
+      return;
+    }
 
-      if (newDisplayName.length < 3 || newDisplayName.length > 16) {
-        setError('Display name must be between 3 and 16 characters.');
-        return;
-      }
-      
+    try {
       setLoading(true);
       const response = await axios.patch(
         `${API}/users/display`,
@@ -26,56 +24,44 @@ const EditProfileModal = ({ isOpen, onClose, currentDisplayName, onUpdate }) => 
       );
 
       if (response.status === 200) {
-        toast.success('Profile updated successfully!');
+        toast.success('Profile updated!');
         onUpdate(newDisplayName);
         onClose();
       } else {
-        toast.error(response.data.message || 'Failed to update display name.');
-        setError(response.data.message || 'Failed to update display name.');
+        toast.error(response.data.message || 'Update failed.');
       }
     } catch (err) {
-      console.error('Error updating display name:', err);
-      setError(err.response?.data?.message || 'An error occurred while updating the display name.');
-      toast.error(err.response?.data?.message || 'An error occurred while updating the display name.');
+      toast.error(err.response?.data?.message || 'Something went wrong.');
     } finally {
       setLoading(false);
     }
   };
 
-  return isOpen ? (
-    <div className="modal modal-open fixed inset-0 flex items-center justify-center z-50">
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/60">
       <Toaster />
-      <div className="modal-box shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Edit Display Name</h2>
+      <div className="bg-gray-900/80 border border-purple-500/30 rounded-2xl p-6 shadow-lg w-full max-w-md">
+        <h2 className="text-xl font-bold mb-4 text-white">Edit Display Name</h2>
         <input
           type="text"
+          className="input input-bordered w-full mb-3 bg-gray-800 text-white"
           value={newDisplayName}
           onChange={(e) => setNewDisplayName(e.target.value)}
-          className="input input-bordered w-full mb-4"
           maxLength={16}
         />
-        <p className="text-sm text-gray-500 mb-2">
-              {16 - newDisplayName.length} remaining
-            </p>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div className="flex justify-end space-x-2 gap-x-2">
-          <button onClick={onClose} className="btn no-animation bg-purple-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-purple-700 transition-all">Cancel</button>
-          <button onClick={handleSave} className="btn no-animation bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center hover:bg-blue-700 transition-all" disabled={loading}>
-            {loading ? (
-              <>
-                Save <FaSpinner className="animate-spin mr-2" />
-              </>
-            ) : (
-              <>
-                Save <FaSave className="inline-block align-middle mr-2" />
-              </>
-            )}
+        <p className="text-sm text-gray-400 mb-2">{16 - newDisplayName.length} characters left</p>
+        {error && <p className="text-red-400 mb-2">{error}</p>}
+        <div className="flex justify-end gap-3">
+          <button onClick={onClose} className="btn btn-sm bg-gray-700 text-white hover:bg-gray-600">Cancel</button>
+          <button onClick={handleSave} className="btn btn-sm bg-purple-600 text-white hover:bg-purple-700" disabled={loading}>
+            {loading ? <FaSpinner className="animate-spin mr-2" /> : <FaSave className="mr-2" />} Save
           </button>
-
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default EditProfileModal;
