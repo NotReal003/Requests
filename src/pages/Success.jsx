@@ -1,111 +1,106 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { CircleCheck, House } from 'lucide-react';
-import { FaDiscord, FaSpinner } from "react-icons/fa6";
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { House, CircleCheck } from 'lucide-react';
+import { FaDiscord, FaSpinner, FaExclamationTriangle } from "react-icons/fa6";
 import { IoShieldCheckmark } from "react-icons/io5";
-import { BiLoaderCircle } from "react-icons/bi";
+
+// --- Component: LoadingSpinner ---
+const LoadingSpinner = () => (
+    <div className="flex flex-col items-center justify-center min-h-screen text-gray-400">
+        <FaSpinner className="animate-spin text-5xl mb-4" />
+        <p>Finalizing Your Request...</p>
+    </div>
+);
+
+// --- Component: ErrorDisplay ---
+const ErrorDisplay = ({ message }) => (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white p-6 text-center">
+      <div className="bg-gradient-to-br from-[#1E1E1E] to-[#111] p-10 rounded-2xl shadow-2xl border border-red-500/30">
+          <FaExclamationTriangle className="text-7xl text-red-500 mx-auto mb-6" />
+          <h1 className="text-4xl font-bold mb-3">An Error Occurred</h1>
+          <p className="text-gray-400 max-w-sm">{message || "Something went wrong. Please try again later."}</p>
+      </div>
+    </div>
+);
 
 
 const Success = () => {
-  const { requestId } = useParams();
+  const location = useLocation();
+  const requestId = new URLSearchParams(location.search).get('request');
   const [loading, setLoading] = useState(true);
   const [request, setRequest] = useState(null);
-  const [error, setError] = useState(null);
   const [myUser, setMyUser] = useState(null);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const API = process.env.REACT_APP_API;
+  const API = process.env.REACT_APP_API || 'https://api.notreal003.org';
 
   useEffect(() => {
-    const fetchRequestDetails = async () => {
+    const fetchDetails = async () => {
+      if (!requestId) {
+          setError("No request ID provided.");
+          setLoading(false);
+          return;
+      }
       try {
-        const urlParams = new URLSearchParams(window.location.search);
-        const requestId = urlParams.get('request');
-        const token = localStorage.getItem('jwtToken');
-        const res = await fetch(`${API}/requests/${requestId}`, {
-          withCredentials: true,
-        });
+        // Use Promise.all to fetch request and user details concurrently
+        const [requestRes, userRes] = await Promise.all([
+          axios.get(`${API}/requests/${requestId}`, { withCredentials: true }),
+          axios.get(`${API}/users/@me`, { withCredentials: true })
+        ]);
 
-        if (!res.ok) {
-          const errorResponse = await res.json();
-          setError(errorResponse.message || 'Failed to load request.');
-          throw new Error(errorResponse.message || 'Failed to load the request.');
-        }
+        setRequest(requestRes.data);
+        setMyUser(userRes.data);
 
-        const requestData = await res.json();
-        setRequest(requestData);
-
-        const userRes = await fetch(`${API}/users/@me`, {
-          withCredentials: true,
-        });
-
-        if (!userRes.ok) {
-          const errorResponse = await userRes.json();
-          setError(errorResponse.message || 'Failed to load user details.');
-          throw new Error(errorResponse.message || 'Failed to load user details.');
-        }
-
-        const userData = await userRes.json();
-        setMyUser(userData);
-
-      } catch (error) {
-        console.error('Error:', error);
-        setError(error.message || 'An error occurred while loading data.');
+      } catch (err) {
+        setError(err.response?.data?.message || 'Failed to load confirmation details.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchRequestDetails();
+    fetchDetails();
   }, [requestId, API]);
 
-  const handleNavigation = (path) => {
-    navigate(path);
-  };
-  const handleWindowLocation = (path) => {
-    window.location.href = path;
-  }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-base-50">
-        <div className="text-center">
-          <FaSpinner className="animate-spin inline-block align-middle" />
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-base-50">
-        <div className="text-center">
-          <strong className="text-lg text-red-500">{error}</strong>
-        </div>
-      </div>
-    );
-  }
+  if (loading) return <LoadingSpinner />;
+  if (error) return <ErrorDisplay message={error} />;
+  if (!request || !myUser) return <ErrorDisplay message="Could not retrieve all necessary details." />;
 
   return (
-    <div className="flex flex flex-col items-center justify-center max-w-md md:max-w-lg mx-auto shadow-lg bg-base-50 min-h-screen">
-      <div className="text-center p-2">
-        <div className="flex items-center justify-center mb-4">
-          <IoShieldCheckmark className="w-20 h-20 text-green-500 animate-pulse" />
+    <div className="min-h-screen w-full bg-black text-gray-200 font-sans flex items-center justify-center p-4">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-black via-black to-[#1a0c2e] opacity-50 z-0"></div>
+        
+        <div className="relative z-10 w-full max-w-lg text-center bg-[#1a1a1a]/50 p-8 sm:p-12 rounded-2xl border border-gray-800/50 shadow-2xl">
+            <div className="flex items-center justify-center mb-6">
+                <IoShieldCheckmark className="w-24 h-24 text-green-400 animate-pulse" />
+            </div>
+            <h1 className="text-4xl font-bold text-white mb-3">Success!</h1>
+            <p className="text-gray-400 mb-6">
+                Thank you, <strong className="text-white">{request.username}</strong>. Your <strong className="text-purple-400">{request.typeName}</strong> has been submitted. We'll send updates to <strong className="text-white">{myUser.email}</strong>.
+            </p>
+            <p className="text-xs text-gray-500 mb-8">Request ID: {request._id}</p>
+
+            <div className="space-y-4">
+                <button 
+                    onClick={() => navigate('/one')} 
+                    className="w-full p-3 bg-purple-600 rounded-lg hover:bg-purple-700 transition-colors font-bold flex items-center justify-center text-white"
+                >
+                    <CircleCheck className='size-5 mr-2' /> View Your Requests
+                </button>
+                <button
+                    onClick={() => window.location.href = 'https://discord.gg/sqVBrMVQmp'}
+                    className="w-full p-3 bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors font-bold flex items-center justify-center text-white"
+                >
+                    <FaDiscord className="size-5 mr-2" /> Join our Discord
+                </button>
+                <button 
+                    onClick={() => navigate('/')} 
+                    className="w-full p-3 bg-gray-700/50 rounded-lg hover:bg-gray-600/70 transition-colors font-bold flex items-center justify-center text-gray-300"
+                >
+                    <House className='size-5 mr-2' /> Back to Home
+                </button>
+            </div>
         </div>
-        <h1 className="text-2xl font-bold mb-2">Success</h1>
-        <p>Thanks for submitting {request.typeName} <strong>{request.username}</strong>. We will notify you on your email <strong>{myUser.email}</strong>. Join our Discord Server so we may contact you :)</p>
-        <p className="text-xs">Your request ID: {request._id}</p>
-        <button onClick={() => handleNavigation('/one')} className="btn no-animation mt-4 w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
-          <CircleCheck className='size-4' /> Your Requests
-        </button>
-        <button
-          onClick={() => handleWindowLocation('https://discord.gg/sqVBrMVQmp')}
-          className="btn mt-4 no-animation w-full bg-blue-600 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-blue-700 transition-all">
-          <FaDiscord /> Join our Discord Server
-        </button>
-        <button onClick={() => handleNavigation('/')} className="btn no-animation mt-4 w-full bg-yellow-500 text-white font-medium rounded-lg shadow-sm flex items-center justify-center hover:bg-yellow-600 transition-all">
-          <House className='size-4' /> Back to Home Page
-        </button>
-      </div>
     </div>
   );
 }
