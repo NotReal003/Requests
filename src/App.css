@@ -1,3 +1,6 @@
+@plugin "daisyui" {
+  themes: night --default, night --prefersdark;
+}
 .App {
   text-align: center;
 }
