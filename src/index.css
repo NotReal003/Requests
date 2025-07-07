@@ -1,38 +1,4 @@
-/* src/index.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 @plugin "daisyui" {
-  themes: night --default, night --prefersdark;
-}
-/* Language: kdkskskdjs */
-
-.custom-tooltip[data-tip]::after {
-  max-width: 200px; /* Set a max width for the tooltip */
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  overflow-y: hidden; /* Prevent vertical overflow */
-  scrollbar-width: thin; /* Optional: Make scrollbar thinner (Firefox) */
-}
-
-/* Optional: Style the scrollbar for Webkit browsers (Chrome, Safari) */
-.custom-tooltip[data-tip]::after::-webkit-scrollbar {
-  height: 4px;
-}
-
-.custom-tooltip[data-tip]::after::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 2px;
-}
-
-.custom-tooltip[data-tip]::after::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-.animate-fade-in {
-  animation: fade-in 0.3s ease-in;
+  themes: all;
 }
