@@ -40,31 +40,30 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, children, isActi
 // --- Component: StatusIndicator ---
 const StatusIndicator = ({ status }) => {
     const statusStyles = {
-        PENDING: { icon: FaHourglassHalf, text: 'Pending Review', color: 'text-yellow-400', bg: 'bg-yellow-500/10' },
-        APPROVED: { icon: FaCheckCircle, text: 'Approved', color: 'text-green-400', bg: 'bg-green-500/10' },
-        RESOLVED: { icon: FaCheckCircle, text: 'Resolved', color: 'text-green-400', bg: 'bg-green-500/10' },
-        DENIED: { icon: FaTimesCircle, text: 'Denied', color: 'text-red-400', bg: 'bg-red-500/10' },
-        CANCELLED: { icon: FaBan, text: 'Cancelled', color: 'text-red-500', bg: 'bg-red-600/10' },
-        ESCALATED: { icon: FaExclamationTriangle, text: 'Escalated', color: 'text-orange-400', bg: 'bg-orange-500/10' },
+        PENDING: { icon: FaHourglassHalf, text: 'Pending Review', color: 'text-yellow-400', bg: 'bg-yellow-500/10 border-yellow-500/20' },
+        APPROVED: { icon: FaCheckCircle, text: 'Approved', color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/20' },
+        RESOLVED: { icon: FaCheckCircle, text: 'Resolved', color: 'text-green-400', bg: 'bg-green-500/10 border-green-500/20' },
+        DENIED: { icon: FaTimesCircle, text: 'Denied', color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20' },
+        CANCELLED: { icon: FaBan, text: 'Cancelled', color: 'text-red-500', bg: 'bg-red-600/10 border-red-600/20' },
+        ESCALATED: { icon: FaExclamationTriangle, text: 'Escalated', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20' },
     };
-    const currentStatus = statusStyles[status] || { icon: FaExclamationTriangle, text: 'Unknown', color: 'text-gray-400', bg: 'bg-gray-500/10' };
+    const currentStatus = statusStyles[status] || { icon: FaExclamationTriangle, text: 'Unknown', color: 'text-gray-400', bg: 'bg-gray-500/10 border-gray-500/20' };
     const Icon = currentStatus.icon;
     return (
-        <div className={`flex items-center text-lg font-semibold ${currentStatus.color} ${currentStatus.bg} px-4 py-2 rounded-lg`}>
+        <div className={`flex items-center text-lg font-semibold ${currentStatus.color} ${currentStatus.bg} px-4 py-2 rounded-lg border`}>
             <Icon className="mr-2" />
             <span>{currentStatus.text}</span>
         </div>
     );
 };
 
-
 // --- Component: InfoField ---
 const InfoField = ({ label, value, icon }) => {
     const Icon = icon;
     return (
         <div>
-            <label className="flex items-center text-sm font-semibold text-gray-400 mb-1"><Icon className="mr-2" />{label}</label>
-            <div className="p-3 bg-[#2a2a2a]/50 rounded-lg border border-gray-700/50 text-gray-300 whitespace-pre-wrap break-words min-h-[44px]">
+            <label className="flex items-center text-sm font-semibold text-gray-400 mb-2"><Icon className="mr-2" />{label}</label>
+            <div className="p-3 bg-[#111]/50 rounded-lg border border-gray-700/50 text-gray-300 whitespace-pre-wrap break-words min-h-[44px]">
                 {value || <span className="text-gray-500">Not provided</span>}
             </div>
         </div>
@@ -73,12 +72,11 @@ const InfoField = ({ label, value, icon }) => {
 
 // --- Component: LoadingSpinner ---
 const LoadingSpinner = () => (
-    <div className="flex flex-col items-center justify-center min-h-screen text-gray-400">
-        <FaSpinner className="animate-spin text-5xl mb-4" />
-        <p>Loading Your Request...</p>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-gray-400">
+        <FaSpinner className="animate-spin text-5xl mb-4 text-purple-400" />
+        <p className="text-lg tracking-wider">Loading Your Request...</p>
     </div>
 );
-
 
 function RequestDetail() {
   const location = useLocation();
@@ -89,7 +87,7 @@ function RequestDetail() {
   const [isCancelling, setIsCancelling] = useState(false);
   const [permissionError, setPermissionError] = useState(null);
   const navigate = useNavigate();
-  const API = process.env.REACT_APP_API || 'https://api.notreal003.org';
+  const API = process.env.REACT_APP_API || 'https://api.notreal003.org;
 
   useEffect(() => {
     const fetchRequest = async () => {
@@ -125,11 +123,10 @@ function RequestDetail() {
 
     try {
         await cancelPromise;
-        // Refetch data to show updated status
         const response = await axios.get(`${API}/requests/${requestId}`, { withCredentials: true });
         setRequest(response.data);
     } catch (error) {
-        // Toast already handled the error message
+        // Error is handled by toast
     } finally {
         setIsCancelling(false);
         setShowCancelModal(false);
@@ -154,7 +151,13 @@ function RequestDetail() {
 
   return (
     <div className="min-h-screen w-full bg-black text-gray-200 font-sans">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-black via-black to-[#1a0c2e] opacity-50 z-0"></div>
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+            <div className="absolute bottom-0 left-[-20%] right-[-20%] top-[-20%] bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+            <div className="absolute left-0 top-0 h-1/2 w-1/2 rounded-full bg-gradient-to-tr from-purple-900 to-transparent opacity-20 animate-spin-slow"></div>
+            <div className="absolute right-0 bottom-0 h-1/2 w-1/2 rounded-full bg-gradient-to-bl from-indigo-900 to-transparent opacity-20 animate-spin-slow-reverse"></div>
+        </div>
+
         <Toaster position="top-center" toastOptions={{ className: 'bg-gray-800 text-white border border-gray-700' }} />
         <ConfirmationModal 
             isOpen={showCancelModal} 
@@ -166,8 +169,7 @@ function RequestDetail() {
             Are you sure you want to cancel this request? This action cannot be reversed.
         </ConfirmationModal>
 
-        <div className="relative z-10 p-4 sm:p-6 lg:p-8">
-            {/* Redesigned Header */}
+        <div className="relative z-10 p-4 sm:p-6 lg:p-8 animate-fade-in-up">
             <header className="flex items-center justify-between mb-10 pb-4 border-b border-gray-800">
                 <div>
                     <h1 className="text-4xl sm:text-5xl font-bold text-white tracking-tight">Request Status</h1>
@@ -178,8 +180,9 @@ function RequestDetail() {
                 </button>
             </header>
             
-            <main className="max-w-5xl mx-auto">
-                <div className="bg-[#1a1a1a]/50 p-6 sm:p-8 rounded-2xl border border-gray-800/50">
+            <main className="max-w-4xl mx-auto">
+                {/* Glassmorphism Card */}
+                <div className="bg-gray-900/40 backdrop-blur-xl p-6 sm:p-8 rounded-2xl border border-purple-500/20 shadow-2xl shadow-purple-900/20">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-gray-700 pb-4 mb-6">
                         <h2 className="text-2xl font-bold text-purple-400 mb-2 sm:mb-0">{request.typeName}</h2>
                         <StatusIndicator status={request.status} />
@@ -200,10 +203,10 @@ function RequestDetail() {
                     
                     {request.status === 'PENDING' && request.reviewed === 'false' && (
                         <div className="text-center pt-6 mt-6 border-t border-gray-800">
-                            <p className="text-sm text-gray-500 mb-2">If you made a mistake, you can cancel your request.</p>
+                            <p className="text-sm text-gray-500 mb-3">If you made a mistake, you can cancel your request.</p>
                             <button 
                                 onClick={() => setShowCancelModal(true)} 
-                                className="px-6 py-2 bg-red-600/20 text-red-400 rounded-lg hover:bg-red-600/40 transition-colors font-semibold"
+                                className="px-6 py-2 bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-lg hover:scale-105 transition-transform duration-300 font-semibold shadow-lg shadow-red-900/30"
                             >
                                 Cancel Request
                             </button>
@@ -212,6 +215,27 @@ function RequestDetail() {
                 </div>
             </main>
         </div>
+
+        {/* CSS for custom animations */}
+        <style>{`
+            @keyframes spin-slow {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            .animate-spin-slow { animation: spin-slow 20s linear infinite; }
+            
+            @keyframes spin-slow-reverse {
+                from { transform: rotate(360deg); }
+                to { transform: rotate(0deg); }
+            }
+            .animate-spin-slow-reverse { animation: spin-slow-reverse 25s linear infinite; }
+            
+            @keyframes fade-in-up {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
+        `}</style>
     </div>
   );
 }
