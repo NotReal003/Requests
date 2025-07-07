@@ -21,7 +21,8 @@ jobs:
         run: npm install
 
       - name: ⬆️ Update DaisyUI to latest
-        run: npm install daisyui@latest
+        run: npm install daisyui@latest --save-exact
+
 
       - name: 📤 Commit updated package files
         env:
