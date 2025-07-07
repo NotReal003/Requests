@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoSend } from "react-icons/io5";
 import { ImExit } from "react-icons/im";
-import { FaPeopleGroup, FaSpinner } from "react-icons/fa";
+import { FaSpinner } from "react-icons/fa";
+import { FaPeopleGroup } from "react-icons/fa6";
 import toast, { Toaster } from 'react-hot-toast';
 import DOMPurify from "dompurify";
 
