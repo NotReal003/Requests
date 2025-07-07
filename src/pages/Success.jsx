@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { House, CircleCheck } from 'lucide-react';
-import { FaDiscord, FaSpinner, FaExclamationTriangle } from "react-icons/fa6";
+import { FaDiscord, FaSpinner, FaExclamationTriangle } from "react-icons/fa";
 import { IoShieldCheckmark } from "react-icons/io5";
 
 // --- Component: LoadingSpinner ---
