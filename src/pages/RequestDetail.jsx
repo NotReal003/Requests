@@ -195,7 +195,7 @@ function RequestDetail() {
 
                         {request.reviewed === 'true' && (
                             <div className="mb-6 bg-purple-900/20 p-4 rounded-lg border border-purple-500/20">
-                                <h3 className="text-lg font-semibold text-purple-300 mb-2">Staff Review</h3>
+                                <h3 className="text-lg font-semibold text-purple-300 mb-2">Review</h3>
                                 <p className="text-gray-300 whitespace-pre-wrap">{request.reviewMessage || `Your request was ${request.status.toLowerCase()}.`}</p>
                             </div>
                         )}
