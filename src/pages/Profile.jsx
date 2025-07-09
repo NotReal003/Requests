@@ -22,12 +22,13 @@ const Profile = () => {
         const userResponse = await axios.get(`${API}/users/@me`, { withCredentials: true });
         const requestsResponse = await axios.get(`${API}/requests`, { withCredentials: true });
         setUser(userResponse.data);
+        const datas = userResponse.data;
         setRequestCount(requestsResponse.data.length);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching profile data:', error);
-        toast.error('Failed to find your profile.');
-        setError('Failed to find your profile.');
+        toast.error(datas.message || 'An issue occurred while submitting your request.');
+        setError(datas.message || 'Failed to find your profile.');
         setLoading(false);
       }
     };
